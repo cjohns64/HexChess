@@ -104,4 +104,23 @@ class Board {
             }
         }
 
+        /**
+         * Set the board to the state given by a list of pieces for both players, each piece will have its current location.
+         */
+        void SetBoard(std::vector<ChessPiece*> white_pieces, std::vector<ChessPiece*> black_pieces) {
+            // set the white pieces
+            for (int i=0; i<white_pieces.size(); i++) {
+                // get the location of the piece and the corresponding tile
+                Tile* tile = GetTile(white_pieces[i]->GetLocation());
+                // set the piece on the tile, ignore if the tile is already full
+                tile->SetPiece(white_pieces[i]);
+            }
+            // set the black pieces
+            for (int i=0; i<black_pieces.size(); i++) {
+                // get the location of the piece and the corresponding tile
+                Tile* tile = GetTile(black_pieces[i]->GetLocation());
+                // set the piece on the tile, ignore if the tile is already full
+                tile->SetPiece(black_pieces[i]);
+            }
+        }
 };
