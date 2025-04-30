@@ -36,7 +36,22 @@ enum eColor {
     HighlightCheck
 };
 
-struct {
+struct sCoords{
     int rank;
     eFiles file;
-} sCoords;
+    sCoords(int _rank, eFiles _file) {
+        rank = _rank;
+        file = _file;
+    }
+};
+
+struct sRelCoords {
+    int rel_rank;
+    int rel_file;
+    bool repeat;
+    sRelCoords(int _rel_rank, int _rel_file, bool _repeat=false) {
+        rel_rank = _rel_rank;
+        rel_file = _rel_file;
+        repeat = _repeat;
+    }
+};
