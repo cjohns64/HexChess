@@ -37,6 +37,7 @@ enum eColor {
 };
 
 struct sCoords{
+    // absolute coordinates of a tile or piece
     int rank;
     eFiles file;
     sCoords(int _rank, eFiles _file) {
@@ -46,9 +47,10 @@ struct sCoords{
 };
 
 struct sRelCoords {
-    int rel_rank;
-    int rel_file;
-    bool repeat;
+    // defines the reletive movement of a piece
+    int rel_rank; // reletive movement along a rank
+    int rel_file; // relative movement along a file
+    bool repeat; // if the relative movement can be repeated in one move, like in the case of a Rook
     sRelCoords(int _rel_rank, int _rel_file, bool _repeat=false) {
         rel_rank = _rel_rank;
         rel_file = _rel_file;
