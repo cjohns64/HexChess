@@ -4,7 +4,7 @@
 // Contains information and functions associated with a single tile.
 class Tile {
     private:
-        ChessPiece* current_piece;
+        ChessPiece* current_piece = NULL;
 
     public:
         eColor tile_color;

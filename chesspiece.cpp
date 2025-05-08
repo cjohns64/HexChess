@@ -10,6 +10,7 @@ class ChessPiece {
         ePlayer player; // the player for the piece: White, Black
         static const bool is_promotable = false; // if the piece can be promoted to a higher value piece
         static const int value;
+        static const bool captures_with_moves = true;
         bool is_unmoved = true;
         // relative locations
         std::vector<sRelCoords> moves;
@@ -138,6 +139,7 @@ class PawnPiece: public ChessPiece {
     public:
         static const bool is_promotable = true;
         static const int value = 1;
+        static const bool captures_with_moves = false;
 
         PawnPiece(ePlayer _player, sCoords* _location) : ChessPiece(Pawn, _player, _location) {
             // Pawn can move one tile in direction of opponent

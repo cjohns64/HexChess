@@ -61,34 +61,6 @@ class Board {
 
     public:
         Board() {
-            // int x=0;
-            // int k=0;
-            // for (int i=0; i<MAX_BOARD_LENGTH; i++) {
-            //     for (int j=0; j<5+x; j++) {
-            //         // grow by 1 for first half, then shrink by one for second half
-            //         if (i >= 5) {
-            //             x--;
-            //         }
-            //         else {
-            //             x++;
-            //         }
-            //         // tile pattern is White, Black, Grey
-            //         switch (k%3){
-            //             case 0:
-            //                 chessboard[i][j] = Tile(colorW);
-            //                 k++;
-            //                 break;
-            //             case 1:
-            //                 chessboard[i][j] = Tile(colorB);
-            //                 k++;
-            //                 break;
-            //             case 2:
-            //                 chessboard[i][j] = Tile(colorG);
-            //                 k++;
-            //                 break;
-            //         }
-            //     }
-            // }
         }
 
         /**
@@ -107,20 +79,23 @@ class Board {
         /**
          * Set the board to the state given by a list of pieces for both players, each piece will have its current location.
          */
-        void SetBoard(std::vector<ChessPiece*> white_pieces, std::vector<ChessPiece*> black_pieces) {
+        void SetBoard(std::vector<ChessPiece>& white_pieces, KingPiece& white_king, std::vector<ChessPiece>& black_pieces, KingPiece& black_king) {
+            // set the white and black Kings
+            GetTile(white_king.GetLocation())->SetPiece(&white_king);
+            GetTile(black_king.GetLocation())->SetPiece(&black_king);
             // set the white pieces
             for (int i=0; i<white_pieces.size(); i++) {
                 // get the location of the piece and the corresponding tile
-                Tile* tile = GetTile(white_pieces[i]->GetLocation());
+                Tile* tile = GetTile(white_pieces[i].GetLocation());
                 // set the piece on the tile, ignore if the tile is already full
-                tile->SetPiece(white_pieces[i]);
+                tile->SetPiece(&white_pieces[i]);
             }
             // set the black pieces
             for (int i=0; i<black_pieces.size(); i++) {
                 // get the location of the piece and the corresponding tile
-                Tile* tile = GetTile(black_pieces[i]->GetLocation());
+                Tile* tile = GetTile(black_pieces[i].GetLocation());
                 // set the piece on the tile, ignore if the tile is already full
-                tile->SetPiece(black_pieces[i]);
+                tile->SetPiece(&black_pieces[i]);
             }
         }
 };

@@ -1,15 +1,17 @@
+struct sRelCoords;
+
 enum eFiles {
-    a,
-    b,
-    c,
-    d,
-    e,
-    f,
-    g,
-    h,
-    i,
-    j,
-    k
+    a = 0,
+    b = 1,
+    c = 2,
+    d = 3,
+    e = 4,
+    f = 5,
+    g = 6,
+    h = 7,
+    i = 8,
+    j = 9,
+    k = 10
 };
 
 enum ePlayer {
@@ -57,3 +59,53 @@ struct sRelCoords {
         repeat = _repeat;
     }
 };
+
+// overload +- opperators for sCoords and sRelCoords combinations
+inline sCoords operator+(const sRelCoords& opt1, const sCoords& opt2) {
+        int new_rank = opt2.rank + opt1.rel_rank;
+        int new_file = opt2.file + opt1.rel_file;
+        return sCoords(new_rank, static_cast<eFiles>(new_file));
+}
+
+inline sCoords operator-(const sRelCoords& opt1, const sCoords& opt2) {
+        int new_rank = opt2.rank - opt1.rel_rank;
+        int new_file = opt2.file - opt1.rel_file;
+        return sCoords(new_rank, static_cast<eFiles>(new_file));
+}
+
+inline sCoords operator+(const sCoords& opt1, const sRelCoords& opt2) {
+        int new_rank = opt1.rank + opt2.rel_rank;
+        int new_file = opt1.file + opt2.rel_file;
+        return sCoords(new_rank, static_cast<eFiles>(new_file));
+}
+
+inline sCoords operator-(const sCoords& opt1, const sRelCoords& opt2) {
+        int new_rank = opt1.rank - opt2.rel_rank;
+        int new_file = opt1.file - opt2.rel_file;
+        return sCoords(new_rank, static_cast<eFiles>(new_file));
+}
+
+inline sCoords operator+(const sCoords& opt1, const sCoords& opt2) {
+        int new_rank = opt1.rank + opt2.rank;
+        int new_file = opt1.file + opt2.file;
+        return sCoords(new_rank, static_cast<eFiles>(new_file));
+}
+
+inline sCoords operator-(const sCoords& opt1, const sCoords& opt2) {
+        int new_rank = opt1.rank - opt2.rank;
+        int new_file = opt1.file - opt2.file;
+        return sCoords(new_rank, static_cast<eFiles>(new_file));
+}
+
+// overload multiplication for sRelCoords
+inline sRelCoords operator*(const int& x, const sRelCoords& obj) {
+        int new_rank = obj.rel_rank * x;
+        int new_file = obj.rel_file * x;
+        return sRelCoords(new_rank, new_file, obj.repeat);
+}
+
+inline sRelCoords operator*(const sRelCoords& obj, const int& x) {
+        int new_rank = obj.rel_rank * x;
+        int new_file = obj.rel_file * x;
+        return sRelCoords(new_rank, new_file, obj.repeat);
+}
