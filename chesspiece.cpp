@@ -17,7 +17,7 @@ class ChessPiece {
         std::vector<sRelCoords> inital_moves;
         std::vector<sRelCoords> captures;
         // references to exact locations
-        std::vector<sCoords*> valid_moves_this_turn;
+        std::vector<sCoords> valid_moves_this_turn;
 
     private:
         sCoords* location;

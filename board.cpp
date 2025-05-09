@@ -1,24 +1,15 @@
-#include "./tile.cpp"
-#include <vector>
+#include "./board_init.cpp"
+// #include "./tile.cpp"
+// #ifdef vector
+// #include <vector>
+// #endif
 
 
 class Board {
     private:
         // data structure representing the board
         // tile sequence is White, Black, Grey
-        std::vector<std::vector<Tile>> chessboard = {
-            {Tile(colorW), Tile(colorB), Tile(colorG), Tile(colorW), Tile(colorB)},
-            {Tile(colorG), Tile(colorW), Tile(colorB), Tile(colorG), Tile(colorW), Tile(colorB)},
-            {Tile(colorG), Tile(colorW), Tile(colorB), Tile(colorG), Tile(colorW), Tile(colorB), Tile(colorG)},
-            {Tile(colorW), Tile(colorB), Tile(colorG), Tile(colorW), Tile(colorB), Tile(colorG), Tile(colorW), Tile(colorB), },
-            {Tile(colorG), Tile(colorW), Tile(colorB), Tile(colorG), Tile(colorW), Tile(colorB), Tile(colorG), Tile(colorW), Tile(colorB)},
-            {Tile(colorG), Tile(colorW), Tile(colorB), Tile(colorG), Tile(colorW), Tile(colorB), Tile(colorG), Tile(colorW), Tile(colorB), Tile(colorG)},
-            {Tile(colorW), Tile(colorB), Tile(colorG), Tile(colorW), Tile(colorB), Tile(colorG), Tile(colorW), Tile(colorB), Tile(colorG)},
-            {Tile(colorW), Tile(colorB), Tile(colorG), Tile(colorW), Tile(colorB), Tile(colorG), Tile(colorW), Tile(colorB)},
-            {Tile(colorG), Tile(colorW), Tile(colorB), Tile(colorG), Tile(colorW), Tile(colorB), Tile(colorG)},
-            {Tile(colorW), Tile(colorB), Tile(colorG), Tile(colorW), Tile(colorB), Tile(colorG)},
-            {Tile(colorW), Tile(colorB), Tile(colorG), Tile(colorW), Tile(colorB)}
-            };
+        std::vector<std::vector<Tile>> chessboard;
 
         /**
          * Checks if the given location is on the board
@@ -61,6 +52,9 @@ class Board {
 
     public:
         Board() {
+            // setup the inital chessboard
+            init_board();
+            chessboard = BOARD_INIT;
         }
 
         /**

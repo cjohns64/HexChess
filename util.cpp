@@ -46,6 +46,11 @@ struct sCoords{
         rank = _rank;
         file = _file;
     }
+
+    // overload == for compairing coordinates
+    bool operator == (const sCoords& obj) {
+        return rank == obj.rank && file == obj.file;
+    }
 };
 
 struct sRelCoords {

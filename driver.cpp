@@ -1,5 +1,13 @@
 #include "board.cpp"
 
+enum eGameEnd {
+    Checkmate = 0,
+    Stalemate = 1,
+    DeadPosistion = 2,
+    ThreefoldRepitition = 3,
+    FiftyMoveRule = 4
+};
+
 /**
  * Init:
  * - setup board
@@ -46,20 +54,32 @@ class Driver {
             sCoords(8, f), sCoords(8, g), sCoords(8, h), sCoords(9, h),
             sCoords(9, i), sCoords(9, j), sCoords(10, j), sCoords(10, k)
         };
+
+        // White: 0a-0f, 1g, 2h, 3i, 4j, 5k
+        sCoords back_rank_white[11] = {
+            sCoords(0, a), sCoords(0, b), sCoords(0, c), sCoords(0, d), sCoords(0, e), sCoords(0, f),
+            sCoords(1, g), sCoords(2, h), sCoords(3, i), sCoords(4, j), sCoords(5, k)
+        };
+        // Black: 10f-10k, 5a, 6b, 7c, 8d, 9e
+        sCoords back_rank_black[11] = {
+            sCoords(10, f), sCoords(10, g), sCoords(10, h), sCoords(10, i), sCoords(10, j), sCoords(10, k),
+            sCoords(5, a), sCoords(6, b), sCoords(7, c), sCoords(8, d), sCoords(9, e)
+        };
         int round_number = -1; // first step in game loop will increment this to 0
         int last_pawn_move_round = 0;
         int last_capture_round = 0;
+        int total_valid_moves_current_player = 0;
         ePlayer current_player = WhitePlayer;
         // the actual pieces are stored here, all other classes use pointers to these pieces
-        std::vector<ChessPiece> white_pieces;
-        std::vector<ChessPiece> black_pieces;
+        vector<ChessPiece> white_pieces;
+        vector<ChessPiece> black_pieces;
         // store the Kings separately since they will need to be accessed for every move, and they can't be removed from the board
         KingPiece white_king;
         KingPiece black_king;
         // data for testing threats without hardcoding different moves
         sCoords empty_location = sCoords(0, a);
         // these pieces are only used for checking for threats and are never placed on the board
-        std::vector<ChessPiece> test_pieces_white = {
+        vector<ChessPiece> test_pieces_white = {
             KingPiece(WhitePlayer, &empty_location),
             QueenPiece(WhitePlayer, &empty_location),
             RookPiece(WhitePlayer, &empty_location),
@@ -69,7 +89,7 @@ class Driver {
         };
         // there is a version for the other player because pawns move in opposite directions
         // all pieces are included in case moves are different for the players.
-        std::vector<ChessPiece> test_pieces_black = {
+        vector<ChessPiece> test_pieces_black = {
             KingPiece(BlackPlayer, &empty_location),
             QueenPiece(BlackPlayer, &empty_location),
             RookPiece(BlackPlayer, &empty_location),
@@ -86,9 +106,9 @@ class Driver {
         ChessPiece* en_passant_piece = NULL;
 
         // vector of the pieces white lost
-        std::vector<ChessPiece> white_dead_pieces;
+        vector<ChessPiece> white_dead_pieces;
         // vector of the pieces black lost
-        std::vector<ChessPiece> black_dead_pieces;
+        vector<ChessPiece> black_dead_pieces;
 
         Board chessboard = Board();
 
@@ -143,40 +163,63 @@ class Driver {
          * - get valid moves for all current player pieces and save/count results in pieces
          * - check for win/draw
          * - player-turn
+         *
+         * Return value is the game over state
          */
-        void GameLoop() {
-            // update round number
-            round_number++;
-            // set the current player
-            current_player = static_cast<ePlayer>(round_number % 2);
-            // skip checking NULL en passant pieces
-            if (en_passant_piece != NULL) {
-                // clear the en_passant_piece if it has made it back to the player that used it
-                if (en_passant_piece->player == current_player) {
-                    en_passant_piece = NULL;
+        eGameEnd GameLoop() {
+            while (true) {
+                // update round number
+                round_number++;
+                // set the current player
+                current_player = static_cast<ePlayer>(round_number % 2);
+                // skip checking NULL en passant pieces
+                if (en_passant_piece != NULL) {
+                    // clear the en_passant_piece if it has made it back to the player that used it
+                    if (en_passant_piece->player == current_player) {
+                        en_passant_piece = NULL;
+                    }
                 }
-            }
-            // check King
-            KingPiece *king = current_player == WhitePlayer ? &white_king : &black_king;
-            // resolve all moves
-            std::vector<Tile*> resolved_moves;
-            ResolveMoves(*king, resolved_moves);
-            //TODO validate all resolved moves
-            //TODO update all valid moves for piece
-
-            // check Pieces
-            std::vector<ChessPiece> *pieces = current_player == WhitePlayer ? &white_pieces : &black_pieces;
-
-            for (int i=0; i<pieces->size(); i++) {
+                // check King
+                KingPiece *king = current_player == WhitePlayer ? &white_king : &black_king;
                 // resolve all moves
-                std::vector<Tile*> resolved_moves;
-                ResolveMoves((*pieces)[i], resolved_moves);
+                vector<Tile*> resolved_moves;
+                ResolveMoves(*king, resolved_moves);
+                // validate all resolved moves
+                ValidateResolvedMoves(resolved_moves, king);
+                // clear total valid moves and update with number of valid moves for the king
+                total_valid_moves_current_player = resolved_moves.size();
+                // update all valid moves for piece
+                king->valid_moves_this_turn = TranslateVector(resolved_moves);
+                
 
-                //TODO validate all resolved moves
-                //TODO update all valid moves for piece
+                // check Pieces
+                vector<ChessPiece> *pieces = current_player == WhitePlayer ? &white_pieces : &black_pieces;
+
+                for (int i=0; i<pieces->size(); i++) {
+                    // resolve all moves
+                    vector<Tile*> resolved_moves;
+                    ResolveMoves((*pieces)[i], resolved_moves);
+
+                    // validate all resolved moves
+                    ValidateResolvedMoves(resolved_moves, &(*pieces)[i]);
+                    // add valid moves to total valid moves count
+                    total_valid_moves_current_player += resolved_moves.size();
+                    // update all valid moves for piece
+                    (*pieces)[i].valid_moves_this_turn = TranslateVector(resolved_moves);
+                }
+                // check if total number of moves > 0
+                if (total_valid_moves_current_player == 0) {
+                    // STALEMATE OR CHECKMATE
+                    if (IsInCheck(king)) {
+                        return Checkmate;
+                    }
+                    return Stalemate;
+                }
+                //TODO check for win/draw conditions
+
+                // ask the player for a move
+                PlayerTurn();
             }
-            // TODO check if total number of moves > 0
-            //TODO check for win/draw conditions
         }
 
     private:
@@ -187,14 +230,25 @@ class Driver {
          * - select? ... undo/redo? ... move?
          * - update game log
          */
-        void RunTurn() {
+        void PlayerTurn() {
+            //TODO selection
+            //TODO repeat until a move is made
+            //TODO move
+        }
+
+        vector<sCoords> TranslateVector(vector<Tile*>& vec) {
+            vector<sCoords> translate_vec;
+            for (int i=0; i<vec.size(); i++) {
+                translate_vec.push_back(vec[i]->GetLocation());
+            }
+            return translate_vec;
         }
 
         /**
          * Converts the move set of a given piece to a vector of tiles that the piece can physically move to.
          * Does not check if the move will put the King in check, only that the tiles are unobstructed or a capture can be made.
          */
-        void ResolveMoves(ChessPiece& piece, std::vector<Tile*>& resolved_moves) {
+        void ResolveMoves(ChessPiece& piece, vector<Tile*>& resolved_moves) {
             // piece location
             sCoords location = piece.GetLocation();
             // check initial moves
@@ -229,12 +283,12 @@ class Driver {
         /**
          * Resolves a single movement direction represented by an sRelCoords object. Updates resolved_moves in place.
          */
-        void ResolveSingleRelMove(sRelCoords& move, sCoords& location, std::vector<Tile*>& resolved_moves, bool can_capture=true, ePlayer player=WhitePlayer) {
+        void ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<Tile*>& resolved_moves, bool can_capture=true, ePlayer player=WhitePlayer, bool is_test=false) {
             Tile* tile;
             if (!move.repeat) {
                 // check move is available
                 tile = chessboard.GetTile(location + move);
-                ResolveThisMove(tile, resolved_moves, can_capture, player);
+                ResolveThisMove(tile, resolved_moves, can_capture, player, is_test);
             }
             else {
                 int x=1;
@@ -242,7 +296,7 @@ class Driver {
                     // check all repeat moves in the direction given by moves
                     tile = chessboard.GetTile(location + (move * x));
                     x++;
-                } while (!ResolveThisMove(tile, resolved_moves, can_capture, player));
+                } while (!ResolveThisMove(tile, resolved_moves, can_capture, player, is_test));
             }
         }
 
@@ -250,17 +304,17 @@ class Driver {
          * Resolves the fetched tile, returns true if the tile was the end of a repeat pattern,
          * and false if a repeat move may still exist.
          */
-        bool ResolveThisMove(Tile* tile, std::vector<Tile*>& resolved_moves, bool can_capture=true, ePlayer player=WhitePlayer){
+        bool ResolveThisMove(Tile* tile, vector<Tile*>& resolved_moves, bool can_capture=true, ePlayer player=WhitePlayer, bool is_test=false){
             // check the tile is on the board
             if (tile != nullptr) {
                 // check if the tile is empty
-                if (tile->GetPiece() == NULL) {
+                if (tile->GetPiece(is_test) == NULL) {
                     // add tile to resolved moves
                     resolved_moves.push_back(tile);
                     return false;
                 }
                 // check if the occupying piece is an enemy piece
-                else if (can_capture && tile->GetPiece()->player != player){
+                else if (can_capture && tile->GetPiece(is_test)->player != player){
                     // add tile and end
                     resolved_moves.push_back(tile);
                     return true;
@@ -291,9 +345,9 @@ class Driver {
          * The check is done by looking checking each possible move (inverted direction)
          * with each piece type using the other player's move set.
          */
-        void GetThreatened(std::vector<ChessPiece*>& threats, sCoords location, ePlayer player, bool return_immediately=false) {
+        void GetThreatened(vector<ChessPiece*>& threats, sCoords location, ePlayer player, bool return_immediately=false, bool is_test=false) {
             // get the test pieces. The move sets could be different, so get the other player's pieces
-            std::vector<ChessPiece>* test_pieces = player == BlackPlayer ? &test_pieces_white : &test_pieces_black;
+            vector<ChessPiece>* test_pieces = player == BlackPlayer ? &test_pieces_white : &test_pieces_black;
             // set the position of the test pieces to the test position
             // this will set all the other test pieces since they all point to the same location
             (*test_pieces)[0].SetLocation(location);
@@ -302,17 +356,17 @@ class Driver {
                 // get a piece
                 ChessPiece* piece = &(*test_pieces)[i];
                 // setup resolver vector for this piece
-                std::vector<Tile*> resolved_moves;
+                vector<Tile*> resolved_moves;
                 // resolve each capture move
                 for (int j=0; j<piece->captures.size(); j++) {
                     // check each capture move one at a time and invert their direction
                     sRelCoords move = piece->captures[j].invert();
                     // resolve moves with other player's inverted move set but with this player's color.
                     // will find all of the other player's pieces that can capture this player's color at the test location.
-                    ResolveSingleRelMove(move, location, resolved_moves, true, player);
+                    ResolveSingleRelMove(move, location, resolved_moves, true, player, is_test);
                     // clear out results that are empty
                     for (int x=0; x<resolved_moves.size(); x++) {
-                        ChessPiece* test_threat = resolved_moves[x]->GetPiece();
+                        ChessPiece* test_threat = resolved_moves[x]->GetPiece(is_test);
                         // check the tile is not empty
                         if (test_threat != NULL) {
                             // piece on tile, check that its type matches the test piece.
@@ -334,13 +388,70 @@ class Driver {
         /**
          * Finds if the given King is in check.
          */
-        bool IsInCheck(KingPiece* king) {
-            std::vector<ChessPiece*> threats;
-            GetThreatened(threats, king->GetLocation(), king->player, true);
+        bool IsInCheck(KingPiece* king, bool is_test=false) {
+            vector<ChessPiece*> threats;
+            GetThreatened(threats, king->GetLocation(), king->player, true, is_test);
             return threats.size() > 0;
         }
 
+        /**
+         * Filters the resolved_moves vector to only contain moves that do not put the king in check.
+         */
+        void ValidateResolvedMoves(vector<Tile*>& resolved_moves, ChessPiece* moving_piece) {
+            vector<Tile*> valid_moves;
+            // validate every move in resolved_moves
+            for (int i=0; i<resolved_moves.size(); i++) {
+                bool valid = ValidateMove(resolved_moves[i]->GetLocation(), moving_piece);
+                if (valid) {
+                    valid_moves.push_back(resolved_moves[i]);
+                }
+            }
+            // update resolved_moves with only the valid moves
+            resolved_moves = valid_moves;
+        }
+
+        /**
+         * Checks that the given move will not result in the King for the moving player being placed in check.
+         */
+        bool ValidateMove(sCoords move, ChessPiece* moving_piece) {
+            // test move piece to location
+            // get the destination tile
+            Tile* move_tile = chessboard.GetTile(move);
+            // get the home tile
+            Tile* home_tile = chessboard.GetTile(moving_piece->GetLocation());
+            // set destination tile to have the test piece
+            move_tile->TestPieceSet(moving_piece);
+            // set the home tile to not have the testing piece
+            home_tile->TestPieceStash();
+
+            // get king for this player
+            KingPiece* king = moving_piece->player == WhitePlayer ? &white_king : &black_king;
+            // see if king is in check now
+            bool bad_move = IsInCheck(king, true);
+
+            // clear test moves
+            move_tile->TestPieceRemove();
+            home_tile->TestPieceRestore();
+            return !bad_move;
+        }
+
+        bool CheckForPromotion(ChessPiece* piece) {
+            if (piece->is_promotable) {
+                // get the set of promotion coordinates
+                sCoords* back_rank = piece->player == WhitePlayer ? back_rank_black : back_rank_white; 
+                sCoords location = piece->GetLocation();
+                // check for a match
+                for (int i=0; i<11; i++) {
+                    if (back_rank[i] == location) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
 };
+
 
 int main() {
     return 0;
