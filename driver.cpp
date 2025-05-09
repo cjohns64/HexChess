@@ -56,6 +56,27 @@ class Driver {
         // store the Kings separately since they will need to be accessed for every move, and they can't be removed from the board
         KingPiece white_king;
         KingPiece black_king;
+        // data for testing threats without hardcoding different moves
+        sCoords empty_location = sCoords(0, a);
+        // these pieces are only used for checking for threats and are never placed on the board
+        std::vector<ChessPiece> test_pieces_white = {
+            KingPiece(WhitePlayer, &empty_location),
+            QueenPiece(WhitePlayer, &empty_location),
+            RookPiece(WhitePlayer, &empty_location),
+            KnightPiece(WhitePlayer, &empty_location),
+            BishopPiece(WhitePlayer, &empty_location),
+            PawnPiece(WhitePlayer, &empty_location)
+        };
+        // there is a version for the other player because pawns move in opposite directions
+        // all pieces are included in case moves are different for the players.
+        std::vector<ChessPiece> test_pieces_black = {
+            KingPiece(BlackPlayer, &empty_location),
+            QueenPiece(BlackPlayer, &empty_location),
+            RookPiece(BlackPlayer, &empty_location),
+            KnightPiece(BlackPlayer, &empty_location),
+            BishopPiece(BlackPlayer, &empty_location),
+            PawnPiece(BlackPlayer, &empty_location)
+        };
         // temporarily point to a piece, for evaluating valid moves that involve capturing other pieces.
         ChessPiece* test_capture_piece = NULL;
         // A pointer to the currently selected piece
@@ -158,6 +179,7 @@ class Driver {
             //TODO check for win/draw conditions
         }
 
+    private:
         /**
          * Turn:
          * - select piece
@@ -179,14 +201,14 @@ class Driver {
             if (piece.is_unmoved) {
                 for (int i=0; i<piece.inital_moves.size(); i++) {
                     sRelCoords move = piece.inital_moves[i];
-                    ResolveMove(move, location, resolved_moves, piece.captures_with_moves, piece.player);
+                    ResolveSingleRelMove(move, location, resolved_moves, piece.captures_with_moves, piece.player);
                 }
             }
             if (piece.captures_with_moves) {
                 // moves and captures are the same so check them at all at once
                 for (int i=0; i<piece.moves.size(); i++) {
                     sRelCoords move = piece.moves[i];
-                    ResolveMove(move, location, resolved_moves, true, piece.player);
+                    ResolveSingleRelMove(move, location, resolved_moves, true, piece.player);
                 }
 
             }
@@ -194,21 +216,20 @@ class Driver {
                 // check moves
                 for (int i=0; i<piece.moves.size(); i++) {
                     sRelCoords move = piece.moves[i];
-                    ResolveMove(move, location, resolved_moves, false, piece.player);
+                    ResolveSingleRelMove(move, location, resolved_moves, false, piece.player);
                 }
                 // check captures
                 for (int i=0; i<piece.captures.size(); i++) {
                     sRelCoords move = piece.captures[i];
-                    ResolveMove(move, location, resolved_moves, false, piece.player);
+                    ResolveSingleRelMove(move, location, resolved_moves, false, piece.player);
                 }
             }
         }
 
-    private:
         /**
          * Resolves a single movement direction represented by an sRelCoords object. Updates resolved_moves in place.
          */
-        void ResolveMove(sRelCoords& move, sCoords& location, std::vector<Tile*>& resolved_moves, bool can_capture=true, ePlayer player=WhitePlayer) {
+        void ResolveSingleRelMove(sRelCoords& move, sCoords& location, std::vector<Tile*>& resolved_moves, bool can_capture=true, ePlayer player=WhitePlayer) {
             Tile* tile;
             if (!move.repeat) {
                 // check move is available
@@ -254,6 +275,71 @@ class Driver {
                 return true;
             }
         }
+
+        /**
+         * Function given a tile, will lookup pieces of the other player that threaten the piece on the input tile.
+         * If return_immediately is true, it will return after the first threat is found.
+         *
+         * input:
+         * location: location of tile that will be checked if it is under threat by the other player.
+         * player: the player whose piece on the input tile may be threatened. Can be found by checking the piece on the tile.
+         * (optional) return immediately: if True, will return the first threatening piece found instead of searching for all of them.
+         * 
+         * output:
+         * list of pieces that threaten the piece on the given tile
+         * 
+         * The check is done by looking checking each possible move (inverted direction)
+         * with each piece type using the other player's move set.
+         */
+        void GetThreatened(std::vector<ChessPiece*>& threats, sCoords location, ePlayer player, bool return_immediately=false) {
+            // get the test pieces. The move sets could be different, so get the other player's pieces
+            std::vector<ChessPiece>* test_pieces = player == BlackPlayer ? &test_pieces_white : &test_pieces_black;
+            // set the position of the test pieces to the test position
+            // this will set all the other test pieces since they all point to the same location
+            (*test_pieces)[0].SetLocation(location);
+            // check each piece in the test piece vector
+            for (int i=0; i<test_pieces->size(); i++) {
+                // get a piece
+                ChessPiece* piece = &(*test_pieces)[i];
+                // setup resolver vector for this piece
+                std::vector<Tile*> resolved_moves;
+                // resolve each capture move
+                for (int j=0; j<piece->captures.size(); j++) {
+                    // check each capture move one at a time and invert their direction
+                    sRelCoords move = piece->captures[j].invert();
+                    // resolve moves with other player's inverted move set but with this player's color.
+                    // will find all of the other player's pieces that can capture this player's color at the test location.
+                    ResolveSingleRelMove(move, location, resolved_moves, true, player);
+                    // clear out results that are empty
+                    for (int x=0; x<resolved_moves.size(); x++) {
+                        ChessPiece* test_threat = resolved_moves[x]->GetPiece();
+                        // check the tile is not empty
+                        if (test_threat != NULL) {
+                            // piece on tile, check that its type matches the test piece.
+                            // this is to prevent adding a threat more than once
+                            if (test_threat->type == piece->type) {
+                                // same type add to threats
+                                threats.push_back(test_threat);
+                                // break if return_immediately is enabled
+                                if (return_immediately) {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
+         * Finds if the given King is in check.
+         */
+        bool IsInCheck(KingPiece* king) {
+            std::vector<ChessPiece*> threats;
+            GetThreatened(threats, king->GetLocation(), king->player, true);
+            return threats.size() > 0;
+        }
+
 };
 
 int main() {
