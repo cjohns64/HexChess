@@ -1,5 +1,5 @@
-struct sRelCoords;
-
+#ifndef HEXCHESS_UTIL_H
+#define HEXCHESS_UTIL_H
 enum eFiles {
     a = 0,
     b = 1,
@@ -38,43 +38,32 @@ enum eColor {
     HighlightCheck
 };
 
-struct sCoords{
+struct sCoords
+{
     // absolute coordinates of a tile or piece
     int rank;
     eFiles file;
-    sCoords(int _rank, eFiles _file) {
-        rank = _rank;
-        file = _file;
-    }
+    sCoords(int _rank, eFiles _file);
 
     // overload == for compairing coordinates
-    bool operator == (const sCoords& obj) {
-        return rank == obj.rank && file == obj.file;
-    }
+    bool operator == (const sCoords& obj);
 };
 
-struct sRelCoords {
+struct sRelCoords
+{
     // defines the relative movement of a piece
     int rel_rank; // relative movement along a rank
     int rel_file; // relative movement along a file
     bool repeat; // if the relative movement can be repeated in one move, like in the case of a Rook
-    sRelCoords(int _rel_rank, int _rel_file, bool _repeat=false) {
-        rel_rank = _rel_rank;
-        rel_file = _rel_file;
-        repeat = _repeat;
-    }
+    sRelCoords(int _rel_rank, int _rel_file, bool _repeat=false);
 
     /**
      * Returns the relative movement in the opposite direction
      */
-    sRelCoords invert() {
-        return sRelCoords(-rel_rank, -rel_file, repeat);
-    }
+    sRelCoords invert();
 
     // overload == for compairing rel coordinates
-    bool operator == (const sRelCoords& obj) {
-        return rel_rank == obj.rel_rank && rel_file == obj.rel_file && repeat == obj.repeat;
-    }
+    bool operator == (const sRelCoords& obj);
 };
 
 // overload +- operators for sCoords and sRelCoords combinations
@@ -126,3 +115,4 @@ inline sRelCoords operator * (const sRelCoords& obj, const int& x) {
         int new_file = obj.rel_file * x;
         return sRelCoords(new_rank, new_file, obj.repeat);
 }
+#endif

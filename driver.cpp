@@ -1,4 +1,5 @@
-#include "board.cpp"
+#include "includes/board.h"
+#include "includes/util.h"
 
 enum eGameEnd {
     Checkmate = 0,
@@ -215,7 +216,24 @@ class Driver {
                     }
                     return Stalemate;
                 }
-                //TODO check for win/draw conditions
+                // check for win/draw conditions
+                if (last_pawn_move_round >= 50 && last_pawn_move_round >= 50) {
+                    // 50 move rule
+                    return FiftyMoveRule;
+                }
+                // check for a dead position
+                // not enough material, player does not have any pawns, rooks, or queens
+                bool dead_position = true;
+                for (int i=0; i<pieces->size(); i++) {
+                    if ((*pieces)[i].type == Pawn || (*pieces)[i].type == Rook || (*pieces)[i].type == Queen) {
+                        // Not comprehensive
+                        dead_position = false;
+                        break;
+                    }
+                }
+                if (dead_position) {
+                    return DeadPosistion;
+                }
 
                 // ask the player for a move
                 PlayerTurn();
