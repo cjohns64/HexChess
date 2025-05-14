@@ -1,5 +1,7 @@
 #ifndef HEXCHESS_UTIL_H
 #define HEXCHESS_UTIL_H
+#include <string>
+
 enum eFiles {
     a = 0,
     b = 1,
@@ -115,4 +117,25 @@ inline sRelCoords operator * (const sRelCoords& obj, const int& x) {
         int new_file = obj.rel_file * x;
         return sRelCoords(new_rank, new_file, obj.repeat);
 }
+
+inline const char* ToString(eType type) {
+    switch (type) {
+        case King:      return "King";
+        case Queen:     return "Queen";
+        case Rook:      return "Rook";
+        case Bishop:    return "Bishop";
+        case Knight:    return "Knight";
+        case Pawn:      return "Pawn";
+        default:        return "Unknown";
+    }
+}
+
+inline const char ToString(eFiles file) {
+    return (char) (static_cast<int>(file) + 'a');
+}
+
+inline const std::string ToString(sCoords coords) {
+    return std::to_string(coords.rank) + ToString(coords.file);
+}
+
 #endif

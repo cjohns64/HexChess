@@ -1,3 +1,4 @@
+#include <iostream>
 #include "includes/board.h"
 #include "includes/util.h"
 #include "includes/resolver.h"
@@ -69,7 +70,9 @@ class Driver {
         };
         int round_number = -1; // first step in game loop will increment this to 0
         int last_pawn_move_round = 0;
+        bool pawn_moved = false;
         int last_capture_round = 0;
+        bool capture_this_round = false;
         int total_valid_moves_current_player = 0;
         ePlayer current_player = WhitePlayer;
         // the actual pieces are stored here, all other classes use pointers to these pieces
@@ -212,6 +215,8 @@ class Driver {
                     // update all valid moves for piece
                     (*pieces)[i].valid_moves_this_turn = TranslateVector(resolved_moves);
                 }
+
+                // #### Check for Game End ####
                 // check if total number of moves > 0
                 if (total_valid_moves_current_player == 0) {
                     // STALEMATE OR CHECKMATE
@@ -221,7 +226,7 @@ class Driver {
                     return Stalemate;
                 }
                 // check for win/draw conditions
-                if (last_pawn_move_round >= 50 && last_pawn_move_round >= 50) {
+                if (last_capture_round >= 50 || last_pawn_move_round >= 50) {
                     // 50 move rule
                     return FiftyMoveRule;
                 }
@@ -239,8 +244,26 @@ class Driver {
                     return DeadPosistion;
                 }
 
+                // 50 move rule setup
+                capture_this_round = false;
+                pawn_moved = false;
+
                 // ask the player for a move
-                PlayerTurn();
+                PlayerTurn(current_player);
+
+                // 50 move rule updates
+                if (!capture_this_round) {
+                    last_capture_round++;
+                }
+                else {
+                    last_capture_round = 0;
+                }
+                if (!pawn_moved) {
+                    last_pawn_move_round++;
+                }
+                else {
+                    last_pawn_move_round = 0;
+                }
             }
         }
 
@@ -252,8 +275,29 @@ class Driver {
          * - select? ... undo/redo? ... move?
          * - update game log
          */
-        void PlayerTurn() {
+        void PlayerTurn(ePlayer player) {
+            //TODO print the board state
+            // reference this player's pieces
+            vector<ChessPiece>* pieces = player == WhitePlayer ? &white_pieces : &black_pieces;
+            KingPiece* king = player == WhitePlayer ? &white_king : &black_king;
+
             //TODO selection
+            // Ask for a selection
+            cout << "Select a piece:\n";
+            // print list of all pieces with moves
+            if (king->valid_moves_this_turn.size() > 0) {
+                cout << "King:" << ToString(king->GetLocation()) << " ";
+            }
+            for (int i=0; i<pieces->size(); i++) {
+                if ((*pieces)[i].valid_moves_this_turn.size() > 0) {
+                    // print type:location for each piece with valid moves
+                    cout << ToString((*pieces)[i].type) << ":" << ToString((*pieces)[i].GetLocation()) << " ";
+                }
+            }
+            // TODO get input
+            // print possible moves for piece
+            // Ask for a move or a different selection
+            // get input
             //TODO repeat until a move is made
             //TODO move
         }
