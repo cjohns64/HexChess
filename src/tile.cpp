@@ -12,15 +12,15 @@ sCoords Tile::GetLocation() {
 /**
  * Places the given piece on this tile, updating current_piece with the reference to the piece.
  */
-void Tile::SetPiece(ChessPiece* piece) {
+void Tile::SetPiece(ChessPiece* piece, bool en_passant) {
     current_piece = piece;
 }
 
 /**
  * Retrieves the piece reference located on the tile, if any.
  */
-ChessPiece* Tile::GetPiece(bool testing) {
-    if (testing && test_piece != NULL) {
+ChessPiece* Tile::GetPiece(bool testing, bool en_passant) {
+    if (testing && test_piece != nullptr) {
         // prefer a testing piece if testing mode is on
         return test_piece;
     }
@@ -30,8 +30,8 @@ ChessPiece* Tile::GetPiece(bool testing) {
 /**
  * Clear the piece on tile, use SetPiece to replace the piece if possible.
  */
-void Tile::_RemovePiece_() {
-    current_piece = NULL;
+void Tile::RemovePiece() {
+    current_piece = nullptr;
 }
 
 void Tile::TestPieceSet(ChessPiece* piece) {
@@ -39,7 +39,7 @@ void Tile::TestPieceSet(ChessPiece* piece) {
 }
 
 void Tile::TestPieceRemove() {
-    test_piece = NULL;
+    test_piece = nullptr;
 }
 
 void Tile::TestPieceStash() {

@@ -81,7 +81,7 @@ bool Resolver::ResolveThisMove(Tile* tile, vector<Tile*>& resolved_moves, bool c
     // check the tile is on the board
     if (tile != nullptr) {
         // check if the tile is empty
-        if (tile->GetPiece(is_test) == NULL) {
+        if (tile->GetPiece(is_test) == nullptr) {
             // add tile to resolved moves
             resolved_moves.push_back(tile);
             return false;
@@ -141,7 +141,7 @@ void Resolver::GetThreatened(vector<ChessPiece*>& threats, sCoords location, ePl
             for (int x=0; x<resolved_moves.size(); x++) {
                 ChessPiece* test_threat = resolved_moves[x]->GetPiece(is_test);
                 // check the tile is not empty
-                if (test_threat != NULL) {
+                if (test_threat != nullptr) {
                     // piece on tile, check that its type matches the test piece.
                     // this is to prevent adding a threat more than once
                     if (test_threat->type == piece->type) {

@@ -5,9 +5,10 @@
 // Contains information and functions associated with a single tile.
 class Tile {
     private:
-        ChessPiece* current_piece = NULL;
-        ChessPiece* test_piece = NULL; // place to store a piece when testing moving to a tile
-        ChessPiece* test_stashed = NULL; // place to stash the current piece to test moving it from this tile
+        ChessPiece* current_piece = nullptr;
+        ChessPiece* en_passant_piece = nullptr;
+        ChessPiece* test_piece = nullptr; // place to store a piece when testing moving to a tile
+        ChessPiece* test_stashed = nullptr; // place to stash the current piece to test moving it from this tile
         sCoords position;
 
     public:
@@ -18,17 +19,17 @@ class Tile {
         /**
          * Places the given piece on this tile, updating current_piece with the reference to the piece.
          */
-        void SetPiece(ChessPiece* piece);
+        void SetPiece(ChessPiece* piece, bool en_passant=false);
 
         /**
          * Retrieves the piece reference located on the tile, if any.
          */
-        ChessPiece* GetPiece(bool testing=false);
+        ChessPiece* GetPiece(bool testing=false, bool en_passant=false);
 
         /**
          * Clear the piece on tile, use SetPiece to replace the piece if possible.
          */
-        void _RemovePiece_();
+        void RemovePiece();
         void TestPieceSet(ChessPiece* piece);
         void TestPieceRemove();
         void TestPieceStash();

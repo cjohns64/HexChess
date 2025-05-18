@@ -1,8 +1,10 @@
 #include <iostream>
+#include <regex>
 #include "includes/board.h"
 #include "includes/util.h"
 #include "includes/resolver.h"
 
+// game end state
 enum eGameEnd {
     Checkmate = 0,
     Stalemate = 1,
@@ -11,6 +13,37 @@ enum eGameEnd {
     FiftyMoveRule = 4
 };
 
+// holder for player move choice
+struct sMove {
+    private:
+        ChessPiece* piece_moving;
+        sCoords move_to;
+
+    public:
+        // empty initialization
+        sMove():piece_moving(nullptr), move_to(0, a) {
+        }
+        // non-empty initialization
+        sMove(ChessPiece* _piece_moving, sCoords _move_to): piece_moving(_piece_moving), move_to(_move_to) {
+        }
+
+        ChessPiece* GetMovingPiece() {
+            return piece_moving;
+        }
+
+        sCoords GetTarget() {
+            return move_to;
+        }
+
+        void SetMove(ChessPiece* _piece_moving, sCoords _move_to) {
+            piece_moving = _piece_moving;
+            move_to = _move_to;
+        }
+
+        bool IsInitialized() {
+            return piece_moving != nullptr;
+        }
+};
 /**
  * Init:
  * - setup board
@@ -81,6 +114,8 @@ class Driver {
         // store the Kings separately since they will need to be accessed for every move, and they can't be removed from the board
         KingPiece white_king;
         KingPiece black_king;
+        
+        const sCoords null_location = sCoords(-1, a);
         // data for testing threats without hardcoding different moves
         sCoords empty_location = sCoords(0, a);
         // these pieces are only used for checking for threats and are never placed on the board
@@ -102,13 +137,11 @@ class Driver {
             BishopPiece(BlackPlayer, &empty_location),
             PawnPiece(BlackPlayer, &empty_location)
         };
-        // temporarily point to a piece, for evaluating valid moves that involve capturing other pieces.
-        ChessPiece* test_capture_piece = NULL;
         // A pointer to the currently selected piece
-        ChessPiece* selected_piece = NULL;
+        ChessPiece* selected_piece = nullptr;
         // A pointer to the piece that may be captured by en-passant, only valid for one opponent turn.
         // Doesn't matter if the opponent overwrites this value since it would have been cleared first thing after opponent's turn.
-        ChessPiece* en_passant_piece = NULL;
+        ChessPiece* en_passant_piece = nullptr;
 
         // vector of the pieces white lost
         vector<ChessPiece> white_dead_pieces;
@@ -180,11 +213,11 @@ class Driver {
                 round_number++;
                 // set the current player
                 current_player = static_cast<ePlayer>(round_number % 2);
-                // skip checking NULL en passant pieces
-                if (en_passant_piece != NULL) {
+                // skip checking nullptr en passant pieces
+                if (en_passant_piece != nullptr) {
                     // clear the en_passant_piece if it has made it back to the player that used it
                     if (en_passant_piece->player == current_player) {
-                        en_passant_piece = NULL;
+                        en_passant_piece = nullptr;
                     }
                 }
                 // check King
@@ -256,12 +289,14 @@ class Driver {
                     last_capture_round++;
                 }
                 else {
+                    // there was a capture this round
                     last_capture_round = 0;
                 }
                 if (!pawn_moved) {
                     last_pawn_move_round++;
                 }
                 else {
+                    // a pawn did move this turn
                     last_pawn_move_round = 0;
                 }
             }
@@ -276,30 +311,154 @@ class Driver {
          * - update game log
          */
         void PlayerTurn(ePlayer player) {
-            //TODO print the board state
             // reference this player's pieces
             vector<ChessPiece>* pieces = player == WhitePlayer ? &white_pieces : &black_pieces;
             KingPiece* king = player == WhitePlayer ? &white_king : &black_king;
+            sMove move_selection;
 
-            //TODO selection
-            // Ask for a selection
-            cout << "Select a piece:\n";
-            // print list of all pieces with moves
-            if (king->valid_moves_this_turn.size() > 0) {
-                cout << "King:" << ToString(king->GetLocation()) << " ";
-            }
-            for (int i=0; i<pieces->size(); i++) {
-                if ((*pieces)[i].valid_moves_this_turn.size() > 0) {
-                    // print type:location for each piece with valid moves
-                    cout << ToString((*pieces)[i].type) << ":" << ToString((*pieces)[i].GetLocation()) << " ";
+            // repeat until a move is made
+            while (!move_selection.IsInitialized()) {
+                vector<sCoords> active_selection;
+                // Ask for a selection
+                cout << "Select a piece:\n";
+                // print list of all pieces with moves
+                if (king->valid_moves_this_turn.size() > 0) {
+                    cout << "King:" << ToString(king->GetLocation()) << " ";
+                    // add location to active selection list
+                    active_selection.push_back(king->GetLocation());
+                }
+                for (int i=0; i<pieces->size(); i++) {
+                    if ((*pieces)[i].valid_moves_this_turn.size() > 0) {
+                        // print type:location for each piece with valid moves
+                        cout << ToString((*pieces)[i].type) << ":" << ToString((*pieces)[i].GetLocation()) << " ";
+                        // add location to active selection list
+                        active_selection.push_back((*pieces)[i].GetLocation());
+                    }
+                }
+                // get input
+                sCoords location = GetAndProcessUserInput();
+                // check the input is in the vector of selectable locations
+                if (CoordsInCoordsVector(&location, &active_selection)) {
+                    // check location is not the null_location, indicating bad user input
+                    if (location.rank >= 0) {
+                        // update the selected piece
+                        selected_piece = chessboard.GetTile(location)->GetPiece();
+                        // check selected piece is valid
+                        if (selected_piece != nullptr) {
+                            vector<sCoords> active_moves;
+                            // print possible moves for piece
+                            for (sCoords move : selected_piece->valid_moves_this_turn) {
+                                // add move to active moves vector
+                                active_moves.push_back(move);
+                                // get a possible target piece
+                                ChessPiece* target = chessboard.GetTile(move)->GetPiece();
+                                // check if move is a capture
+                                if (selected_piece->type == Pawn && en_passant_piece != nullptr) {
+                                    // check for en_passant
+                                    // TODO
+                                }
+                                // check if move is a capture
+                                if (target != nullptr) {
+                                    cout << ToString(move) << "x" << ToString(target->type);
+                                }
+                                else {
+                                    cout << ToString(move);
+                                }
+                                cout << " ";
+                            }
+                            // Ask for a move
+                            cout << "Select a move tile:\n";
+                            // get input
+                            sCoords move_location = GetAndProcessUserInput();
+                            if (CoordsInCoordsVector(&move_location, &active_moves)) {
+                                // input is a move
+                                move_selection.SetMove(selected_piece, move_location);
+                            }
+                            // inputs that are not a move will result in another loop, and prompt for a selection again
+                        }
+                    }
                 }
             }
-            // TODO get input
-            // print possible moves for piece
-            // Ask for a move or a different selection
-            // get input
-            //TODO repeat until a move is made
-            //TODO move
+            // move piece
+            ChessPiece* target = chessboard.GetTile(move_selection.GetTarget())->GetPiece();
+            // check for a capture
+            if (target != nullptr) {
+                // moving piece will capture
+                vector<ChessPiece>* other_pieces = player == BlackPlayer ? &white_pieces : &black_pieces;
+                vector<ChessPiece>* dead_pieces = player == BlackPlayer ? &white_dead_pieces : &black_dead_pieces;
+                // add piece to captured pieces
+                dead_pieces->push_back(*target);
+                // remove from list of player pieces
+                other_pieces->erase(find(other_pieces->begin(), other_pieces->end(), *target));
+                capture_this_round = true;
+            }
+            // move the piece
+            Tile* start_tile = chessboard.GetTile(move_selection.GetMovingPiece()->GetLocation());
+            Tile* end_tile = chessboard.GetTile(move_selection.GetTarget());
+            start_tile->RemovePiece();
+            end_tile->SetPiece(move_selection.GetMovingPiece());
+            // update if a pawn was moved
+            pawn_moved = move_selection.GetMovingPiece()->type == Pawn;
+        }
+
+        /**
+         * Checks if the given coordinates are contained in the given vector of coordinates.
+         */
+        bool CoordsInCoordsVector(sCoords* test_coords, vector<sCoords>* test_vector_coords) {
+            for (sCoords x : *test_vector_coords) {
+                if (x == *test_coords) {
+                    // match
+                    return true; 
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Convert the user's input to a selection or move
+         * Accepts Q:e5, Queen e5, Q e5, e5, ext.
+         */
+        sCoords GetAndProcessUserInput() {
+            // https://stackoverflow.com/questions/51455616/limit-the-size-of-characters-to-input
+            const size_t MAXIMUM_CHARS = 25;
+            static char buffer[MAXIMUM_CHARS + 1]; // An extra for the terminating null character.
+            std::cin.getline(buffer, MAXIMUM_CHARS, '\n');
+            const std::string user_input = buffer;
+
+            // get the coordinates
+            regex regular_exp("(\\d\\d+\\w)");
+            smatch match_obj;
+
+            // process the expression
+            if (regex_search(user_input, match_obj, regular_exp)) {
+                return StrToCoords(match_obj[0].str());
+            }
+            else {
+                // user input was not valid
+                return null_location;
+            }
+        }
+
+        // convert the input string of 2 or 3 chars to an sCoords obj
+        sCoords StrToCoords(std::string str) {
+            int rank;
+            eFiles file;
+            // convert first string to sCoords
+            if (str.length() == 3) {
+                // convert first two chars to an int
+                rank = ((str[0] - '0') * 10) + (str[1] - '0');
+                // convert third char to an eFiles, by converting it to an int first
+                file = static_cast<eFiles>(str[2] - '0');
+                return sCoords(rank, file);
+            }
+            else {
+                // assume length of 2
+                // convert first char to an int
+                rank = str[0] - '0';
+                // convert second char to an eFiles, by converting it to an int first
+                file = static_cast<eFiles>(str[1] - '0');
+                return sCoords(rank, file);
+            }
         }
 
         vector<sCoords> TranslateVector(vector<Tile*>& vec) {
