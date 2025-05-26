@@ -15,7 +15,7 @@ class ChessPiece {
         bool is_unmoved = true;
         // relative locations
         std::vector<sRelCoords> moves;
-        std::vector<sRelCoords> inital_moves;
+        int inital_move_repeat_count = 0;
         std::vector<sRelCoords> captures;
         // references to exact locations
         std::vector<sCoords> valid_moves_this_turn;
@@ -80,4 +80,8 @@ class PawnPiece: public ChessPiece {
 
         PawnPiece(ePlayer _player, sCoords* _location);
 };
+
+inline bool operator == (ChessPiece first, ChessPiece other) {
+    return first.type == other.type && first.GetLocation() == other.GetLocation() && first.player == other.player;
+}
 #endif

@@ -87,17 +87,16 @@ KnightPiece::KnightPiece(ePlayer _player, sCoords* _location) : ChessPiece(Knigh
 };
 
 PawnPiece::PawnPiece(ePlayer _player, sCoords* _location) : ChessPiece(Pawn, _player, _location) {
-    // Pawn can move one tile in direction of opponent
     // Pawn can move two tile in direction of opponent first time it moves
+    inital_move_repeat_count = 1;
+    // Pawn can move one tile in direction of opponent
     // Pawn can capture at first diagonals in direction of opponent
     if (player == WhitePlayer) {
         moves = {sRelCoords(1, 0)};
-        inital_moves = {sRelCoords(2, 0)};
         captures = {sRelCoords(1, -1), sRelCoords(2, 1)};
     }
     else {
         moves = {sRelCoords(-1, 0)};
-        inital_moves = {sRelCoords(-2, 0)};
         captures = {sRelCoords(-1, 1), sRelCoords(-2, -1)};
     }
 };

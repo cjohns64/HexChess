@@ -3,6 +3,10 @@
 // Contains information and functions associated with a single tile.
 Tile::Tile(eColor tile_color, sCoords location): position(location.rank, location.file)  {
     tile_color = tile_color;
+    current_piece = nullptr;
+    en_passant_piece = nullptr;
+    test_piece = nullptr;
+    test_stashed = nullptr;
 }
 
 sCoords Tile::GetLocation() {
@@ -13,7 +17,12 @@ sCoords Tile::GetLocation() {
  * Places the given piece on this tile, updating current_piece with the reference to the piece.
  */
 void Tile::SetPiece(ChessPiece* piece, bool en_passant) {
-    current_piece = piece;
+    if (en_passant) {
+        en_passant_piece = piece;
+    }
+    else {
+        current_piece = piece;
+    }
 }
 
 /**
@@ -24,6 +33,11 @@ ChessPiece* Tile::GetPiece(bool testing, bool en_passant) {
         // prefer a testing piece if testing mode is on
         return test_piece;
     }
+    else if (en_passant && en_passant_piece != nullptr) {
+        // second priority is the en_passant_piece
+        return en_passant_piece;
+    }
+    // default to current_piece
     return current_piece;
 }
 

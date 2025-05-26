@@ -20,17 +20,11 @@ bool Resolver::IsInCheck(KingPiece* king, bool is_test) {
 /**
  * Converts the move set of a given piece to a vector of tiles that the piece can physically move to.
  * Does not check if the move will put the King in check, only that the tiles are unobstructed or a capture can be made.
+ * TODO add en_passant checks
  */
 void Resolver::ResolveMoves(ChessPiece& piece, vector<Tile*>& resolved_moves) {
     // piece location
     sCoords location = piece.GetLocation();
-    // check initial moves
-    if (piece.is_unmoved) {
-        for (int i=0; i<piece.inital_moves.size(); i++) {
-            sRelCoords move = piece.inital_moves[i];
-            ResolveSingleRelMove(move, location, resolved_moves, piece.captures_with_moves, piece.player);
-        }
-    }
     if (piece.captures_with_moves) {
         // moves and captures are the same so check them at all at once
         for (int i=0; i<piece.moves.size(); i++) {
@@ -43,7 +37,15 @@ void Resolver::ResolveMoves(ChessPiece& piece, vector<Tile*>& resolved_moves) {
         // check moves
         for (int i=0; i<piece.moves.size(); i++) {
             sRelCoords move = piece.moves[i];
-            ResolveSingleRelMove(move, location, resolved_moves, false, piece.player);
+            // check initial moves
+            if (piece.is_unmoved && piece.inital_move_repeat_count > 0) {
+                ResolveSingleRelMove(move, location, resolved_moves, false, piece.player,
+                        piece.inital_move_repeat_count, true);
+            }
+            // check regular moves
+            else {
+                ResolveSingleRelMove(move, location, resolved_moves, false, piece.player);
+            }
         }
         // check captures
         for (int i=0; i<piece.captures.size(); i++) {
@@ -56,18 +58,23 @@ void Resolver::ResolveMoves(ChessPiece& piece, vector<Tile*>& resolved_moves) {
 /**
  * Resolves a single movement direction represented by an sRelCoords object. Updates resolved_moves in place.
  */
-void Resolver::ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<Tile*>& resolved_moves, bool can_capture, ePlayer player, bool is_test) {
+void Resolver::ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<Tile*>& resolved_moves, bool can_capture, ePlayer player, bool is_test, int inital_move_repeat_count, bool test_repeat_init_move) {
     Tile* tile;
-    if (!move.repeat) {
+    if (!move.repeat && !(test_repeat_init_move && inital_move_repeat_count > 0)) {
         // check move is available
         tile = chessboard->GetTile(location + move);
         ResolveThisMove(tile, resolved_moves, can_capture, player, is_test);
     }
     else {
         int x=1;
+        int t=inital_move_repeat_count;
         do {
+            if (test_repeat_init_move && t < 0) {
+                break; // stop repeat testing once inital_move_repeat_count is used up
+            }
             // check all repeat moves in the direction given by moves
             tile = chessboard->GetTile(location + (move * x));
+            t--;
             x++;
         } while (!ResolveThisMove(tile, resolved_moves, can_capture, player, is_test));
     }
@@ -76,6 +83,7 @@ void Resolver::ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<
 /**
  * Resolves the fetched tile, returns true if the tile was the end of a repeat pattern,
  * and false if a repeat move may still exist.
+ * TODO add en_passant checks
  */
 bool Resolver::ResolveThisMove(Tile* tile, vector<Tile*>& resolved_moves, bool can_capture, ePlayer player, bool is_test){
     // check the tile is on the board

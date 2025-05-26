@@ -1,8 +1,9 @@
+#include "../includes/board.h"
+#include "../includes/util.h"
+#include "../includes/resolver.h"
+// includes for cmd line interface
 #include <iostream>
 #include <regex>
-#include "includes/board.h"
-#include "includes/util.h"
-#include "includes/resolver.h"
 
 // game end state
 enum eGameEnd {
@@ -92,12 +93,12 @@ class Driver {
         };
 
         // White: 0a-0f, 1g, 2h, 3i, 4j, 5k
-        sCoords back_rank_white[11] = {
+        const sCoords back_rank_white[11] = {
             sCoords(0, a), sCoords(0, b), sCoords(0, c), sCoords(0, d), sCoords(0, e), sCoords(0, f),
             sCoords(1, g), sCoords(2, h), sCoords(3, i), sCoords(4, j), sCoords(5, k)
         };
         // Black: 10f-10k, 5a, 6b, 7c, 8d, 9e
-        sCoords back_rank_black[11] = {
+        const sCoords back_rank_black[11] = {
             sCoords(10, f), sCoords(10, g), sCoords(10, h), sCoords(10, i), sCoords(10, j), sCoords(10, k),
             sCoords(5, a), sCoords(6, b), sCoords(7, c), sCoords(8, d), sCoords(9, e)
         };
@@ -158,13 +159,13 @@ class Driver {
                    {
             // initial placement -- White
             for (int i=1; i<26; i++) {
-                if (i>=10) {
+                if (i>9) {
                     white_pieces.push_back(PawnPiece(WhitePlayer, &inital_placement[i]));
                 }
                 else if (i>1 && i<=4) {
                     white_pieces.push_back(BishopPiece(WhitePlayer, &inital_placement[i]));
                 }
-                else if (i>5 && i<=7) {
+                else if (i>4 && i<=7) {
                     white_pieces.push_back(KnightPiece(WhitePlayer, &inital_placement[i]));
                 }
                 else if (i>7 && i<=9) {
@@ -176,7 +177,7 @@ class Driver {
             }
             // initial placement -- Black 
             for (int i=27; i<52; i++) {
-                if (i>=36) {
+                if (i>35) {
                     black_pieces.push_back(PawnPiece(BlackPlayer, &inital_placement[i]));
                 }
                 else if (i>27 && i<=30) {
@@ -318,6 +319,7 @@ class Driver {
 
             // repeat until a move is made
             while (!move_selection.IsInitialized()) {
+                PrintBoard();
                 vector<sCoords> active_selection;
                 // Ask for a selection
                 cout << "Select a piece:\n";
@@ -395,10 +397,24 @@ class Driver {
             // move the piece
             Tile* start_tile = chessboard.GetTile(move_selection.GetMovingPiece()->GetLocation());
             Tile* end_tile = chessboard.GetTile(move_selection.GetTarget());
+            // remove piece from tile
             start_tile->RemovePiece();
+            // set piece at new tile
             end_tile->SetPiece(move_selection.GetMovingPiece());
+            // update piece location
+            move_selection.GetMovingPiece()->SetLocation(move_selection.GetTarget());
             // update if a pawn was moved
             pawn_moved = move_selection.GetMovingPiece()->type == Pawn;
+            // check for pawn initial move if a pawn was moved
+            if (pawn_moved) {
+                sCoords target_coords = move_selection.GetTarget();
+                // TODO add en_passant to valid moves, check this move was an initial move
+                // vector<sCoords> initial_moves = move_selection.GetMovingPiece()->inital_moves;
+                // if (CoordsInCoordsVector(&target_coords, &initial_moves) {
+                    // ;
+                // }
+
+            }
         }
 
         /**
@@ -422,18 +438,20 @@ class Driver {
             // https://stackoverflow.com/questions/51455616/limit-the-size-of-characters-to-input
             const size_t MAXIMUM_CHARS = 25;
             static char buffer[MAXIMUM_CHARS + 1]; // An extra for the terminating null character.
-            std::cin.getline(buffer, MAXIMUM_CHARS, '\n');
-            const std::string user_input = buffer;
+            cin.getline(buffer, MAXIMUM_CHARS, '\n');
+            const string user_input = buffer;
 
             // get the coordinates
-            regex regular_exp("(\\d\\d+\\w)");
+            regex regular_exp("(\\d{1,2}\\w)");
             smatch match_obj;
 
             // process the expression
             if (regex_search(user_input, match_obj, regular_exp)) {
+                cout << user_input << " is valid" << endl;
                 return StrToCoords(match_obj[0].str());
             }
             else {
+                cout << user_input << " not identified as valid input" << endl;
                 // user input was not valid
                 return null_location;
             }
@@ -445,18 +463,22 @@ class Driver {
             eFiles file;
             // convert first string to sCoords
             if (str.length() == 3) {
+                cout << "input len = 3" << endl;
                 // convert first two chars to an int
                 rank = ((str[0] - '0') * 10) + (str[1] - '0');
                 // convert third char to an eFiles, by converting it to an int first
-                file = static_cast<eFiles>(str[2] - '0');
+                file = static_cast<eFiles>((int) str[2] - 'a');
+                cout << "rank=" << rank << " file=" << file << endl;
                 return sCoords(rank, file);
             }
             else {
+                cout << "input len != 3" << endl;
                 // assume length of 2
                 // convert first char to an int
                 rank = str[0] - '0';
                 // convert second char to an eFiles, by converting it to an int first
-                file = static_cast<eFiles>(str[1] - '0');
+                file = static_cast<eFiles>((int) str[1] - 'a');
+                cout << "rank=" << rank << " file=" << file << endl;
                 return sCoords(rank, file);
             }
         }
@@ -468,9 +490,31 @@ class Driver {
             }
             return translate_vec;
         }
+
+        void PrintBoard() {
+            for (int i=0; i<10; i++) {
+                for (int j=0; j<10; j++) {
+                    Tile* x = chessboard.GetTile(sCoords(i, static_cast<eFiles>(j)));
+                    if (x != nullptr) {
+                        ChessPiece* t = x->GetPiece();
+                        if (t == nullptr) {
+                            // empty tile
+                            cout << "[        ]" << " ";
+                        }
+                        else {
+                            cout << "[" << ToString(t->type) << " " << ToString(t->GetLocation()) << "]" << " ";
+                        }
+                    }
+                }
+                cout << endl;
+            }
+        }
 };
 
 
 int main() {
+    Driver driver = Driver();
+    eGameEnd end_state = driver.GameLoop();
+    cout << end_state << endl;
     return 0;
 }

@@ -17,27 +17,27 @@ enum eFiles {
 };
 
 enum ePlayer {
-    WhitePlayer,
-    BlackPlayer
+    WhitePlayer = 0,
+    BlackPlayer = 1
 };
 
 enum eType {
-    King,
-    Queen,
-    Rook,
-    Bishop,
-    Knight,
-    Pawn
+    King = 0,
+    Queen = 1,
+    Rook = 2,
+    Bishop = 3,
+    Knight = 4,
+    Pawn = 5
 };
 
 enum eColor {
-    colorW,
-    colorB,
-    colorG,
-    HighlightSelect,
-    HighlightMove,
-    HighlightCapture,
-    HighlightCheck
+    colorW = 0,
+    colorB = 1,
+    colorG = 2,
+    HighlightSelect = 3,
+    HighlightMove = 4,
+    HighlightCapture = 5,
+    HighlightCheck = 6
 };
 
 struct sCoords

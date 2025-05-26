@@ -5,10 +5,10 @@
 // Contains information and functions associated with a single tile.
 class Tile {
     private:
-        ChessPiece* current_piece = nullptr;
-        ChessPiece* en_passant_piece = nullptr;
-        ChessPiece* test_piece = nullptr; // place to store a piece when testing moving to a tile
-        ChessPiece* test_stashed = nullptr; // place to stash the current piece to test moving it from this tile
+        ChessPiece* current_piece;
+        ChessPiece* en_passant_piece;
+        ChessPiece* test_piece; // place to store a piece when testing moving to a tile
+        ChessPiece* test_stashed; // place to stash the current piece to test moving it from this tile
         sCoords position;
 
     public:
