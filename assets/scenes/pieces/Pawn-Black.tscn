@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://bmdkr6br71v5d"]
+
+[ext_resource type="PackedScene" uid="uid://crm3de6ktd7sa" path="res://assets/meshes/pawn.glb" id="1_uqpk1"]
+[ext_resource type="Material" uid="uid://j48veesp4mlx" path="res://assets/material/Pawn Black.tres" id="2_srxv8"]
+
+[node name="Pawn-Black" type="Node3D"]
+
+[node name="pawn" parent="." instance=ExtResource("1_uqpk1")]
+transform = Transform3D(0.779423, 0, -0.45, 0, 0.9, 0, 0.45, 0, 0.779423, 0, 0, 0)
+
+[node name="Pawn" parent="pawn" index="0"]
+material_override = ExtResource("2_srxv8")
+
+[editable path="pawn"]

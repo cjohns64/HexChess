@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://c6vgn4ry4lnpk"]
+
+[ext_resource type="Texture2D" uid="uid://duc6pfd4gn6kr" path="res://assets/meshes/king_King Normal.png" id="1_nbvb1"]
+
+[resource]
+resource_name = "King Mat"
+cull_mode = 2
+albedo_color = Color(0.576471, 0.576471, 0.576471, 1)
+roughness = 0.309091
+normal_enabled = true
+normal_texture = ExtResource("1_nbvb1")

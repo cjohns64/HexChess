@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://fipopkj32fi6"]
+
+[ext_resource type="PackedScene" uid="uid://culonsosevj52" path="res://assets/meshes/tile-grey.glb" id="1_g6w5x"]
+[ext_resource type="Material" uid="uid://d2mata68wx4yp" path="res://assets/material/Tile-Grey.tres" id="1_r7yby"]
+
+[node name="Tile" type="Node3D"]
+
+[node name="transform-adjustments" type="Node3D" parent="."]
+transform = Transform3D(1.125, 0, 0, 0, 1.125, 0, 0, 0, 1.125, 0, 0, 0)
+
+[node name="tile-grey" parent="transform-adjustments" instance=ExtResource("1_g6w5x")]
+
+[node name="Tile-applied" parent="transform-adjustments/tile-grey" index="0"]
+material_override = ExtResource("1_r7yby")
+
+[editable path="transform-adjustments/tile-grey"]

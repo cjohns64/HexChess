@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://xjmkoe1mgig1"]
+
+[ext_resource type="PackedScene" uid="uid://cwrquxteoeacu" path="res://assets/meshes/bishop.glb" id="1_kfgda"]
+[ext_resource type="Material" uid="uid://mrnpqhps60ca" path="res://assets/material/Bishop White.tres" id="2_kfgda"]
+
+[node name="Bishop-White" type="Node3D"]
+
+[node name="bishop" parent="." instance=ExtResource("1_kfgda")]
+transform = Transform3D(-0.779423, 0, -0.45, 0, 0.9, 0, 0.45, 0, -0.779423, 0, 0, 0)
+
+[node name="Bishop" parent="bishop" index="0"]
+material_override = ExtResource("2_kfgda")
+
+[editable path="bishop"]

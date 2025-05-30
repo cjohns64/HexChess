@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://bgnc3qlsdxwve"]
+
+[ext_resource type="Texture2D" uid="uid://dmq2ec8jlk0at" path="res://assets/meshes/rook_Rook Normal.png" id="1_5ypyj"]
+
+[resource]
+resource_name = "rook mat"
+cull_mode = 2
+albedo_color = Color(0, 0, 0, 1)
+roughness = 0.309091
+normal_enabled = true
+normal_texture = ExtResource("1_5ypyj")

@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://d10eexsc84kqc"]
+
+[ext_resource type="PackedScene" uid="uid://bo74yk40q8bdo" path="res://assets/meshes/queen.glb" id="1_7jd6t"]
+[ext_resource type="Material" uid="uid://cdig54ut53o4s" path="res://assets/material/Queen White.tres" id="2_7jd6t"]
+
+[node name="Queen-White" type="Node3D"]
+
+[node name="queen" parent="." instance=ExtResource("1_7jd6t")]
+transform = Transform3D(0.779423, 0, -0.45, 0, 0.9, 0, 0.45, 0, 0.779423, 0, 0, 0)
+
+[node name="Queen" parent="queen" index="0"]
+material_override = ExtResource("2_7jd6t")
+
+[editable path="queen"]

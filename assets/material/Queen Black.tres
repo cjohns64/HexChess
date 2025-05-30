@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://ckg3o5ey063j5"]
+
+[ext_resource type="Texture2D" uid="uid://dxuncyn4nnoik" path="res://assets/meshes/queen_Queen Normal.png" id="1_ytxtp"]
+
+[resource]
+resource_name = "Queen Mat"
+cull_mode = 2
+albedo_color = Color(0, 0, 0, 1)
+roughness = 0.309091
+normal_enabled = true
+normal_texture = ExtResource("1_ytxtp")

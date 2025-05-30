@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://b0o2r6hk2wnhp"]
+
+[ext_resource type="PackedScene" uid="uid://tm31lkplhpry" path="res://assets/meshes/knight.glb" id="1_ocyvu"]
+[ext_resource type="Material" uid="uid://q1a8vkgs2thg" path="res://assets/material/Knight White.tres" id="2_ocyvu"]
+
+[node name="Knight-White" type="Node3D"]
+
+[node name="knight" parent="." instance=ExtResource("1_ocyvu")]
+transform = Transform3D(-0.779423, 0, -0.45, 0, 0.9, 0, 0.45, 0, -0.779423, 0, 0, 0)
+
+[node name="Rook_001" parent="knight" index="0"]
+material_override = ExtResource("2_ocyvu")
+
+[editable path="knight"]

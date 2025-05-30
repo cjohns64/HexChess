@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://c4wdi68yjo1fn"]
+
+[ext_resource type="PackedScene" uid="uid://skcll2ygtcl3" path="res://assets/meshes/rook.glb" id="1_1n4h2"]
+[ext_resource type="Material" uid="uid://bgnc3qlsdxwve" path="res://assets/material/Rook Black.tres" id="2_i2juc"]
+
+[node name="Rook-Black" type="Node3D"]
+
+[node name="rook" parent="." instance=ExtResource("1_1n4h2")]
+transform = Transform3D(0.779423, 0, -0.45, 0, 0.9, 0, 0.45, 0, 0.779423, 0, 0, 0)
+
+[node name="Rook" parent="rook" index="0"]
+material_override = ExtResource("2_i2juc")
+
+[editable path="rook"]
