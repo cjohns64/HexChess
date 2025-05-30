@@ -38,9 +38,9 @@ void Resolver::ResolveMoves(ChessPiece& piece, vector<Tile*>& resolved_moves) {
         for (int i=0; i<piece.moves.size(); i++) {
             sRelCoords move = piece.moves[i];
             // check initial moves
-            if (piece.is_unmoved && piece.inital_move_repeat_count > 0) {
+            if (piece.is_unmoved && piece.initial_move_repeat_count > 0) {
                 ResolveSingleRelMove(move, location, resolved_moves, false, piece.player,
-                        piece.inital_move_repeat_count, true);
+                        piece.initial_move_repeat_count, true);
             }
             // check regular moves
             else {
@@ -83,7 +83,7 @@ void Resolver::ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<
 /**
  * Resolves the fetched tile, returns true if the tile was the end of a repeat pattern,
  * and false if a repeat move may still exist.
- * TODO add en_passant checks
+ * TODO add en_passant and castling checks
  */
 bool Resolver::ResolveThisMove(Tile* tile, vector<Tile*>& resolved_moves, bool can_capture, ePlayer player, bool is_test){
     // check the tile is on the board

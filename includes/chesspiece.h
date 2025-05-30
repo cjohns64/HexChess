@@ -15,7 +15,8 @@ class ChessPiece {
         bool is_unmoved = true;
         // relative locations
         std::vector<sRelCoords> moves;
-        int inital_move_repeat_count = 0;
+        int initial_move_repeat_count = 0;
+        ChessPiece* initial_move_target_requirement = nullptr;
         std::vector<sRelCoords> captures;
         // references to exact locations
         std::vector<sCoords> valid_moves_this_turn;

@@ -23,6 +23,8 @@ sCoords ChessPiece::GetLocation() {
 }
 
 KingPiece::KingPiece(ePlayer _player, sCoords* _location) : ChessPiece(King, _player, _location) {
+    initial_move_repeat_count = 3; // TODO must move to a same-player Rook that has not moved. And trigger a castling event
+    initial_move_target_requirement = Rook;
     // King can move to all adjacent tiles
     moves = {
         sRelCoords(1, 0), sRelCoords(-1, 0),
@@ -88,7 +90,7 @@ KnightPiece::KnightPiece(ePlayer _player, sCoords* _location) : ChessPiece(Knigh
 
 PawnPiece::PawnPiece(ePlayer _player, sCoords* _location) : ChessPiece(Pawn, _player, _location) {
     // Pawn can move two tile in direction of opponent first time it moves
-    inital_move_repeat_count = 1;
+    initial_move_repeat_count = 1;
     // Pawn can move one tile in direction of opponent
     // Pawn can capture at first diagonals in direction of opponent
     if (player == WhitePlayer) {
