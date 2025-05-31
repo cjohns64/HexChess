@@ -16,7 +16,7 @@ class ChessPiece {
         // relative locations
         std::vector<sRelCoords> moves;
         int initial_move_repeat_count = 0;
-        ChessPiece* initial_move_target_requirement = nullptr;
+        eType initial_move_target_requirement = NoPiece;
         std::vector<sRelCoords> captures;
         // references to exact locations
         std::vector<sCoords> valid_moves_this_turn;

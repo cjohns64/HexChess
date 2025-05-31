@@ -267,6 +267,7 @@ vector<sCoords> HexChessDriver::GetMoveTiles(sCoords selection) {
     return active_moves;
 }
 
+#include <bits/stdc++.h>
 /**
  * moves the currently selected piece to the given location.
  *
@@ -330,4 +331,21 @@ vector<sCoords> HexChessDriver::TranslateVector(vector<Tile*>& vec) {
         translate_vec.push_back(vec[i]->GetLocation());
     }
     return translate_vec;
+}
+
+#include <iostream>
+int main() {
+    HexChessDriver driver = HexChessDriver();
+    driver.RoundSetup();
+    vector<sCoords> sel_vec = driver.GetSelectableTiles();
+    cout << "Selection: " << ToString(sel_vec[0]) << endl;
+    driver.ClearSelection();
+    cout << "New Selection" << endl;
+    sel_vec = driver.GetSelectableTiles();
+    cout << "Selection: " << ToString(sel_vec[1]) << endl;
+    vector<sCoords> mov_vec = driver.GetMoveTiles(sel_vec[1]);
+    cout << "Move: " << ToString(mov_vec[0]) << endl;
+    driver.MovePiece(mov_vec[0]);
+    driver.RoundCleanup();
+    return 0;
 }

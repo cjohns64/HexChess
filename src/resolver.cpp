@@ -20,7 +20,7 @@ bool Resolver::IsInCheck(KingPiece* king, bool is_test) {
 /**
  * Converts the move set of a given piece to a vector of tiles that the piece can physically move to.
  * Does not check if the move will put the King in check, only that the tiles are unobstructed or a capture can be made.
- * TODO add en_passant checks
+ * TODO add en_passant and castling checks
  */
 void Resolver::ResolveMoves(ChessPiece& piece, vector<Tile*>& resolved_moves) {
     // piece location

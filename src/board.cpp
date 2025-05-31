@@ -12,7 +12,7 @@ Board::Board() {
  */
 bool Board::IsOnBoard(sCoords location) {
     // check rank is within range
-    if (location.rank < 10 and location.rank >= 0) {
+    if (location.rank <= 10 and location.rank >= 0) {
         // check file is within range
         switch (location.rank) {
             case 0:
@@ -28,15 +28,15 @@ bool Board::IsOnBoard(sCoords location) {
             case 5:
                 return location.file <= 10 and location.file >= 0;
             case 6:
-                return location.file <= 9 and location.file >= 0;
+                return location.file <= 10 and location.file >= 1;
             case 7:
-                return location.file <= 8 and location.file >= 0;
+                return location.file <= 10 and location.file >= 2;
             case 8:
-                return location.file <= 7 and location.file >= 0;
+                return location.file <= 10 and location.file >= 3;
             case 9:
-                return location.file <= 6 and location.file >= 0;
+                return location.file <= 10 and location.file >= 4;
             case 10:
-                return location.file <= 5 and location.file >= 0;
+                return location.file <= 10 and location.file >= 5;
             default:
                 return false;
         }
@@ -52,6 +52,10 @@ bool Board::IsOnBoard(sCoords location) {
  */
 Tile* Board::GetTile(sCoords location) {
     if (IsOnBoard(location)) {
+        if (location.rank > 5) {
+            // shift back to index that is actually stored
+            return &chessboard[location.rank][location.file - (location.rank - 5)];
+        }
         return &chessboard[location.rank][location.file];
     }
     else {
