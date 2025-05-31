@@ -2,6 +2,16 @@
 #define HEXCHESS_UTIL_H
 #include <string>
 
+// game end state
+enum eGameEnd {
+    Running=-1,
+    Checkmate = 0,
+    Stalemate = 1,
+    DeadPosistion = 2,
+    ThreefoldRepitition = 3,
+    FiftyMoveRule = 4
+};
+
 enum eFiles {
     a = 0,
     b = 1,

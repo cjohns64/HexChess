@@ -1,12 +1,48 @@
 #include "includes/board.h"
 
-vector<vector<Tile>> BOARD_INIT(11,vector<Tile>());
-
-Board::Board() {
+Board::Board(): chessboard(11, vector<Tile>()) {
     // setup the inital chessboard
-    init_board(BOARD_INIT);
-    chessboard = BOARD_INIT;
+    init_board();
 };
+
+/**
+ * Initializes the chessboard with default tiles
+ */
+void Board::init_board() {
+    int x = 6; // x is the total number of files in each rank. It changes by one on each adjacent rank.
+    int z = 0; // z counts the total number of tiles visited, used for tile color
+    int s = 0; // shift for file number, since this board does not have any holes the file must be adjusted after rank 5
+    // i is the rank number
+    for (int i=0; i<11; i++) {
+        // j is the file number
+        for (int j=0; j<x; j++) {
+            // the tile color repeats in a pattern of W > B > G > ...
+            switch (z % 3) {
+                case 0:
+                    chessboard[i].push_back(Tile(colorW, sCoords(i, static_cast<eFiles>(j + s))));
+                    break;
+                case 1:
+                    chessboard[i].push_back(Tile(colorB, sCoords(i, static_cast<eFiles>(j + s))));
+                    break;
+                case 2:
+                    chessboard[i].push_back(Tile(colorG, sCoords(i, static_cast<eFiles>(j + s))));
+                    break;
+            }
+            // tile complete, increase z
+            z++;
+        }
+        // rank complete, adjust x.
+        // x  increases by one per rank up to the center, then decreases by one per rank. 
+        if (i >= 5) {
+            x--;
+            s++; // increase file shift factor by one for each rank after 5
+        }
+        else {
+            x++;
+        }
+    }
+}
+
 /**
  * Checks if the given location is on the board
  */
