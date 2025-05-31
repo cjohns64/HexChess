@@ -1,4 +1,6 @@
 *.o
+*.os
+/gdexample/
 a.out
 .godot/
 /android/
