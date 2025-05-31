@@ -1,4 +1,4 @@
-#include "../includes/tile.h"
+#include "includes/tile.h"
 
 // Contains information and functions associated with a single tile.
 Tile::Tile(eColor tile_color, sCoords location): position(location.rank, location.file)  {

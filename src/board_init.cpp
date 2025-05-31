@@ -1,4 +1,4 @@
-#include "../includes/board_init.h"
+#include "includes/board_init.h"
 
 /**
  * Initializes BOARD_INIT with default tiles

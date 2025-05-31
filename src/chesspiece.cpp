@@ -1,4 +1,4 @@
-#include "../includes/chesspiece.h"
+#include "includes/chesspiece.h"
 
 ChessPiece::ChessPiece(eType _type, ePlayer _player, sCoords* _location) {
     type = _type;

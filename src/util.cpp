@@ -1,4 +1,4 @@
-#include "../includes/util.h"
+#include "includes/util.h"
 sCoords::sCoords(int _rank, eFiles _file){
         rank = _rank;
         file = _file;

@@ -27,7 +27,8 @@ enum eType {
     Rook = 2,
     Bishop = 3,
     Knight = 4,
-    Pawn = 5
+    Pawn = 5,
+    NoPiece = 9
 };
 
 enum eColor {

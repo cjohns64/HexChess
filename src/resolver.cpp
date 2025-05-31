@@ -1,4 +1,4 @@
-#include "../includes/resolver.h"
+#include "includes/resolver.h"
 
 Resolver::Resolver(Board* board, KingPiece* _white_king, KingPiece* _black_king, vector<ChessPiece>* _test_pieces_white, vector<ChessPiece>* _test_pieces_black) {
     chessboard = board;

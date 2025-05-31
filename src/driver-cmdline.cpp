@@ -1,12 +1,13 @@
-#include "../includes/board.h"
-#include "../includes/util.h"
-#include "../includes/resolver.h"
+#include "includes/board.h"
+#include "includes/util.h"
+#include "includes/resolver.h"
 // includes for cmd line interface
 #include <iostream>
 #include <regex>
 
 // game end state
 enum eGameEnd {
+    Running=-1,
     Checkmate = 0,
     Stalemate = 1,
     DeadPosistion = 2,
@@ -65,7 +66,7 @@ struct sMove {
  * Black Turn:
  * - same as White
  */
-class Driver {
+class ChessDriver {
     private:
         // initial piece locations defined explicitly
         sCoords inital_placement[52] = { // White
@@ -109,6 +110,7 @@ class Driver {
         bool capture_this_round = false;
         int total_valid_moves_current_player = 0;
         ePlayer current_player = WhitePlayer;
+        eGameEnd game_state = Running;
         // the actual pieces are stored here, all other classes use pointers to these pieces
         vector<ChessPiece> white_pieces;
         vector<ChessPiece> black_pieces;
@@ -153,7 +155,7 @@ class Driver {
         Resolver resolver;
 
     public:
-        Driver() : white_king(KingPiece(WhitePlayer, &inital_placement[0])),
+        ChessDriver() : white_king(KingPiece(WhitePlayer, &inital_placement[0])),
                    black_king(KingPiece(BlackPlayer, &inital_placement[26])),
                    resolver(Resolver(&chessboard, &white_king, &black_king, &test_pieces_white, &test_pieces_white))
                    {
@@ -197,6 +199,45 @@ class Driver {
             chessboard.SetBoard(white_pieces, white_king, black_pieces, black_king);
         }
 
+        // NOTE: Command line interface
+        eGameEnd CommandLineGameLoop() {
+            while (game_state == Running) {
+                RoundSetup();
+                // ask the player for a move
+                CommandlinePlayerTurn(current_player);
+                RoundCleanup();
+            }
+            return game_state;
+        }
+
+        /**
+         * Returns the piece type on the given location 
+         * OR NoPiece if tile is not on the board or no piece is on the tile.
+         */
+        eType GetPieceTypeOnTile(sCoords location) {
+            Tile* tile = chessboard.GetTile(location);
+            if (tile != nullptr && tile->GetPiece() != nullptr) {
+                return tile->GetPiece()->type;
+            }
+            else {
+                return NoPiece;
+            }
+        }
+
+        /**
+         * Returns the player that owns the piece at the given location 
+         * defualts to White if no piece is on the tile.
+         */
+        ePlayer GetPlayerAtLocation(sCoords location) {
+            Tile* tile = chessboard.GetTile(location);
+            if (tile != nullptr && tile->GetPiece() != nullptr) {
+                return tile->GetPiece()->player;
+            }
+            else {
+                return WhitePlayer;
+            }
+        }
+
         /**
          * Loop:
          * - update round number
@@ -208,98 +249,183 @@ class Driver {
          *
          * Return value is the game over state
          */
-        eGameEnd GameLoop() {
-            while (true) {
-                // update round number
-                round_number++;
-                // set the current player
-                current_player = static_cast<ePlayer>(round_number % 2);
-                // skip checking nullptr en passant pieces
-                if (en_passant_piece != nullptr) {
-                    // clear the en_passant_piece if it has made it back to the player that used it
-                    if (en_passant_piece->player == current_player) {
-                        en_passant_piece = nullptr;
-                    }
+        void RoundSetup() {
+            // update round number
+            round_number++;
+            // set the current player
+            current_player = static_cast<ePlayer>(round_number % 2);
+            // skip checking nullptr en passant pieces
+            if (en_passant_piece != nullptr) {
+                // clear the en_passant_piece if it has made it back to the player that used it
+                if (en_passant_piece->player == current_player) {
+                    en_passant_piece = nullptr;
                 }
-                // check King
-                KingPiece *king = current_player == WhitePlayer ? &white_king : &black_king;
+            }
+            // check King
+            KingPiece *king = current_player == WhitePlayer ? &white_king : &black_king;
+            // resolve all moves
+            vector<Tile*> resolved_moves;
+            resolver.ResolveMoves(*king, resolved_moves);
+            // validate all resolved moves
+            resolver.ValidateResolvedMoves(resolved_moves, king);
+            // clear total valid moves and update with number of valid moves for the king
+            total_valid_moves_current_player = resolved_moves.size();
+            // update all valid moves for piece
+            king->valid_moves_this_turn = TranslateVector(resolved_moves);
+            
+
+            // check Pieces
+            vector<ChessPiece> *pieces = current_player == WhitePlayer ? &white_pieces : &black_pieces;
+
+            for (int i=0; i<pieces->size(); i++) {
                 // resolve all moves
                 vector<Tile*> resolved_moves;
-                resolver.ResolveMoves(*king, resolved_moves);
+                resolver.ResolveMoves((*pieces)[i], resolved_moves);
+
                 // validate all resolved moves
-                resolver.ValidateResolvedMoves(resolved_moves, king);
-                // clear total valid moves and update with number of valid moves for the king
-                total_valid_moves_current_player = resolved_moves.size();
+                resolver.ValidateResolvedMoves(resolved_moves, &(*pieces)[i]);
+                // add valid moves to total valid moves count
+                total_valid_moves_current_player += resolved_moves.size();
                 // update all valid moves for piece
-                king->valid_moves_this_turn = TranslateVector(resolved_moves);
-                
+                (*pieces)[i].valid_moves_this_turn = TranslateVector(resolved_moves);
+            }
 
-                // check Pieces
-                vector<ChessPiece> *pieces = current_player == WhitePlayer ? &white_pieces : &black_pieces;
-
-                for (int i=0; i<pieces->size(); i++) {
-                    // resolve all moves
-                    vector<Tile*> resolved_moves;
-                    resolver.ResolveMoves((*pieces)[i], resolved_moves);
-
-                    // validate all resolved moves
-                    resolver.ValidateResolvedMoves(resolved_moves, &(*pieces)[i]);
-                    // add valid moves to total valid moves count
-                    total_valid_moves_current_player += resolved_moves.size();
-                    // update all valid moves for piece
-                    (*pieces)[i].valid_moves_this_turn = TranslateVector(resolved_moves);
+            // #### Check for Game End ####
+            // check if total number of moves > 0
+            if (total_valid_moves_current_player == 0) {
+                // STALEMATE OR CHECKMATE
+                if (resolver.IsInCheck(king)) {
+                    game_state = Checkmate;
+                    return;
                 }
+                game_state = Stalemate;
+                return;
+            }
+            // check for win/draw conditions
+            if (last_capture_round >= 50 || last_pawn_move_round >= 50) {
+                // 50 move rule
+                game_state = FiftyMoveRule;
+                return;
+            }
+            // check for a dead position
+            // not enough material, player does not have any pawns, rooks, or queens
+            bool dead_position = true;
+            for (int i=0; i<pieces->size(); i++) {
+                if ((*pieces)[i].type == Pawn || (*pieces)[i].type == Rook || (*pieces)[i].type == Queen) {
+                    // Not comprehensive
+                    dead_position = false;
+                    break;
+                }
+            }
+            if (dead_position) {
+                game_state = DeadPosistion;
+                return;
+            }
 
-                // #### Check for Game End ####
-                // check if total number of moves > 0
-                if (total_valid_moves_current_player == 0) {
-                    // STALEMATE OR CHECKMATE
-                    if (resolver.IsInCheck(king)) {
-                        return Checkmate;
+            // 50 move rule setup
+            capture_this_round = false;
+            pawn_moved = false;
+        }
+
+        void RoundCleanup() {
+            // 50 move rule updates
+            if (!capture_this_round) {
+                last_capture_round++;
+            }
+            else {
+                // there was a capture this round
+                last_capture_round = 0;
+            }
+            if (!pawn_moved) {
+                last_pawn_move_round++;
+            }
+            else {
+                // a pawn did move this turn
+                last_pawn_move_round = 0;
+            }
+        }
+
+        /**
+         */
+        vector<sCoords> GetSelectableTiles() {
+            // set the current player
+            ePlayer player = static_cast<ePlayer>(round_number % 2);
+            vector<ChessPiece>* pieces = player == WhitePlayer ? &white_pieces : &black_pieces;
+            KingPiece* king = player == WhitePlayer ? &white_king : &black_king;
+            vector<sCoords> active_selection;
+            // print list of all pieces with moves
+            if (king->valid_moves_this_turn.size() > 0) {
+                // add location to active selection list
+                active_selection.push_back(king->GetLocation());
+            }
+            for (int i=0; i<pieces->size(); i++) {
+                if ((*pieces)[i].valid_moves_this_turn.size() > 0) {
+                    // add location to active selection list
+                    active_selection.push_back((*pieces)[i].GetLocation());
+                }
+            }
+            return active_selection;
+        }
+
+        void ClearSelection() {
+            selected_piece = nullptr;
+        }
+
+        vector<sCoords> GetMoveTiles(sCoords selection) {
+            // update the selected piece
+            selected_piece = chessboard.GetTile(selection)->GetPiece();
+            vector<sCoords> active_moves;
+            // check selected piece is valid
+            if (selected_piece != nullptr) {
+                // print possible moves for piece
+                for (sCoords move : selected_piece->valid_moves_this_turn) {
+                    // add move to active moves vector
+                    active_moves.push_back(move);
+                    // get a possible target piece
+                    ChessPiece* target = chessboard.GetTile(move)->GetPiece();
+                    // check if move is a capture
+                    if (selected_piece->type == Pawn && en_passant_piece != nullptr) {
+                        // check for en_passant
+                        // TODO
                     }
-                    return Stalemate;
                 }
-                // check for win/draw conditions
-                if (last_capture_round >= 50 || last_pawn_move_round >= 50) {
-                    // 50 move rule
-                    return FiftyMoveRule;
-                }
-                // check for a dead position
-                // not enough material, player does not have any pawns, rooks, or queens
-                bool dead_position = true;
-                for (int i=0; i<pieces->size(); i++) {
-                    if ((*pieces)[i].type == Pawn || (*pieces)[i].type == Rook || (*pieces)[i].type == Queen) {
-                        // Not comprehensive
-                        dead_position = false;
-                        break;
-                    }
-                }
-                if (dead_position) {
-                    return DeadPosistion;
-                }
+            }
+            return active_moves;
+        }
 
-                // 50 move rule setup
-                capture_this_round = false;
-                pawn_moved = false;
-
-                // ask the player for a move
-                PlayerTurn(current_player);
-
-                // 50 move rule updates
-                if (!capture_this_round) {
-                    last_capture_round++;
-                }
-                else {
-                    // there was a capture this round
-                    last_capture_round = 0;
-                }
-                if (!pawn_moved) {
-                    last_pawn_move_round++;
-                }
-                else {
-                    // a pawn did move this turn
-                    last_pawn_move_round = 0;
-                }
+        void MovePiece(sCoords target_loc) {
+            // move piece
+            ChessPiece* target = chessboard.GetTile(target_loc)->GetPiece();
+            //ChessPiece* selected_piece = chessboard.GetTile(selection_loc)->GetPiece();
+            // check for a capture
+            if (target != nullptr) {
+                // moving piece will capture
+                vector<ChessPiece>* other_pieces = selected_piece->player == BlackPlayer ? &white_pieces : &black_pieces;
+                vector<ChessPiece>* dead_pieces = selected_piece->player == BlackPlayer ? &white_dead_pieces : &black_dead_pieces;
+                // add piece to captured pieces
+                dead_pieces->push_back(*target);
+                // remove from list of player pieces
+                other_pieces->erase(find(other_pieces->begin(), other_pieces->end(), *target));
+                capture_this_round = true;
+            }
+            // move the piece
+            Tile* start_tile = chessboard.GetTile(selected_piece->GetLocation());
+            Tile* end_tile = chessboard.GetTile(target_loc);
+            // remove piece from tile
+            start_tile->RemovePiece();
+            // set piece at new tile
+            end_tile->SetPiece(selected_piece);
+            // update piece location
+            selected_piece->SetLocation(target_loc);
+            // update if a pawn was moved
+            pawn_moved = selected_piece->type == Pawn;
+            // check for pawn initial move if a pawn was moved
+            if (pawn_moved) {
+                // TODO add en_passant to valid moves, check this move was an initial move
+                // vector<sCoords> initial_moves = move_selection.GetMovingPiece()->inital_moves;
+                // if (CoordsInCoordsVector(&target_coords, &initial_moves) {
+                    // ;
+                // }
             }
         }
 
@@ -311,7 +437,8 @@ class Driver {
          * - select? ... undo/redo? ... move?
          * - update game log
          */
-        void PlayerTurn(ePlayer player) {
+        // NOTE: Command line interface
+        void CommandlinePlayerTurn(ePlayer player) {
             // reference this player's pieces
             vector<ChessPiece>* pieces = player == WhitePlayer ? &white_pieces : &black_pieces;
             KingPiece* king = player == WhitePlayer ? &white_king : &black_king;
@@ -320,100 +447,52 @@ class Driver {
             // repeat until a move is made
             while (!move_selection.IsInitialized()) {
                 PrintBoard();
-                vector<sCoords> active_selection;
+                vector<sCoords> active_selection = GetSelectableTiles();
                 // Ask for a selection
                 cout << "Select a piece:\n";
                 // print list of all pieces with moves
-                if (king->valid_moves_this_turn.size() > 0) {
-                    cout << "King:" << ToString(king->GetLocation()) << " ";
-                    // add location to active selection list
-                    active_selection.push_back(king->GetLocation());
-                }
-                for (int i=0; i<pieces->size(); i++) {
-                    if ((*pieces)[i].valid_moves_this_turn.size() > 0) {
-                        // print type:location for each piece with valid moves
-                        cout << ToString((*pieces)[i].type) << ":" << ToString((*pieces)[i].GetLocation()) << " ";
-                        // add location to active selection list
-                        active_selection.push_back((*pieces)[i].GetLocation());
-                    }
+                for (int i=0; i<active_selection.size(); i++) {
+                    ChessPiece* p = chessboard.GetTile(active_selection[i])->GetPiece();
+                    // print type:location for each piece with valid moves
+                    cout << ToString(p->type) << ":" << ToString(active_selection[i]) << " ";
                 }
                 // get input
-                sCoords location = GetAndProcessUserInput();
+                sCoords selection = GetAndProcessUserInput();
                 // check the input is in the vector of selectable locations
-                if (CoordsInCoordsVector(&location, &active_selection)) {
+                if (CoordsInCoordsVector(&selection, &active_selection)) {
                     // check location is not the null_location, indicating bad user input
-                    if (location.rank >= 0) {
+                    if (selection.rank >= 0) {
                         // update the selected piece
-                        selected_piece = chessboard.GetTile(location)->GetPiece();
-                        // check selected piece is valid
-                        if (selected_piece != nullptr) {
-                            vector<sCoords> active_moves;
-                            // print possible moves for piece
-                            for (sCoords move : selected_piece->valid_moves_this_turn) {
-                                // add move to active moves vector
-                                active_moves.push_back(move);
-                                // get a possible target piece
-                                ChessPiece* target = chessboard.GetTile(move)->GetPiece();
-                                // check if move is a capture
-                                if (selected_piece->type == Pawn && en_passant_piece != nullptr) {
-                                    // check for en_passant
-                                    // TODO
-                                }
-                                // check if move is a capture
-                                if (target != nullptr) {
-                                    cout << ToString(move) << "x" << ToString(target->type);
-                                }
-                                else {
-                                    cout << ToString(move);
-                                }
-                                cout << " ";
+                        vector<sCoords> active_moves = GetMoveTiles(selection);
+                        // print possible moves for piece
+                        for (sCoords move : selected_piece->valid_moves_this_turn) {
+                            // get a possible target piece
+                            ChessPiece* target = chessboard.GetTile(move)->GetPiece();
+                            // check if move is a capture
+                            if (selected_piece->type == Pawn && en_passant_piece != nullptr) {
+                                // check for en_passant
+                                // TODO
                             }
-                            // Ask for a move
-                            cout << "Select a move tile:\n";
-                            // get input
-                            sCoords move_location = GetAndProcessUserInput();
-                            if (CoordsInCoordsVector(&move_location, &active_moves)) {
-                                // input is a move
-                                move_selection.SetMove(selected_piece, move_location);
+                            // check if move is a capture
+                            if (target != nullptr) {
+                                cout << ToString(move) << "x" << ToString(target->type);
                             }
-                            // inputs that are not a move will result in another loop, and prompt for a selection again
+                            else {
+                                cout << ToString(move);
+                            }
+                            cout << " ";
                         }
+                        // Ask for a move
+                        cout << "Select a move tile:\n";
+                        // get input
+                        sCoords move_location = GetAndProcessUserInput();
+                        if (CoordsInCoordsVector(&move_location, &active_moves)) {
+                            // input is a move
+                            MovePiece(move_location);
+                        }
+                        // inputs that are not a move will result in another loop, and prompt for a selection again
                     }
                 }
-            }
-            // move piece
-            ChessPiece* target = chessboard.GetTile(move_selection.GetTarget())->GetPiece();
-            // check for a capture
-            if (target != nullptr) {
-                // moving piece will capture
-                vector<ChessPiece>* other_pieces = player == BlackPlayer ? &white_pieces : &black_pieces;
-                vector<ChessPiece>* dead_pieces = player == BlackPlayer ? &white_dead_pieces : &black_dead_pieces;
-                // add piece to captured pieces
-                dead_pieces->push_back(*target);
-                // remove from list of player pieces
-                other_pieces->erase(find(other_pieces->begin(), other_pieces->end(), *target));
-                capture_this_round = true;
-            }
-            // move the piece
-            Tile* start_tile = chessboard.GetTile(move_selection.GetMovingPiece()->GetLocation());
-            Tile* end_tile = chessboard.GetTile(move_selection.GetTarget());
-            // remove piece from tile
-            start_tile->RemovePiece();
-            // set piece at new tile
-            end_tile->SetPiece(move_selection.GetMovingPiece());
-            // update piece location
-            move_selection.GetMovingPiece()->SetLocation(move_selection.GetTarget());
-            // update if a pawn was moved
-            pawn_moved = move_selection.GetMovingPiece()->type == Pawn;
-            // check for pawn initial move if a pawn was moved
-            if (pawn_moved) {
-                sCoords target_coords = move_selection.GetTarget();
-                // TODO add en_passant to valid moves, check this move was an initial move
-                // vector<sCoords> initial_moves = move_selection.GetMovingPiece()->inital_moves;
-                // if (CoordsInCoordsVector(&target_coords, &initial_moves) {
-                    // ;
-                // }
-
             }
         }
 
@@ -463,22 +542,22 @@ class Driver {
             eFiles file;
             // convert first string to sCoords
             if (str.length() == 3) {
-                cout << "input len = 3" << endl;
+                // cout << "input len = 3" << endl;
                 // convert first two chars to an int
                 rank = ((str[0] - '0') * 10) + (str[1] - '0');
                 // convert third char to an eFiles, by converting it to an int first
                 file = static_cast<eFiles>((int) str[2] - 'a');
-                cout << "rank=" << rank << " file=" << file << endl;
+                // cout << "rank=" << rank << " file=" << file << endl;
                 return sCoords(rank, file);
             }
             else {
-                cout << "input len != 3" << endl;
+                // cout << "input len != 3" << endl;
                 // assume length of 2
                 // convert first char to an int
                 rank = str[0] - '0';
                 // convert second char to an eFiles, by converting it to an int first
                 file = static_cast<eFiles>((int) str[1] - 'a');
-                cout << "rank=" << rank << " file=" << file << endl;
+                // cout << "rank=" << rank << " file=" << file << endl;
                 return sCoords(rank, file);
             }
         }
@@ -513,8 +592,8 @@ class Driver {
 
 
 int main() {
-    Driver driver = Driver();
-    eGameEnd end_state = driver.GameLoop();
+    ChessDriver driver = ChessDriver();
+    eGameEnd end_state = driver.CommandLineGameLoop();
     cout << end_state << endl;
     return 0;
 }
