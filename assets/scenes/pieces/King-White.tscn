@@ -4,9 +4,9 @@
 [ext_resource type="Material" uid="uid://c6vgn4ry4lnpk" path="res://assets/material/King White.tres" id="2_gghsn"]
 
 [node name="King-White" type="Node3D"]
-transform = Transform3D(-3.93403e-08, 0, -0.9, 0, 0.9, 0, 0.9, 0, -3.93403e-08, 0, 0, 0)
 
 [node name="king" parent="." instance=ExtResource("1_gghsn")]
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 0, 0)
 
 [node name="King" parent="king" index="0"]
 material_override = ExtResource("2_gghsn")
