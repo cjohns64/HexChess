@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://dvyvoidm6v5t7"]
+[gd_scene load_steps=15 format=3 uid="uid://dvyvoidm6v5t7"]
 
 [ext_resource type="PackedScene" uid="uid://daefdlpvxwe0y" path="res://assets/scenes/chessboard.tscn" id="1_irqoo"]
 [ext_resource type="PackedScene" uid="uid://bogshqtqcw2t5" path="res://assets/scenes/pieces/King-White.tscn" id="2_a1va8"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://ie8vxi0qjygn" path="res://assets/scenes/pieces/Knight-Black.tscn" id="11_oa5ht"]
 [ext_resource type="PackedScene" uid="uid://c4wdi68yjo1fn" path="res://assets/scenes/pieces/Rook-Black.tscn" id="12_x14mn"]
 [ext_resource type="PackedScene" uid="uid://bmdkr6br71v5d" path="res://assets/scenes/pieces/Pawn-Black.tscn" id="13_qhbr5"]
+[ext_resource type="Script" uid="uid://cjvsj3yi7oxk0" path="res://assets/scripts/hex_chess_driver.gd" id="14_x7qtp"]
 
 [node name="Game" type="Node3D"]
 
@@ -180,3 +181,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.65622, 0, 4.98065)
 
 [node name="Pawn-White16" parent="Pieces/White" instance=ExtResource("7_hwkka")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.8442, 0, 6.28428)
+
+[node name="HexChessDriver" type="HexChessDriver" parent="."]
+script = ExtResource("14_x7qtp")
