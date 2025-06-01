@@ -5,6 +5,10 @@
 #include "resolver.h"
 #include <vector>
 
+#include <godot_cpp/classes/node.hpp>
+
+namespace godot {
+
 /**
  * Init:
  * - setup board
@@ -25,7 +29,12 @@
  * Black Turn:
  * - same as White
  */
-class HexChessDriver {
+class HexChessDriver: public Node {
+    GDCLASS(HexChessDriver, Node)
+
+protected:
+	static void _bind_methods();
+
 private:
     // initial piece locations defined explicitly
     sCoords inital_placement[52] = { // White
@@ -189,4 +198,5 @@ private:
      */
     vector<sCoords> TranslateVector(vector<Tile*>& vec);
 };
+}
 #endif

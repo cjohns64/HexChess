@@ -1,4 +1,10 @@
 #include "includes/hexchess_driver.h"
+#include <godot_cpp/core/class_db.hpp>
+
+using namespace godot;
+
+void HexChessDriver::_bind_methods() {
+}
 
 /**
  * Init:
