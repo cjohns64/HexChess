@@ -1,4 +1,19 @@
 #include "includes/hexchess_driver.h"
+#include <godot_cpp/core/class_db.hpp>
+
+using namespace godot;
+
+void HexChessDriver::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("RoundSetup"), &HexChessDriver::RoundSetup);
+    ClassDB::bind_method(D_METHOD("RoundCleanup"), &HexChessDriver::RoundCleanup);
+    ClassDB::bind_method(D_METHOD("GetGameState"), &HexChessDriver::GetGameState);
+    ClassDB::bind_method(D_METHOD("ClearSelection"), &HexChessDriver::ClearSelection);
+    ClassDB::bind_method(D_METHOD("MovePiece", "rank", "file"), &HexChessDriver::MovePiece);
+    ClassDB::bind_method(D_METHOD("GetPieceOnTile", "rank", "file"), &HexChessDriver::GetPieceOnTile);
+    ClassDB::bind_method(D_METHOD("GetSelectableTiles"), &HexChessDriver::GetSelectableTiles);
+    ClassDB::bind_method(D_METHOD("GetMoveTiles", "rank", "file"), &HexChessDriver::GetMoveTiles);
+    ClassDB::bind_method(D_METHOD("GetActionOnTile", "rank", "file"), &HexChessDriver::GetActionOnTile);
+}
 
 /**
  * Init:
@@ -64,32 +79,74 @@ HexChessDriver::HexChessDriver() : white_king(KingPiece(WhitePlayer, &inital_pla
     chessboard.SetBoard(white_pieces, white_king, black_pieces, black_king);
 }
 
-/**
- * Returns the piece type on the given location 
- * OR NoPiece if tile is not on the board or no piece is on the tile.
- */
-eType HexChessDriver::GetPieceTypeOnTile(sCoords location) {
+    /**
+     * Returns the piece type and player on the given location 
+     *
+     * Data is encoded as a hexadecimal number stored as an int where:
+     *      0 no piece      = 0
+     *      1 white king    = 1
+     *      2 white queen   = 2
+     *      3 white rook    = 3
+     *      4 white bishop  = 4
+     *      5 white knight  = 5
+     *      6 white pawn    = 6
+     *      7 black king    = 7
+     *      8 black queen   = 8
+     *      9 black rook    = 9
+     *      a black bishop  = 10
+     *      b black knight  = 11
+     *      c black pawn    = 12
+     *      d - not used    = 13
+     *      e - not used    = 14
+     *      f - not used    = 15
+     */
+int HexChessDriver::GetPieceOnTile(int rank, int file) {
+    sCoords location = sCoords(rank, static_cast<eFiles>(file));
     Tile* tile = chessboard.GetTile(location);
     if (tile != nullptr && tile->GetPiece() != nullptr) {
-        return tile->GetPiece()->type;
+        if (tile->GetPiece()->type == NoPiece) {
+            return 0;
+        }
+        else {
+            int x = tile->GetPiece()->player == WhitePlayer ? 1 : 7;
+            return (int) tile->GetPiece()->type + x;
+        }
     }
     else {
-        return NoPiece;
+        return 0;
     }
 }
 
 /**
- * Returns the player that owns the piece at the given location 
- * defaults to White if no piece is on the tile.
+ * Returns the avalible action type for a given location 
+ *
+ * Data is encoded as an int where:
+ *      0 no action
+ *      1 selectable piece
+ *      2 move
+ *      3 move & selectable piece
  */
-ePlayer HexChessDriver::GetPlayerAtLocation(sCoords location) {
-    Tile* tile = chessboard.GetTile(location);
-    if (tile != nullptr && tile->GetPiece() != nullptr) {
-        return tile->GetPiece()->player;
+int HexChessDriver::GetActionOnTile(int rank, int file) {
+    sCoords location = sCoords(rank, static_cast<eFiles>(file));
+    bool is_selection = CoordsInCoordsVector(&location, &active_selection);
+    bool is_move = CoordsInCoordsVector(&location, &active_moves);
+
+    if (is_selection && is_move) {
+        return 3;
+    }
+    else if (is_move) {
+        return 2;
+    }
+    else if (is_selection) {
+        return 1;
     }
     else {
-        return WhitePlayer;
+        return 0;
     }
+}
+
+int HexChessDriver::GetGameState() {
+    return game_state;
 }
 
 /**
@@ -207,12 +264,13 @@ void HexChessDriver::RoundCleanup() {
 /**
  * Returns a vector of the coordinates of all pieces with valid moves.
  */
-vector<sCoords> HexChessDriver::GetSelectableTiles() {
+void HexChessDriver::GetSelectableTiles() {
     // set the current player
     ePlayer player = static_cast<ePlayer>(round_number % 2);
     vector<ChessPiece>* pieces = player == WhitePlayer ? &white_pieces : &black_pieces;
     KingPiece* king = player == WhitePlayer ? &white_king : &black_king;
-    vector<sCoords> active_selection;
+    active_selection.clear();
+    active_moves.clear();
     // print list of all pieces with moves
     if (king->valid_moves_this_turn.size() > 0) {
         // add location to active selection list
@@ -224,7 +282,7 @@ vector<sCoords> HexChessDriver::GetSelectableTiles() {
             active_selection.push_back((*pieces)[i].GetLocation());
         }
     }
-    return active_selection;
+    // return active_selection;
 }
 
 /**
@@ -245,10 +303,12 @@ void HexChessDriver::ClearSelection() {
 /**
  * Given the location of a selected piece, returns a vector of all valid move locations.
  */
-vector<sCoords> HexChessDriver::GetMoveTiles(sCoords selection) {
+void HexChessDriver::GetMoveTiles(int rank, int file) {
+    sCoords selection = sCoords(rank, static_cast<eFiles>(file));
     // update the selected piece
     selected_piece = chessboard.GetTile(selection)->GetPiece();
-    vector<sCoords> active_moves;
+    active_moves.clear();
+    active_selection.clear();
     // check selected piece is valid
     if (selected_piece != nullptr) {
         // print possible moves for piece
@@ -264,7 +324,7 @@ vector<sCoords> HexChessDriver::GetMoveTiles(sCoords selection) {
             }
         }
     }
-    return active_moves;
+    //return active_moves;
 }
 
 #include <bits/stdc++.h>
@@ -273,7 +333,8 @@ vector<sCoords> HexChessDriver::GetMoveTiles(sCoords selection) {
  *
  * Must follow immediately after GetMoveTiles since it requires the selected piece to be updated.
  */
-void HexChessDriver::MovePiece(sCoords target_loc) {
+void HexChessDriver::MovePiece(int rank, int file) {
+    sCoords target_loc = sCoords(rank, static_cast<eFiles>(file));
     // move piece
     ChessPiece* target = chessboard.GetTile(target_loc)->GetPiece();
     //ChessPiece* selected_piece = chessboard.GetTile(selection_loc)->GetPiece();
@@ -333,19 +394,20 @@ vector<sCoords> HexChessDriver::TranslateVector(vector<Tile*>& vec) {
     return translate_vec;
 }
 
-#include <iostream>
-int main() {
-    HexChessDriver driver = HexChessDriver();
-    driver.RoundSetup();
-    vector<sCoords> sel_vec = driver.GetSelectableTiles();
-    cout << "Selection: " << ToString(sel_vec[0]) << endl;
-    driver.ClearSelection();
-    cout << "New Selection" << endl;
-    sel_vec = driver.GetSelectableTiles();
-    cout << "Selection: " << ToString(sel_vec[1]) << endl;
-    vector<sCoords> mov_vec = driver.GetMoveTiles(sel_vec[1]);
-    cout << "Move: " << ToString(mov_vec[0]) << endl;
-    driver.MovePiece(mov_vec[0]);
-    driver.RoundCleanup();
-    return 0;
-}
+
+// #include <iostream>
+// int main() {
+//     HexChessDriver driver = HexChessDriver();
+//     driver.RoundSetup();
+//     vector<sCoords> sel_vec = driver.GetSelectableTiles();
+//     cout << "Selection: " << ToString(sel_vec[0]) << endl;
+//     driver.ClearSelection();
+//     cout << "New Selection" << endl;
+//     sel_vec = driver.GetSelectableTiles();
+//     cout << "Selection: " << ToString(sel_vec[1]) << endl;
+//     vector<sCoords> mov_vec = driver.GetMoveTiles(sel_vec[1].rank, sel_vec[1].file);
+//     cout << "Move: " << ToString(mov_vec[0]) << endl;
+//     driver.MovePiece(mov_vec[0].rank, mov_vec[0].file);
+//     driver.RoundCleanup();
+//     return 0;
+// }

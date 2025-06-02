@@ -5,6 +5,10 @@
 #include "resolver.h"
 #include <vector>
 
+#include <godot_cpp/classes/node.hpp>
+
+namespace godot {
+
 /**
  * Init:
  * - setup board
@@ -25,7 +29,12 @@
  * Black Turn:
  * - same as White
  */
-class HexChessDriver {
+class HexChessDriver: public Node {
+    GDCLASS(HexChessDriver, Node)
+
+protected:
+	static void _bind_methods();
+
 private:
     // initial piece locations defined explicitly
     sCoords inital_placement[52] = { // White
@@ -110,6 +119,10 @@ private:
     // vector of the pieces black lost
     vector<ChessPiece> black_dead_pieces;
 
+    // working selection and moves
+    vector<sCoords> active_selection;
+    vector<sCoords> active_moves;
+
     Board chessboard = Board();
     Resolver resolver;
 
@@ -117,16 +130,39 @@ public:
     HexChessDriver();
 
     /**
-     * Returns the piece type on the given location 
-     * OR NoPiece if tile is not on the board or no piece is on the tile.
+     * Returns the piece type and player on the given location 
+     *
+     * Data is encoded as a hexadecimal number stored as an int where:
+     *      0 no piece      = 0
+     *      1 white king    = 1
+     *      2 white queen   = 2
+     *      3 white rook    = 3
+     *      4 white bishop  = 4
+     *      5 white knight  = 5
+     *      6 white pawn    = 6
+     *      7 black king    = 7
+     *      8 black queen   = 8
+     *      9 black rook    = 9
+     *      a black bishop  = 10
+     *      b black knight  = 11
+     *      c black pawn    = 12
+     *      d - not used    = 13
+     *      e - not used    = 14
+     *      f - not used    = 15
      */
-    eType GetPieceTypeOnTile(sCoords location);
-
+    int GetPieceOnTile(int rank, int file);
+    
     /**
-     * Returns the player that owns the piece at the given location 
-     * defaults to White if no piece is on the tile.
+     * Returns the avalible action type for a given location 
+     *
+     * Data is encoded as an int where:
+     *      0 no action
+     *      1 selectable piece
+     *      2 move
+     *      3 move & selectable piece
      */
-    ePlayer GetPlayerAtLocation(sCoords location);
+    int GetActionOnTile(int rank, int file);
+
 
     /**
      * - update round number
@@ -135,10 +171,14 @@ public:
      * - get valid moves for all current player pieces and save/count results in pieces
      * - check for win/draw
      *
-     * Return value is the game over state
      * Should be run before the player is allowed to select a piece
      */
     void RoundSetup();
+
+    /**
+     * Return value is the game over state
+     */
+    int GetGameState();
 
     /**
      * Post move cleanup before the next round can be setup.
@@ -151,7 +191,7 @@ public:
     /**
      * Returns a vector of the coordinates of all pieces with valid moves.
      */
-    vector<sCoords> GetSelectableTiles();
+    void GetSelectableTiles();
 
     /**
      * Clears the selected piece.
@@ -169,14 +209,14 @@ public:
     /**
      * Given the location of a selected piece, returns a vector of all valid move locations.
      */
-    vector<sCoords> GetMoveTiles(sCoords selection);
+    void GetMoveTiles(int rank, int file);
 
     /**
      * moves the currently selected piece to the given location.
      *
      * Must follow immediately after GetMoveTiles since it requires the selected piece to be updated.
      */
-    void MovePiece(sCoords target_loc);
+    void MovePiece(int rank, int file);
 
 private:
     /**
@@ -189,4 +229,5 @@ private:
      */
     vector<sCoords> TranslateVector(vector<Tile*>& vec);
 };
+}
 #endif

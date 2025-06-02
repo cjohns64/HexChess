@@ -1,182 +1,43 @@
-[gd_scene load_steps=14 format=3 uid="uid://dvyvoidm6v5t7"]
+[gd_scene load_steps=7 format=3 uid="uid://dvyvoidm6v5t7"]
 
 [ext_resource type="PackedScene" uid="uid://daefdlpvxwe0y" path="res://assets/scenes/chessboard.tscn" id="1_irqoo"]
-[ext_resource type="PackedScene" uid="uid://bogshqtqcw2t5" path="res://assets/scenes/pieces/King-White.tscn" id="2_a1va8"]
-[ext_resource type="PackedScene" uid="uid://d10eexsc84kqc" path="res://assets/scenes/pieces/Queen-White.tscn" id="3_dwqtt"]
-[ext_resource type="PackedScene" uid="uid://b0o2r6hk2wnhp" path="res://assets/scenes/pieces/Knight-White.tscn" id="4_xtffv"]
-[ext_resource type="PackedScene" uid="uid://bdv4htcu1mnko" path="res://assets/scenes/pieces/Rook-White.tscn" id="5_px4c8"]
-[ext_resource type="PackedScene" uid="uid://xjmkoe1mgig1" path="res://assets/scenes/pieces/Bishop-White.tscn" id="6_y0dfe"]
-[ext_resource type="PackedScene" uid="uid://d140smmxqi2bo" path="res://assets/scenes/pieces/Pawn-White.tscn" id="7_hwkka"]
-[ext_resource type="PackedScene" uid="uid://dnflrir4qhvk2" path="res://assets/scenes/pieces/King-Black.tscn" id="8_hwkka"]
-[ext_resource type="PackedScene" uid="uid://bw723i62glfdx" path="res://assets/scenes/pieces/Queen-Black.tscn" id="9_x7qtp"]
-[ext_resource type="PackedScene" uid="uid://7bk7kk3esxfl" path="res://assets/scenes/pieces/Bishop-Black.tscn" id="10_vrcpr"]
-[ext_resource type="PackedScene" uid="uid://ie8vxi0qjygn" path="res://assets/scenes/pieces/Knight-Black.tscn" id="11_oa5ht"]
-[ext_resource type="PackedScene" uid="uid://c4wdi68yjo1fn" path="res://assets/scenes/pieces/Rook-Black.tscn" id="12_x14mn"]
-[ext_resource type="PackedScene" uid="uid://bmdkr6br71v5d" path="res://assets/scenes/pieces/Pawn-Black.tscn" id="13_qhbr5"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ye5td"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_5efah"]
+sky_material = SubResource("ProceduralSkyMaterial_ye5td")
+
+[sub_resource type="Environment" id="Environment_oo56v"]
+background_mode = 2
+sky = SubResource("Sky_5efah")
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ye5td"]
+albedo_color = Color(0.0132863, 0.0263918, 0.0504466, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_5efah"]
 
 [node name="Game" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_oo56v")
 
 [node name="Chessboard" parent="." instance=ExtResource("1_irqoo")]
 transform = Transform3D(1.08253, 0, -0.625, 0, 1.25, 0, 0.625, 0, 1.08253, 0, 0, 0)
 
-[node name="Pieces" type="Node3D" parent="."]
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.973338, -0.137553, 0.183552, 0.0104087, 0.825897, 0.563725, -0.229137, -0.546785, 0.805309, 4.40276, 17.7286, 24.0319)
+projection = 1
+size = 16.823
+far = 1083.33
 
-[node name="Black" type="Node3D" parent="Pieces"]
-
-[node name="King-Black" parent="Pieces/Black" instance=ExtResource("8_hwkka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0487391, 0, -12.3206)
-
-[node name="Queen-Black" parent="Pieces/Black" instance=ExtResource("9_x7qtp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.21453, 0, -11.0777)
-
-[node name="Bishop-Black" parent="Pieces/Black" instance=ExtResource("10_vrcpr")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25942, 0, -8.60067)
-
-[node name="Bishop-Black2" parent="Pieces/Black" instance=ExtResource("10_vrcpr")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0553922, 0, -9.86937)
-
-[node name="Bishop-Black3" parent="Pieces/Black" instance=ExtResource("10_vrcpr")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08137, 0, -11.1074)
-
-[node name="Knight-Black" parent="Pieces/Black" instance=ExtResource("11_oa5ht")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.38248, -9.53674e-07, -9.84509)
-
-[node name="Knight-Black2" parent="Pieces/Black" instance=ExtResource("11_oa5ht")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1121, 0, -8.67877)
-
-[node name="Knight-Black3" parent="Pieces/Black" instance=ExtResource("11_oa5ht")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.27295, 0, -9.88528)
-
-[node name="Rook-Black" parent="Pieces/Black" instance=ExtResource("12_x14mn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.52335, 0, -8.6647)
-
-[node name="Rook-Black2" parent="Pieces/Black" instance=ExtResource("12_x14mn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.40829, 0, -8.54941)
-
-[node name="Pawn-Black" parent="Pieces/Black" instance=ExtResource("13_qhbr5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.65026, 0, -7.53351)
-
-[node name="Pawn-Black2" parent="Pieces/Black" instance=ExtResource("13_qhbr5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.7982, 0, -6.2805)
-
-[node name="Pawn-Black3" parent="Pieces/Black" instance=ExtResource("13_qhbr5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.50039, 0, -6.25081)
-
-[node name="Pawn-Black4" parent="Pieces/Black" instance=ExtResource("13_qhbr5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.37783, 0, -7.44908)
-
-[node name="Pawn-Black5" parent="Pieces/Black" instance=ExtResource("13_qhbr5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.17641, 0, -6.19626)
-
-[node name="Pawn-Black6" parent="Pieces/Black" instance=ExtResource("13_qhbr5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0271361, 0, -7.39337)
-
-[node name="Pawn-Black7" parent="Pieces/Black" instance=ExtResource("13_qhbr5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1562, 0, -6.15836)
-
-[node name="Pawn-Black8" parent="Pieces/Black" instance=ExtResource("13_qhbr5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.31998, 0, -7.30225)
-
-[node name="Pawn-Black9" parent="Pieces/Black" instance=ExtResource("13_qhbr5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.45382, 0, -6.12665)
-
-[node name="Pawn-Black10" parent="Pieces/Black" instance=ExtResource("13_qhbr5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.60624, 0, -7.35081)
-
-[node name="Pawn-Black11" parent="Pieces/Black" instance=ExtResource("13_qhbr5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.8022, 0, -6.10783)
-
-[node name="Pawn-Black12" parent="Pieces/Black" instance=ExtResource("13_qhbr5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.6234, 0, -5.01659)
-
-[node name="Pawn-Black13" parent="Pieces/Black" instance=ExtResource("13_qhbr5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.30401, 0, -5.00932)
-
-[node name="Pawn-Black14" parent="Pieces/Black" instance=ExtResource("13_qhbr5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00190955, 0, -4.92098)
-
-[node name="Pawn-Black15" parent="Pieces/Black" instance=ExtResource("13_qhbr5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.33023, 0, -4.8693)
-
-[node name="Pawn-Black16" parent="Pieces/Black" instance=ExtResource("13_qhbr5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.61571, 0, -4.89708)
-
-[node name="White" type="Node3D" parent="Pieces"]
-
-[node name="King-White" parent="Pieces/White" instance=ExtResource("2_a1va8")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.206749, 0, 12.2473)
-
-[node name="Queen-White" parent="Pieces/White" instance=ExtResource("3_dwqtt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.03257, 0, 10.9623)
-
-[node name="Knight-White" parent="Pieces/White" instance=ExtResource("4_xtffv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.17519, 0, 9.8211)
-
-[node name="Rook-White" parent="Pieces/White" instance=ExtResource("5_px4c8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.36978, 0, 8.59775)
-
-[node name="Bishop-White" parent="Pieces/White" instance=ExtResource("6_y0dfe")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.35606, 0, 11.0275)
-
-[node name="Bishop-White2" parent="Pieces/White" instance=ExtResource("6_y0dfe")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0874162, 0, 9.79176)
-
-[node name="Bishop-White3" parent="Pieces/White" instance=ExtResource("6_y0dfe")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.07374, 0, 8.55068)
-
-[node name="Knight-White2" parent="Pieces/White" instance=ExtResource("4_xtffv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.43012, 0, 9.86723)
-
-[node name="Knight-White3" parent="Pieces/White" instance=ExtResource("4_xtffv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.26074, 0, 8.56233)
-
-[node name="Rook-White2" parent="Pieces/White" instance=ExtResource("5_px4c8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.54311, 0, 8.73581)
-
-[node name="Pawn-White" parent="Pieces/White" instance=ExtResource("7_hwkka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.59142, 0, 7.27033)
-
-[node name="Pawn-White2" parent="Pieces/White" instance=ExtResource("7_hwkka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.671, 0, 6.0715)
-
-[node name="Pawn-White3" parent="Pieces/White" instance=ExtResource("7_hwkka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.51684, 0, 4.86217)
-
-[node name="Pawn-White4" parent="Pieces/White" instance=ExtResource("7_hwkka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.38161, 0, 6.0904)
-
-[node name="Pawn-White5" parent="Pieces/White" instance=ExtResource("7_hwkka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.22749, 0, 7.31862)
-
-[node name="Pawn-White6" parent="Pieces/White" instance=ExtResource("7_hwkka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.22749, 0, 4.91886)
-
-[node name="Pawn-White7" parent="Pieces/White" instance=ExtResource("7_hwkka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.01668, 0, 6.14709)
-
-[node name="Pawn-White8" parent="Pieces/White" instance=ExtResource("7_hwkka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.175226, 0, 7.29973)
-
-[node name="Pawn-White9" parent="Pieces/White" instance=ExtResource("7_hwkka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0618513, 0, 4.88107)
-
-[node name="Pawn-White10" parent="Pieces/White" instance=ExtResource("7_hwkka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.19708, 0, 6.14709)
-
-[node name="Pawn-White11" parent="Pieces/White" instance=ExtResource("7_hwkka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.46457, 0, 4.84328)
-
-[node name="Pawn-White12" parent="Pieces/White" instance=ExtResource("7_hwkka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.42678, 0, 7.29973)
-
-[node name="Pawn-White13" parent="Pieces/White" instance=ExtResource("7_hwkka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.54311, 0, 6.16598)
-
-[node name="Pawn-White14" parent="Pieces/White" instance=ExtResource("7_hwkka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.73502, 0, 7.48869)
-
-[node name="Pawn-White15" parent="Pieces/White" instance=ExtResource("7_hwkka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.65622, 0, 4.98065)
-
-[node name="Pawn-White16" parent="Pieces/White" instance=ExtResource("7_hwkka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.8442, 0, 6.28428)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(35, 0, 0, 0, 35, 0, 0, 0, 35, 0, -0.0122933, 0)
+material_override = SubResource("StandardMaterial3D_ye5td")
+mesh = SubResource("PlaneMesh_5efah")
