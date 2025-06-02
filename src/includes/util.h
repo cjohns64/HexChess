@@ -75,11 +75,11 @@ struct sRelCoords
     // defines the relative movement of a piece
     int rel_rank; // relative movement along a rank
     int rel_file; // relative movement along a file
-    bool repeat; // if the relative movement can be repeated in one move, like in the case of a Rook
+    int repeat_max; // if the relative movement can be repeated in one move, like in the case of a Rook
     bool initial_only; // this move can only be used if the piece hasn't moved
     eType target_requirement; // target square must be of this type for this move to be valid
     eMoveReq tile_requirement; // target square must be of this type for this move to be valid
-    sRelCoords(int _rel_rank, int _rel_file, bool _repeat=false,
+    sRelCoords(int _rel_rank, int _rel_file, int _repeat_max=99,
             eType _target_requirement=AnyPiece, eMoveReq _tile_requirement=TileEmptyOrEnemy, bool _initial_only=false);
 
     /**
@@ -132,13 +132,13 @@ inline sCoords operator - (const sCoords& opt1, const sCoords& opt2) {
 inline sRelCoords operator * (const int& x, const sRelCoords& obj) {
         int new_rank = obj.rel_rank * x;
         int new_file = obj.rel_file * x;
-        return sRelCoords(new_rank, new_file, obj.repeat);
+        return sRelCoords(new_rank, new_file, obj.repeat_max);
 }
 
 inline sRelCoords operator * (const sRelCoords& obj, const int& x) {
         int new_rank = obj.rel_rank * x;
         int new_file = obj.rel_file * x;
-        return sRelCoords(new_rank, new_file, obj.repeat);
+        return sRelCoords(new_rank, new_file, obj.repeat_max);
 }
 
 inline const char* ToString(eType type) {

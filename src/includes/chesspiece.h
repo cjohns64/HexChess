@@ -12,13 +12,9 @@ public:
     ePlayer player; // the player for the piece: White, Black
     static const bool is_promotable = false; // if the piece can be promoted to a higher value piece
     static const int value;
-    static const bool captures_with_moves = true;
     bool is_unmoved = true;
     // relative locations
     std::vector<sRelCoords> moves;
-    int initial_move_repeat_count = 0;
-    eType initial_move_target_requirement = NoPiece;
-    std::vector<sRelCoords> captures;
     // references to exact locations
     std::vector<sCoords> valid_moves_this_turn;
 
@@ -78,7 +74,6 @@ class PawnPiece: public ChessPiece {
     public:
         static const bool is_promotable = true;
         static const int value = 1;
-        static const bool captures_with_moves = false;
 
         PawnPiece(ePlayer _player, sCoords* _location);
 };

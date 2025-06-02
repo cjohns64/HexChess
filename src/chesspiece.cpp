@@ -27,19 +27,18 @@ KingPiece::KingPiece(ePlayer _player, sCoords* _location) : ChessPiece(King, _pl
     // King can move to all adjacent tiles
     moves = {
         // normal moves
-        sRelCoords(1, 0), sRelCoords(-1, 0),
-        sRelCoords(0, 1), sRelCoords(0, -1),
-        sRelCoords(1, 1), sRelCoords(-1, -1),
+        sRelCoords(1, 0, 0), sRelCoords(-1, 0, 0),
+        sRelCoords(0, 1, 0), sRelCoords(0, -1, 0),
+        sRelCoords(1, 1, 0), sRelCoords(-1, -1, 0),
         // castling moves
-        sRelCoords(1, 0, true, Rook, TileAlly, true),
-        sRelCoords(-1, 0, true, Rook, TileAlly, true),
-        sRelCoords(0, 1, true, Rook, TileAlly, true),
-        sRelCoords(0, -1, true, Rook, TileAlly, true),
-        sRelCoords(1, 1, true, Rook, TileAlly, true),
-        sRelCoords(-1, -1, true, Rook, TileAlly, true)
+        sRelCoords(1, 0, 2, Rook, TileAlly, true),
+        sRelCoords(-1, 0, 2, Rook, TileAlly, true),
+        sRelCoords(0, 1, 2, Rook, TileAlly, true),
+        sRelCoords(0, -1, 2, Rook, TileAlly, true),
+        sRelCoords(1, 1, 2, Rook, TileAlly, true),
+        sRelCoords(-1, -1, 2, Rook, TileAlly, true)
     };
     // King can capture at movement tiles
-    captures = moves;
 };
 
 QueenPiece::QueenPiece(ePlayer _player, sCoords* _location) : ChessPiece(Queen, _player, _location) {
@@ -47,67 +46,64 @@ QueenPiece::QueenPiece(ePlayer _player, sCoords* _location) : ChessPiece(Queen, 
     // and to all diagonal tiles
     moves = {
         // Rook moves
-        sRelCoords(1, 0, true), sRelCoords(-1, 0, true),
-        sRelCoords(0, 1, true), sRelCoords(0, -1, true),
-        sRelCoords(1, 1, true), sRelCoords(-1, -1, true),
+        sRelCoords(1, 0), sRelCoords(-1, 0),
+        sRelCoords(0, 1), sRelCoords(0, -1),
+        sRelCoords(1, 1), sRelCoords(-1, -1),
         // Bishop moves
-        sRelCoords(1, -1, true), sRelCoords(-1, 1, true),
-        sRelCoords(-2, -1, true), sRelCoords(2, 1, true),
-        sRelCoords(1, 2, true), sRelCoords(-1, -2, true)
+        sRelCoords(1, -1), sRelCoords(-1, 1),
+        sRelCoords(-2, -1), sRelCoords(2, 1),
+        sRelCoords(1, 2), sRelCoords(-1, -2)
     };
-    // Queen can capture at movement tiles
-    captures = moves;
 };
 
 RookPiece::RookPiece(ePlayer _player, sCoords* _location) : ChessPiece(Rook, _player, _location) {
     // Rook can move to all tiles allong a rank
     moves = {
-        sRelCoords(1, 0, true), sRelCoords(-1, 0, true),
-        sRelCoords(0, 1, true), sRelCoords(0, -1, true),
-        sRelCoords(1, 1, true), sRelCoords(-1, -1, true)
+        sRelCoords(1, 0), sRelCoords(-1, 0),
+        sRelCoords(0, 1), sRelCoords(0, -1),
+        sRelCoords(1, 1), sRelCoords(-1, -1)
     };
-    // Rook can capture at movement tiles
-    captures = moves;
 };
 
 BishopPiece::BishopPiece(ePlayer _player, sCoords* _location) : ChessPiece(Bishop, _player, _location) {
     // Bishop can move to all diagonal tiles
     moves = {
-        sRelCoords(1, -1, true), sRelCoords(-1, 1, true),
-        sRelCoords(-2, -1, true), sRelCoords(2, 1, true),
-        sRelCoords(1, 2, true), sRelCoords(-1, -2, true)
+        sRelCoords(1, -1), sRelCoords(-1, 1),
+        sRelCoords(-2, -1), sRelCoords(2, 1),
+        sRelCoords(1, 2), sRelCoords(-1, -2)
     };
-    // Bishop can capture at movement tiles
-    captures = moves;
 };
 
 KnightPiece::KnightPiece(ePlayer _player, sCoords* _location) : ChessPiece(Knight, _player, _location) {
     // Knight can move to the first tiles not on a rank or diagonal
     moves = {
-        sRelCoords(3, 1), sRelCoords(-3, -1),
-        sRelCoords(3, 2), sRelCoords(-3, -2),
-        sRelCoords(2, -1), sRelCoords(-2, 1),
-        sRelCoords(-2, -3), sRelCoords(2, 3),
-        sRelCoords(-1, -3), sRelCoords(1, -2),
-        sRelCoords(-1, 2), sRelCoords(1, 3)
+        sRelCoords(3, 1, 0), sRelCoords(-3, -1, 0),
+        sRelCoords(3, 2, 0), sRelCoords(-3, -2, 0),
+        sRelCoords(2, -1, 0), sRelCoords(-2, 1, 0),
+        sRelCoords(-2, -3, 0), sRelCoords(2, 3, 0),
+        sRelCoords(-1, -3, 0), sRelCoords(1, -2, 0),
+        sRelCoords(-1, 2, 0), sRelCoords(1, 3, 0),
     };
-    // Knight can capture at movement tiles
-    captures = moves;
 };
 
 PawnPiece::PawnPiece(ePlayer _player, sCoords* _location) : ChessPiece(Pawn, _player, _location) {
     // Pawn can move two tile in direction of opponent first time it moves
-    initial_move_repeat_count = 1;
     // Pawn can move one tile in direction of opponent
     // Pawn can capture at first diagonals in direction of opponent
     if (player == WhitePlayer) {
-        moves = {sRelCoords(1, 0, false, NoPiece, TileEmpty)};
-        captures = {sRelCoords(1, -1, false, AnyPiece, TileEnemy),
-            sRelCoords(2, 1, false, AnyPiece, TileEnemy)};
+        moves = {sRelCoords(1, 0, 0, NoPiece, TileEmpty),
+            // initial move can repeat
+            sRelCoords(1, 0, 1, NoPiece, TileEmpty, true),
+            // capture moves
+            sRelCoords(1, -1, 0, AnyPiece, TileEnemy),
+            sRelCoords(2, 1, 0, AnyPiece, TileEnemy)};
     }
     else {
-        moves = {sRelCoords(-1, 0, false, NoPiece, TileEmpty)};
-        captures = {sRelCoords(-1, 1, false, AnyPiece, TileEnemy),
-            sRelCoords(-2, -1, false, AnyPiece, TileEnemy)};
+        moves = {sRelCoords(-1, 0, 0, NoPiece, TileEmpty),
+            // initial move can repeat
+            sRelCoords(-1, 0, 1, NoPiece, TileEmpty, true),
+            // capture moves
+            sRelCoords(-1, 1, 0, AnyPiece, TileEnemy),
+            sRelCoords(-2, -1, 0, AnyPiece, TileEnemy)};
     }
 };

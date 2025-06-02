@@ -20,10 +20,35 @@ bool Resolver::IsInCheck(KingPiece* king, bool is_test) {
 /**
  * Converts the move set of a given piece to a vector of tiles that the piece can physically move to.
  * Does not check if the move will put the King in check, only that the tiles are unobstructed or a capture can be made.
- * TODO add en_passant and castling checks
  * 
+ * Move data:
+ * - check initial_only
+ * - check target_requirement
+ * - check tile_requirement
+ * - repeat up to repeat_max
+ * - stop if conditions are not met or a piece is encountered
+ *
+ */
+void Resolver::ResolveMoves(ChessPiece& piece, vector<Tile*>& resolved_moves) {
+    // piece location
+    sCoords location = piece.GetLocation();
+    // check moves
+    for (int i=0; i<piece.moves.size(); i++) {
+        sRelCoords move = piece.moves[i];
+        // skip resolving initial moves if piece has moved
+        if ((piece.is_unmoved && move.initial_only) || !move.initial_only) {
+            //TODO check for castling and en passant
+            ResolveSingleRelMove(move, location, resolved_moves, piece.player);
+        }
+    }
+}
+
+/**
+ * Resolves a single movement direction represented by an sRelCoords object. Updates resolved_moves in place.
+ * Returns once the move is resolved.
+ *
  * Piece Requirement:
- * NoPiece: #ignore tile requirement
+ * NoPiece: #tile requirement == TileEmpty
  *  - target is empty
  * AnyPiece: #ignore this req
  * Other: #match
@@ -39,92 +64,102 @@ bool Resolver::IsInCheck(KingPiece* king, bool is_test) {
  * TileAlly:
  *  - target player == current player
  */
-void Resolver::ResolveMoves(ChessPiece& piece, vector<Tile*>& resolved_moves) {
-    // piece location
-    sCoords location = piece.GetLocation();
-    if (piece.captures_with_moves) {
-        // moves and captures are the same so check them at all at once
-        for (int i=0; i<piece.moves.size(); i++) {
-            sRelCoords move = piece.moves[i];
-            ResolveSingleRelMove(move, location, resolved_moves, true, piece.player);
-        }
-
-    }
-    else {
-        // check moves
-        for (int i=0; i<piece.moves.size(); i++) {
-            sRelCoords move = piece.moves[i];
-            // check initial moves
-            if (piece.is_unmoved && piece.initial_move_repeat_count > 0) {
-                ResolveSingleRelMove(move, location, resolved_moves, false, piece.player,
-                        piece.initial_move_repeat_count, true);
-            }
-            // check regular moves
-            else {
-                ResolveSingleRelMove(move, location, resolved_moves, false, piece.player);
-            }
-        }
-        // check captures
-        for (int i=0; i<piece.captures.size(); i++) {
-            sRelCoords move = piece.captures[i];
-            ResolveSingleRelMove(move, location, resolved_moves, false, piece.player);
-        }
-    }
-}
-
-/**
- * Resolves a single movement direction represented by an sRelCoords object. Updates resolved_moves in place.
- */
-void Resolver::ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<Tile*>& resolved_moves, bool can_capture, ePlayer player, bool is_test, int inital_move_repeat_count, bool test_repeat_init_move) {
+void Resolver::ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<Tile*>& resolved_moves, ePlayer player, bool is_test) {
     Tile* tile;
-    if (!move.repeat && !(test_repeat_init_move && inital_move_repeat_count > 0)) {
-        // check move is available
-        tile = chessboard->GetTile(location + move);
-        ResolveThisMove(tile, resolved_moves, can_capture, player, is_test);
-    }
-    else {
-        int x=1;
-        int t=inital_move_repeat_count;
-        do {
-            if (test_repeat_init_move && t < 0) {
-                break; // stop repeat testing once inital_move_repeat_count is used up
+    int x=1;
+    int t=move.repeat_max;
+    // repeat up to repeat_max
+    while (t >= 0) { // one loop if t==0
+        // check all repeat moves in the direction given by move
+        tile = chessboard->GetTile(location + (move * x));
+        if (tile != nullptr) {
+            // check target_requirement
+            if (move.target_requirement == NoPiece) {
+                // tile must be empty
+                if (tile->GetPiece(is_test) != nullptr) {
+                    // tile is not empty
+                    return;
+                }
+                else {
+                    // add move
+                    resolved_moves.push_back(tile);
+                }
             }
-            // check all repeat moves in the direction given by moves
-            tile = chessboard->GetTile(location + (move * x));
-            t--;
-            x++;
-        } while (!ResolveThisMove(tile, resolved_moves, can_capture, player, is_test));
-    }
-}
-
-/**
- * Resolves the fetched tile, returns true if the tile was the end of a repeat pattern,
- * and false if a repeat move may still exist.
- * TODO add en_passant and castling checks
- */
-bool Resolver::ResolveThisMove(Tile* tile, vector<Tile*>& resolved_moves, bool can_capture, ePlayer player, bool is_test){
-    // check the tile is on the board
-    if (tile != nullptr) {
-        // check if the tile is empty
-        if (tile->GetPiece(is_test) == nullptr) {
-            // add tile to resolved moves
-            resolved_moves.push_back(tile);
-            return false;
+            else if (move.target_requirement == AnyPiece) {
+                ChessPiece* target_piece = tile->GetPiece(is_test);
+                switch (move.tile_requirement) {
+                    case TileEmpty:
+                        if (target_piece == nullptr) {
+                            resolved_moves.push_back(tile);
+                        }
+                        else {
+                            // condition failed
+                            return;
+                        }
+                        break;
+                    case TileEnemy:
+                        if (target_piece != nullptr && target_piece->player != player) {
+                            resolved_moves.push_back(tile);
+                            return; // stop at piece
+                        }
+                        else {
+                            // condition failed
+                            return;
+                        }
+                        break;
+                    case TileAlly:
+                        if (target_piece != nullptr && target_piece->player == player) {
+                            resolved_moves.push_back(tile);
+                            return; // stop at piece
+                        }
+                        else {
+                            // condition failed
+                            return;
+                        }
+                        break;
+                    case TileEmptyOrEnemy:
+                        if (target_piece != nullptr && target_piece->player != player) {
+                            resolved_moves.push_back(tile);
+                            return; // stop at piece
+                        }
+                        else if (target_piece == nullptr) {
+                            resolved_moves.push_back(tile);
+                        }
+                        else {
+                            // condition failed
+                            return;
+                        }
+                        break;
+                    default:
+                        // default to failed
+                        return;
+                }
+            }
+            else { // target requirement needs piece match
+                ChessPiece* target_piece = tile->GetPiece(is_test);
+                if (target_piece != nullptr) {
+                    if (target_piece->type == move.target_requirement) {
+                        // match, add move
+                        resolved_moves.push_back(tile);
+                    }
+                    else {
+                        // no match
+                        return;
+                    }
+                }
+                else {
+                    // no piece so no match
+                    return;
+                }
+            }
+            // check tile_requirement
+            // stop if conditions are not met or a piece is encountered
         }
-        // check if the occupying piece is an enemy piece
-        else if (can_capture && tile->GetPiece(is_test)->player != player){
-            // add tile and end
-            resolved_moves.push_back(tile);
-            return true;
-        }
-        // tile was either not occupied by a enemy piece, or could not move to tile.
         else {
-            return true;
+            return; // tile not on board
         }
-    }
-    // tile was not on the board
-    else {
-        return true;
+        t--;
+        x++;
     }
 }
 
@@ -156,12 +191,12 @@ void Resolver::GetThreatened(vector<ChessPiece*>& threats, sCoords location, ePl
         // setup resolver vector for this piece
         vector<Tile*> resolved_moves;
         // resolve each capture move
-        for (int j=0; j<piece->captures.size(); j++) {
+        for (int j=0; j<piece->moves.size(); j++) {
             // check each capture move one at a time and invert their direction
-            sRelCoords move = piece->captures[j].invert();
+            sRelCoords move = piece->moves[j].invert();
             // resolve moves with other player's inverted move set but with this player's color.
             // will find all of the other player's pieces that can capture this player's color at the test location.
-            ResolveSingleRelMove(move, location, resolved_moves, true, player, is_test);
+            ResolveSingleRelMove(move, location, resolved_moves, player, is_test);
             // clear out results that are empty
             for (int x=0; x<resolved_moves.size(); x++) {
                 ChessPiece* test_threat = resolved_moves[x]->GetPiece(is_test);

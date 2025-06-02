@@ -28,13 +28,7 @@ public:
     /**
      * Resolves a single movement direction represented by an sRelCoords object. Updates resolved_moves in place.
      */
-    void ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<Tile*>& resolved_moves, bool can_capture=true, ePlayer player=WhitePlayer, bool is_test=false, int inital_move_repeat_count=0, bool test_repeat_init_move=false);
-
-    /**
-     * Resolves the fetched tile, returns true if the tile was the end of a repeat pattern,
-     * and false if a repeat move may still exist.
-     */
-    bool ResolveThisMove(Tile* tile, vector<Tile*>& resolved_moves, bool can_capture=true, ePlayer player=WhitePlayer, bool is_test=false);
+    void ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<Tile*>& resolved_moves, ePlayer player=WhitePlayer, bool is_test=false);
 
     /**
      * Function given a tile, will lookup pieces of the other player that threaten the piece on the input tile.
