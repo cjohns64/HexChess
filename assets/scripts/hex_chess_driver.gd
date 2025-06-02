@@ -216,7 +216,7 @@ func ClearCurrentSelection() -> void:
 	UpdateBoard()
 
 func OnTileClicked(rank:int, file:int) -> void:
-	print("OnTileClicked Called:: rank=%d file=%d" % [rank, file])
+	#print("OnTileClicked Called:: rank=%d file=%d" % [rank, file])
 	# verifiy coordinates are within board range
 	if rank > 10 or rank < 0:
 		print("ERROR:: rank not in range :: ", rank)

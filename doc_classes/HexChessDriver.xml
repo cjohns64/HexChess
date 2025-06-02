@@ -10,14 +10,14 @@
 		<method name="ClearSelection">
 			<return type="void" />
 			<description>
-                {Clears the selected piece.
+                Clears the selected piece.
                  Usage:
                   1 - GetSelectableTiles() // get a list of selectable tiles
                   2 - GetMoveTiles()       // get the list of valid moves from selected tile
                   3 - ClearSelection()     // player wants to make a different selection
                   4 - GetSelectableTiles() // show the list of selectable tiles again
                   5 - GetMoveTiles()       // get the list of valid moves from the new selected tile
-                  6 - MovePiece()          // commit to a move}
+                  6 - MovePiece()          // commit to a move
 			</description>
 		</method>
 		<method name="GetActionOnTile">
@@ -25,7 +25,6 @@
 			<param index="0" name="rank" type="int" />
 			<param index="1" name="file" type="int" />
 			<description>
-                {
 Returns the avalible action type for a given location 
      
 Data is encoded as an int where:
@@ -33,7 +32,6 @@ Data is encoded as an int where:
      1 selectable piece
      2 move
      3 move & selectable piece
-                }
 			</description>
 		</method>
 		<method name="GetMoveTiles">

@@ -38,7 +38,15 @@ enum eType {
     Bishop = 3,
     Knight = 4,
     Pawn = 5,
-    NoPiece = 9
+    NoPiece = 9,
+    AnyPiece = 10,
+};
+
+enum eMoveReq {
+    TileEmpty = 0,
+    TileEnemy = 1,
+    TileEmptyOrEnemy = 2,
+    TileAlly = 3,
 };
 
 enum eColor {
@@ -58,7 +66,7 @@ struct sCoords
     eFiles file;
     sCoords(int _rank, eFiles _file);
 
-    // overload == for compairing coordinates
+    // overload == for comparing coordinates
     bool operator == (const sCoords& obj);
 };
 
@@ -68,14 +76,18 @@ struct sRelCoords
     int rel_rank; // relative movement along a rank
     int rel_file; // relative movement along a file
     bool repeat; // if the relative movement can be repeated in one move, like in the case of a Rook
-    sRelCoords(int _rel_rank, int _rel_file, bool _repeat=false);
+    bool initial_only; // this move can only be used if the piece hasn't moved
+    eType target_requirement; // target square must be of this type for this move to be valid
+    eMoveReq tile_requirement; // target square must be of this type for this move to be valid
+    sRelCoords(int _rel_rank, int _rel_file, bool _repeat=false,
+            eType _target_requirement=AnyPiece, eMoveReq _tile_requirement=TileEmptyOrEnemy, bool _initial_only=false);
 
     /**
      * Returns the relative movement in the opposite direction
      */
     sRelCoords invert();
 
-    // overload == for compairing rel coordinates
+    // overload == for comparing rel coordinates
     bool operator == (const sRelCoords& obj);
 };
 

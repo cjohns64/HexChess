@@ -4,3 +4,8 @@
 a.out
 .godot/
 /android/
+
+# scons
+.sconsign.dblite
+config.log
+.sconf_temp

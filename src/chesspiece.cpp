@@ -24,13 +24,19 @@ sCoords ChessPiece::GetLocation() {
 
 KingPiece::KingPiece(ePlayer _player, sCoords* _location) : ChessPiece(King, _player, _location) {
     // TODO must move to a same-player Rook that has not moved. And trigger a castling event
-    // initial_move_repeat_count = 3;
-    // initial_move_target_requirement = Rook;
     // King can move to all adjacent tiles
     moves = {
+        // normal moves
         sRelCoords(1, 0), sRelCoords(-1, 0),
         sRelCoords(0, 1), sRelCoords(0, -1),
-        sRelCoords(1, 1), sRelCoords(-1, -1)
+        sRelCoords(1, 1), sRelCoords(-1, -1),
+        // castling moves
+        sRelCoords(1, 0, true, Rook, TileAlly, true),
+        sRelCoords(-1, 0, true, Rook, TileAlly, true),
+        sRelCoords(0, 1, true, Rook, TileAlly, true),
+        sRelCoords(0, -1, true, Rook, TileAlly, true),
+        sRelCoords(1, 1, true, Rook, TileAlly, true),
+        sRelCoords(-1, -1, true, Rook, TileAlly, true)
     };
     // King can capture at movement tiles
     captures = moves;
@@ -95,11 +101,13 @@ PawnPiece::PawnPiece(ePlayer _player, sCoords* _location) : ChessPiece(Pawn, _pl
     // Pawn can move one tile in direction of opponent
     // Pawn can capture at first diagonals in direction of opponent
     if (player == WhitePlayer) {
-        moves = {sRelCoords(1, 0)};
-        captures = {sRelCoords(1, -1), sRelCoords(2, 1)};
+        moves = {sRelCoords(1, 0, false, NoPiece, TileEmpty)};
+        captures = {sRelCoords(1, -1, false, AnyPiece, TileEnemy),
+            sRelCoords(2, 1, false, AnyPiece, TileEnemy)};
     }
     else {
-        moves = {sRelCoords(-1, 0)};
-        captures = {sRelCoords(-1, 1), sRelCoords(-2, -1)};
+        moves = {sRelCoords(-1, 0, false, NoPiece, TileEmpty)};
+        captures = {sRelCoords(-1, 1, false, AnyPiece, TileEnemy),
+            sRelCoords(-2, -1, false, AnyPiece, TileEnemy)};
     }
 };

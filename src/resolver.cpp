@@ -21,6 +21,23 @@ bool Resolver::IsInCheck(KingPiece* king, bool is_test) {
  * Converts the move set of a given piece to a vector of tiles that the piece can physically move to.
  * Does not check if the move will put the King in check, only that the tiles are unobstructed or a capture can be made.
  * TODO add en_passant and castling checks
+ * 
+ * Piece Requirement:
+ * NoPiece: #ignore tile requirement
+ *  - target is empty
+ * AnyPiece: #ignore this req
+ * Other: #match
+ *  - match piece and tile requirement
+ * 
+ * Tile Requirement:
+ * TileEmpty:
+ *  - target empty
+ * TileEnemy:
+ *  - target player != current player && not empty
+ * TileEmptyOrEnemy:
+ *  - target player != current player || empty
+ * TileAlly:
+ *  - target player == current player
  */
 void Resolver::ResolveMoves(ChessPiece& piece, vector<Tile*>& resolved_moves) {
     // piece location
