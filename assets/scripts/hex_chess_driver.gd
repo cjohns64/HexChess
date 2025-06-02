@@ -1,4 +1,5 @@
 extends HexChessDriver
+class_name HexChess
 
 enum ActionType {NoAction, Selectable, Move, MoveAndSelect}
 enum PieceType {King, Queen, Rook, Bishop, Knight, Pawn, NoPiece}
@@ -22,7 +23,7 @@ var BlackPieces:Dictionary[PieceType, PackedScene] = {
 
 class Chessboard:
 	var _internal_array: Array[TileObject] = []
-	func _init(root:Node):
+	func _init(root:HexChess):
 		# instantiate an empty chessboard
 		var x:int = 6
 		var s:int = 0
@@ -30,12 +31,23 @@ class Chessboard:
 		for i in 11:
 			for j in x:
 				# add element to array
-				print("adding Tile%d" % n)
+				#print("adding Tile%d" % n)
+				var tile_node:Node3D = root.get_node("Tile%d" % n)
+				var tile_script:TileInteraction = tile_node as TileInteraction
+				# set the material
+				tile_script.SetMaterial((i + j + s) % 3)
+				# set the rank and file
+				tile_script.rank = i
+				tile_script.file = j + s
+				# connect to on clicked signal
+				tile_script.tile_clicked.connect(func(rank:int, file:int): root.OnTileClicked(rank, file))
+				#tile_script.PrintStats()
+				# add to reference
 				_internal_array.push_back(
 					TileObject.new(
 						i, 
 						j+s,
-						root.get_node("Tile%d" % n)
+						tile_node
 						)
 					)
 				n += 1
@@ -46,7 +58,6 @@ class Chessboard:
 				s += 1
 			else:
 				x += 1
-		pass
 		
 	func get_tile(rank:int, file:int) -> TileObject:
 		# the internal array is 1D but the hexagon board is non-uniform 2D
@@ -89,7 +100,7 @@ class Chessboard:
 				return _internal_array[0] # default should never happen
 
 var hexboard:Chessboard
-var root_node:Node
+var root_node:HexChess
 
 class ChessPiece:
 	var player
@@ -116,6 +127,19 @@ func _ready() -> void:
 	RoundSetup() # declare a new round
 	GetSelectableTiles()
 	UpdateBoard()
+
+var round_in_process:bool = true
+func _process(delta: float) -> void:
+	if !round_in_process:
+		round_in_process = true
+		# start next round
+		RoundSetup()
+		if ReturnGameState() == GameState.Running:
+			GetSelectableTiles()
+			UpdateBoard()
+		else:
+			# game over
+			pass
 
 func ReturnGameState() -> GameState:
 	var value:int = GetGameState()
@@ -163,9 +187,28 @@ func SetPieceObjectOnTile(piece:ChessPiece, rank:int, file:int) -> void:
 	
 
 func SetTileHighlight(action:ActionType, rank:int, file:int) -> void:
-	# TODO clear Highlight
-	# TODO set new Highlight
-	pass
+	var tmp:TileInteraction = hexboard.get_tile(rank, file).tile_instance as TileInteraction
+	# set new Highlight
+	if action == ActionType.Selectable:
+		#tmp.select_obj.process_mode = Node.PROCESS_MODE_INHERIT
+		#tmp.move_obj.process_mode = Node.PROCESS_MODE_DISABLED
+		tmp.select_obj.show()
+		tmp.move_obj.hide()
+	elif action == ActionType.Move:
+		#tmp.select_obj.process_mode = Node.PROCESS_MODE_DISABLED
+		#tmp.move_obj.process_mode = Node.PROCESS_MODE_INHERIT
+		tmp.select_obj.hide()
+		tmp.move_obj.show()
+	elif action == ActionType.MoveAndSelect:
+		#tmp.select_obj.process_mode = Node.PROCESS_MODE_INHERIT
+		#tmp.move_obj.process_mode = Node.PROCESS_MODE_INHERIT
+		tmp.select_obj.show()
+		tmp.move_obj.show()
+	else:
+		#tmp.select_obj.process_mode = Node.PROCESS_MODE_DISABLED
+		#tmp.move_obj.process_mode = Node.PROCESS_MODE_DISABLED
+		tmp.select_obj.hide()
+		tmp.move_obj.hide()
 
 func ClearCurrentSelection() -> void:
 	ClearSelection() # remove current selection
@@ -173,6 +216,7 @@ func ClearCurrentSelection() -> void:
 	UpdateBoard()
 
 func OnTileClicked(rank:int, file:int) -> void:
+	print("OnTileClicked Called:: rank=%d file=%d" % [rank, file])
 	# verifiy coordinates are within board range
 	if rank > 10 or rank < 0:
 		print("ERROR:: rank not in range :: ", rank)
@@ -191,6 +235,7 @@ func OnTileClicked(rank:int, file:int) -> void:
 		MovePiece(rank, file)
 		UpdateBoard()
 		RoundCleanup() # round over, setup for next round
+		round_in_process = false
 	else:
 		# tile has both a selection and a move
 		# TODO
