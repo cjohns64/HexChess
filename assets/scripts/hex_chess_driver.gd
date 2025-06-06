@@ -103,8 +103,8 @@ var hexboard:Chessboard
 var root_node:HexChess
 
 class ChessPiece:
-	var player
-	var type
+	var player:bool
+	var type:PieceType
 	func _init(_is_white_player:bool, _type:PieceType) -> void:
 		player = _is_white_player
 		type = _type
@@ -172,6 +172,9 @@ func GetCurrentPieceObjectOnTile(rank:int, file:int) -> ChessPiece:
 func SetPieceObjectOnTile(piece:ChessPiece, rank:int, file:int) -> void:
 	if piece == GetCurrentPieceObjectOnTile(rank, file):
 		return # skip if no change
+	# update piece data
+	hexboard.get_tile(rank, file).piece = piece
+	# update piece mesh
 	# clear piece on tile
 	if (hexboard.get_tile(rank, file).instance != null):
 		hexboard.get_tile(rank, file).instance.queue_free()
@@ -189,6 +192,7 @@ func SetPieceObjectOnTile(piece:ChessPiece, rank:int, file:int) -> void:
 func SetTileHighlight(action:ActionType, rank:int, file:int) -> void:
 	var tmp:TileInteraction = hexboard.get_tile(rank, file).tile_instance as TileInteraction
 	# set new Highlight
+	tmp.current_obj.hide()
 	if action == ActionType.Selectable:
 		#tmp.select_obj.process_mode = Node.PROCESS_MODE_INHERIT
 		#tmp.move_obj.process_mode = Node.PROCESS_MODE_DISABLED
@@ -216,7 +220,7 @@ func ClearCurrentSelection() -> void:
 	UpdateBoard()
 
 func OnTileClicked(rank:int, file:int) -> void:
-	#print("OnTileClicked Called:: rank=%d file=%d" % [rank, file])
+	print("OnTileClicked Called:: rank=%d file=%d" % [rank, file])
 	# verifiy coordinates are within board range
 	if rank > 10 or rank < 0:
 		print("ERROR:: rank not in range :: ", rank)
@@ -230,6 +234,9 @@ func OnTileClicked(rank:int, file:int) -> void:
 		# update tiles with moves for selectable
 		GetMoveTiles(rank, file) # notify driver of piece selection
 		UpdateBoard()
+		# update current selection
+		var tmp:TileInteraction = hexboard.get_tile(rank, file).tile_instance as TileInteraction
+		tmp.current_obj.show()
 	elif action == ActionType.Move:
 		# notify driver of move
 		MovePiece(rank, file)

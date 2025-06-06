@@ -10,9 +10,10 @@ public:
     static const int MAX_BOARD_LENGTH = 11;
     eType type; // the piece type: King, Queen, Rook, Bishop, Knight, Pawn
     ePlayer player; // the player for the piece: White, Black
-    static const bool is_promotable = false; // if the piece can be promoted to a higher value piece
-    static const int value;
+    bool is_promotable = false; // if the piece can be promoted to a higher value piece
+    int value;
     bool is_unmoved = true;
+    bool is_alive = true;
     // relative locations
     std::vector<sRelCoords> moves;
     // references to exact locations
@@ -37,43 +38,43 @@ public:
 
 class KingPiece: public ChessPiece {
     public:
-        static const int value = 0;
+        int value = 0;
 
         KingPiece(ePlayer _player, sCoords* _location);
 };
 
 class QueenPiece: public ChessPiece {
     public:
-        static const int value = 9;
+        int value = 9;
 
         QueenPiece(ePlayer _player, sCoords* _location);
 };
 
 class RookPiece: public ChessPiece {
     public:
-        static const int value = 5;
+        int value = 5;
 
         RookPiece(ePlayer _player, sCoords* _location);
 };
 
 class BishopPiece: public ChessPiece {
     public:
-        static const int value = 3;
+        int value = 3;
 
         BishopPiece(ePlayer _player, sCoords* _location);
 };
 
 class KnightPiece: public ChessPiece {
     public:
-        static const int value = 3;
+        int value = 3;
 
         KnightPiece(ePlayer _player, sCoords* _location);
 };
 
 class PawnPiece: public ChessPiece {
     public:
-        static const bool is_promotable = true;
-        static const int value = 1;
+        bool is_promotable = true;
+        int value = 1;
 
         PawnPiece(ePlayer _player, sCoords* _location);
 };

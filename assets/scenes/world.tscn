@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://dvyvoidm6v5t7"]
+[gd_scene load_steps=8 format=3 uid="uid://dvyvoidm6v5t7"]
 
-[ext_resource type="PackedScene" uid="uid://daefdlpvxwe0y" path="res://assets/scenes/chessboard.tscn" id="1_irqoo"]
+[ext_resource type="PackedScene" uid="uid://daefdlpvxwe0y" path="res://assets/scenes/chessboard.tscn" id="1_betll"]
+[ext_resource type="PackedScene" uid="uid://odthg3iaugrp" path="res://assets/scenes/ui.tscn" id="2_ypxwc"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ye5td"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -19,7 +20,7 @@ albedo_color = Color(0.0132863, 0.0263918, 0.0504466, 1)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_5efah"]
 
-[node name="Game" type="Node3D"]
+[node name="World" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
@@ -28,7 +29,7 @@ shadow_enabled = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_oo56v")
 
-[node name="Chessboard" parent="." instance=ExtResource("1_irqoo")]
+[node name="Chessboard" parent="." instance=ExtResource("1_betll")]
 transform = Transform3D(1.08253, 0, -0.625, 0, 1.25, 0, 0.625, 0, 1.08253, 0, 0, 0)
 
 [node name="Camera3D" type="Camera3D" parent="."]
@@ -41,3 +42,11 @@ far = 1083.33
 transform = Transform3D(35, 0, 0, 0, 35, 0, 0, 0, 35, 0, -0.0122933, 0)
 material_override = SubResource("StandardMaterial3D_ye5td")
 mesh = SubResource("PlaneMesh_5efah")
+
+[node name="UI" parent="." instance=ExtResource("2_ypxwc")]
+mouse_filter = 1
+
+[connection signal="pressed" from="UI/Button" to="Chessboard/HexChessDriver" method="ClearCurrentSelection"]
+
+[editable path="Chessboard"]
+[editable path="UI"]

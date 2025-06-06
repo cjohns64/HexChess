@@ -30,6 +30,9 @@ bool Resolver::IsInCheck(KingPiece* king, bool is_test) {
  *
  */
 void Resolver::ResolveMoves(ChessPiece& piece, vector<Tile*>& resolved_moves) {
+    if (!piece.is_alive) {
+        return; // dead pieces don't have moves
+    }
     // piece location
     sCoords location = piece.GetLocation();
     // check moves

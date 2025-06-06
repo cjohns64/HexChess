@@ -20,6 +20,7 @@ signal tile_clicked(rank:int, file:int)
 # selectable/moveable
 @onready var select_obj = $selectable
 @onready var move_obj = $moveable
+@onready var current_obj = $current
 
 func _ready() -> void:
 	SetMaterial(mat_override)

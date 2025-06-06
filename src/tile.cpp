@@ -29,14 +29,20 @@ void Tile::SetPiece(ChessPiece* piece, bool en_passant) {
  * Retrieves the piece reference located on the tile, if any.
  */
 ChessPiece* Tile::GetPiece(bool testing, bool en_passant) {
-    if (testing && test_piece != nullptr) {
-        // prefer a testing piece if testing mode is on
-        return test_piece;
+    if (testing) {
+        // don't return the test piece unless testing is on
+        if (test_piece != nullptr) {
+            // prefer a testing piece if testing mode is on
+            return test_piece;
+        }
+        else {
+            return current_piece;
+        }
     }
-    else if (en_passant && en_passant_piece != nullptr) {
-        // second priority is the en_passant_piece
-        return en_passant_piece;
-    }
+    // else if (en_passant && en_passant_piece != nullptr) {
+    //     // second priority is the en_passant_piece
+    //     return en_passant_piece;
+    // }
     // default to current_piece
     return current_piece;
 }

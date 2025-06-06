@@ -3,26 +3,13 @@
 [ext_resource type="Material" uid="uid://cbpislyr6b26o" path="res://assets/material/Tile-Black.tres" id="1_cs4m4"]
 [ext_resource type="Script" uid="uid://ckcy7rhpid6pc" path="res://assets/scenes/tile_interaction.gd" id="1_hsif7"]
 [ext_resource type="PackedScene" uid="uid://culonsosevj52" path="res://assets/meshes/tile-grey.glb" id="1_wlc15"]
+[ext_resource type="Material" uid="uid://cl63vcivpyi1m" path="res://assets/material/Highlight Glow.tres" id="4_mvcd3"]
+[ext_resource type="PackedScene" uid="uid://cdof0cmk86iu6" path="res://assets/meshes/tile-highlight-01.glb" id="5_dovqi"]
+[ext_resource type="PackedScene" uid="uid://cknjfed264sve" path="res://assets/meshes/tile-highlight-02.glb" id="6_qongt"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_fgjg7"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_pi5e4"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2ae7a"]
-transparency = 1
-albedo_color = Color(0, 0.633333, 1, 0.494118)
-emission_enabled = true
-emission = Color(0.198045, 0.435409, 1, 1)
-emission_energy_multiplier = 1.59
-
-[sub_resource type="BoxMesh" id="BoxMesh_pi5e4"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m8fsc"]
-transparency = 1
-albedo_color = Color(1, 0, 0, 0.262745)
-emission_enabled = true
-emission = Color(1, 0, 0, 1)
-emission_energy_multiplier = 2.65
 
 [node name="Tile" type="Node3D"]
 script = ExtResource("1_hsif7")
@@ -41,16 +28,32 @@ material_override = ExtResource("1_cs4m4")
 transform = Transform3D(1.81, 0, 0, 0, 1.81, 0, 0, 0, 1.81, 0, 0, 0)
 shape = SubResource("SphereShape3D_fgjg7")
 
-[node name="selectable" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.875, 0, 0, 0, 0.23, 0, 0, 0, 1.875, 0, 0, 0)
-mesh = SubResource("CylinderMesh_pi5e4")
-surface_material_override/0 = SubResource("StandardMaterial3D_2ae7a")
+[node name="selectable" type="Node3D" parent="."]
 
-[node name="moveable" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.315, 0, 0, 0, 0.689, 0, 0, 0, 1.315, 0, 0, 0)
-mesh = SubResource("BoxMesh_pi5e4")
-surface_material_override/0 = SubResource("StandardMaterial3D_m8fsc")
+[node name="selectable-m" type="MeshInstance3D" parent="selectable"]
+transform = Transform3D(1.875, 0, 0, 0, 0.1, 0, 0, 0, 1.875, 0, 0.1, 0)
+mesh = SubResource("CylinderMesh_pi5e4")
+skeleton = NodePath("../../root/@EditorNode@21272/@Panel@14/@VBoxContainer@15/DockHSplitLeftL/DockHSplitLeftR/DockHSplitMain/@VBoxContainer@26/DockVSplitCenter/@VSplitContainer@54/@VBoxContainer@55/@EditorMainScreen@102/MainScreen/@CanvasItemEditor@11482/@VSplitContainer@11134/@HSplitContainer@11136/@HSplitContainer@11138/@Control@11139/@SubViewportContainer@11140/@SubViewport@11141/Tile")
+surface_material_override/0 = ExtResource("4_mvcd3")
+
+[node name="current" type="Node3D" parent="."]
+
+[node name="tile-highlight-01" parent="current" instance=ExtResource("5_dovqi")]
+transform = Transform3D(1.115, 0, 0, 0, 1.115, 0, 0, 0, 1.115, 0, 0, 0)
+
+[node name="highlight-move" parent="current/tile-highlight-01" index="0"]
+surface_material_override/0 = ExtResource("4_mvcd3")
+
+[node name="moveable" type="Node3D" parent="."]
+
+[node name="tile-highlight-02" parent="moveable" instance=ExtResource("6_qongt")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0, 0)
+
+[node name="highlight-move_001" parent="moveable/tile-highlight-02" index="0"]
+material_override = ExtResource("4_mvcd3")
 
 [connection signal="input_event" from="Area3D" to="." method="_on_area_3d_input_event"]
 
 [editable path="transform-adjustments/tile-grey"]
+[editable path="current/tile-highlight-01"]
+[editable path="moveable/tile-highlight-02"]
