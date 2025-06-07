@@ -1,6 +1,6 @@
 #include "includes/register_types.h"
 
-#include "includes/hexchess_driver.h"
+#include "includes/gdhexchess_driver.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -13,7 +13,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
 		return;
 	}
 
-	GDREGISTER_RUNTIME_CLASS(HexChessDriver);
+	GDREGISTER_RUNTIME_CLASS(GDHexChessDriver);
 }
 
 void uninitialize_module(ModuleInitializationLevel p_level) {

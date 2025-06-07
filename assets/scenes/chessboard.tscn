@@ -6,7 +6,7 @@
 [node name="Chessboard" type="Node3D"]
 transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 0, 0, 0)
 
-[node name="HexChessDriver" type="HexChessDriver" parent="."]
+[node name="HexChessDriver" type="GDHexChessDriver" parent="."]
 script = ExtResource("4_emxaf")
 
 [node name="Tile1" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]

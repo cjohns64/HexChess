@@ -1,19 +1,4 @@
-#include "includes/hexchess_driver.h"
-#include <godot_cpp/core/class_db.hpp>
-
-using namespace godot;
-
-void HexChessDriver::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("RoundSetup"), &HexChessDriver::RoundSetup);
-    ClassDB::bind_method(D_METHOD("RoundCleanup"), &HexChessDriver::RoundCleanup);
-    ClassDB::bind_method(D_METHOD("GetGameState"), &HexChessDriver::GetGameState);
-    ClassDB::bind_method(D_METHOD("ClearSelection"), &HexChessDriver::ClearSelection);
-    ClassDB::bind_method(D_METHOD("MovePiece", "rank", "file"), &HexChessDriver::MovePiece);
-    ClassDB::bind_method(D_METHOD("GetPieceOnTile", "rank", "file"), &HexChessDriver::GetPieceOnTile);
-    ClassDB::bind_method(D_METHOD("GetSelectableTiles"), &HexChessDriver::GetSelectableTiles);
-    ClassDB::bind_method(D_METHOD("GetMoveTiles", "rank", "file"), &HexChessDriver::GetMoveTiles);
-    ClassDB::bind_method(D_METHOD("GetActionOnTile", "rank", "file"), &HexChessDriver::GetActionOnTile);
-}
+#include "includes/hex_chess_driver.h"
 
 /**
  * Init:
@@ -343,6 +328,7 @@ void HexChessDriver::MovePiece(int rank, int file) {
         // moving piece will capture
         // remove from list of player pieces
         target->is_alive = false;
+        // update captures stat for this round
         capture_this_round = true;
     }
     // move the piece
@@ -389,21 +375,3 @@ vector<sCoords> HexChessDriver::TranslateVector(vector<Tile*>& vec) {
     }
     return translate_vec;
 }
-
-
-// #include <iostream>
-// int main() {
-//     HexChessDriver driver = HexChessDriver();
-//     driver.RoundSetup();
-//     vector<sCoords> sel_vec = driver.GetSelectableTiles();
-//     cout << "Selection: " << ToString(sel_vec[0]) << endl;
-//     driver.ClearSelection();
-//     cout << "New Selection" << endl;
-//     sel_vec = driver.GetSelectableTiles();
-//     cout << "Selection: " << ToString(sel_vec[1]) << endl;
-//     vector<sCoords> mov_vec = driver.GetMoveTiles(sel_vec[1].rank, sel_vec[1].file);
-//     cout << "Move: " << ToString(mov_vec[0]) << endl;
-//     driver.MovePiece(mov_vec[0].rank, mov_vec[0].file);
-//     driver.RoundCleanup();
-//     return 0;
-// }

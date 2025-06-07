@@ -1,6 +1,7 @@
-extends HexChessDriver
+extends GDHexChessDriver
 class_name HexChess
 
+signal gameOver(state:GameState, isWhiteTurn:bool)
 enum ActionType {NoAction, Selectable, Move, MoveAndSelect}
 enum PieceType {King, Queen, Rook, Bishop, Knight, Pawn, NoPiece}
 enum GameState {Running, Checkmate, Stalemate, DeadPosistion, ThreefoldRepitition, FiftyMoveRule}
@@ -129,17 +130,21 @@ func _ready() -> void:
 	UpdateBoard()
 
 var round_in_process:bool = true
+var game_over:bool = false
+var round_num:int = -1
 func _process(delta: float) -> void:
-	if !round_in_process:
+	if !game_over and !round_in_process:
 		round_in_process = true
 		# start next round
 		RoundSetup()
+		round_num += 1
 		if ReturnGameState() == GameState.Running:
 			GetSelectableTiles()
 			UpdateBoard()
 		else:
 			# game over
-			pass
+			game_over = true
+			gameOver.emit(ReturnGameState(), round_num % 2 == 0)
 
 func ReturnGameState() -> GameState:
 	var value:int = GetGameState()

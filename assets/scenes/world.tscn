@@ -46,6 +46,7 @@ mesh = SubResource("PlaneMesh_5efah")
 [node name="UI" parent="." instance=ExtResource("2_ypxwc")]
 mouse_filter = 1
 
+[connection signal="gameOver" from="Chessboard/HexChessDriver" to="UI" method="_on_hex_chess_driver_game_over"]
 [connection signal="pressed" from="UI/Button" to="Chessboard/HexChessDriver" method="ClearCurrentSelection"]
 
 [editable path="Chessboard"]

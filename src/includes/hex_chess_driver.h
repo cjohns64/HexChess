@@ -5,9 +5,6 @@
 #include "resolver.h"
 #include <vector>
 
-#include <godot_cpp/classes/node.hpp>
-
-namespace godot {
 
 /**
  * Init:
@@ -29,13 +26,9 @@ namespace godot {
  * Black Turn:
  * - same as White
  */
-class HexChessDriver: public Node {
-    GDCLASS(HexChessDriver, Node)
+class HexChessDriver {
 
 protected:
-	static void _bind_methods();
-
-private:
     // initial piece locations defined explicitly
     sCoords inital_placement[52] = { // White
         sCoords(0, f), // King
@@ -213,7 +206,7 @@ public:
      */
     void MovePiece(int rank, int file);
 
-private:
+protected:
     /**
      * Checks if the given coordinates are contained in the given vector of coordinates.
      */
@@ -224,5 +217,4 @@ private:
      */
     vector<sCoords> TranslateVector(vector<Tile*>& vec);
 };
-}
 #endif
