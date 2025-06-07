@@ -12,7 +12,6 @@ ChessPiece::ChessPiece(eType _type, ePlayer _player, sCoords* _location) {
 void ChessPiece::SetLocation(sCoords new_location) {
     location->rank = new_location.rank;
     location->file = new_location.file;
-    is_unmoved = false;
 }
 
 /**

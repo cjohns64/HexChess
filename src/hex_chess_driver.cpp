@@ -205,12 +205,27 @@ void HexChessDriver::RoundSetup() {
     // check for a dead position
     // not enough material, player does not have any pawns, rooks, or queens
     bool dead_position = true;
-    for (int i=0; i<pieces->size(); i++) {
-        if ((*pieces)[i].type == Pawn || (*pieces)[i].type == Rook || (*pieces)[i].type == Queen) {
-            // Not comprehensive
-            dead_position = false;
-            break;
+    for (int x=0; x<2; x++) {
+        vector<ChessPiece> *tmp_pieces = x==0 ? &white_pieces : &black_pieces;
+        bool dead_pos[] = {true, true};
+        for (int i=0; i<tmp_pieces->size(); i++) {
+            if ((*tmp_pieces)[i].type == Pawn && (*tmp_pieces)[i].is_alive) {
+                // Not comprehensive
+                dead_pos[x] = false;
+                break;
+            }
+            if ((*tmp_pieces)[i].type == Rook && (*tmp_pieces)[i].is_alive) {
+                // Not comprehensive
+                dead_pos[x] = false;
+                break;
+            }
+            if ((*tmp_pieces)[i].type == Queen && (*tmp_pieces)[i].is_alive) {
+                // Not comprehensive
+                dead_pos[x] = false;
+                break;
+            }
         }
+        dead_position = dead_pos[0] && dead_pos[1];
     }
     if (dead_position) {
         game_state = DeadPosistion;
@@ -319,6 +334,7 @@ void HexChessDriver::GetMoveTiles(int rank, int file) {
  * Must follow immediately after GetMoveTiles since it requires the selected piece to be updated.
  */
 void HexChessDriver::MovePiece(int rank, int file) {
+    selected_piece->is_unmoved = false;
     sCoords target_loc = sCoords(rank, static_cast<eFiles>(file));
     // move piece
     ChessPiece* target = chessboard.GetTile(target_loc)->GetPiece();

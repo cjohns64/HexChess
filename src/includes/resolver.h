@@ -17,7 +17,7 @@ public:
     /**
      * Finds if the given King is in check.
      */
-    bool IsInCheck(KingPiece* king, bool is_test=false);
+    bool IsInCheck(KingPiece* king);
 
     /**
      * Converts the move set of a given piece to a vector of tiles that the piece can physically move to.
@@ -28,7 +28,7 @@ public:
     /**
      * Resolves a single movement direction represented by an sRelCoords object. Updates resolved_moves in place.
      */
-    void ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<Tile*>& resolved_moves, ePlayer player=WhitePlayer, bool is_test=false);
+    void ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<Tile*>& resolved_moves, ePlayer player=WhitePlayer);
 
     /**
      * Function given a tile, will lookup pieces of the other player that threaten the piece on the input tile.
@@ -45,7 +45,7 @@ public:
      * The check is done by looking checking each possible move (inverted direction)
      * with each piece type using the other player's move set.
      */
-    void GetThreatened(vector<ChessPiece*>& threats, sCoords location, ePlayer player, bool return_immediately=false, bool is_test=false);
+    void GetThreatened(vector<ChessPiece*>& threats, sCoords location, ePlayer player, bool return_immediately=false);
 
     /**
      * Filters the resolved_moves vector to only contain moves that do not put the king in check.

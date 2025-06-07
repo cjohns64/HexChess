@@ -11,9 +11,9 @@ Resolver::Resolver(Board* board, KingPiece* _white_king, KingPiece* _black_king,
 /**
  * Finds if the given King is in check.
  */
-bool Resolver::IsInCheck(KingPiece* king, bool is_test) {
+bool Resolver::IsInCheck(KingPiece* king) {
     vector<ChessPiece*> threats;
-    GetThreatened(threats, king->GetLocation(), king->player, true, is_test);
+    GetThreatened(threats, king->GetLocation(), king->player, true);
     return threats.size() > 0;
 }
 
@@ -67,7 +67,7 @@ void Resolver::ResolveMoves(ChessPiece& piece, vector<Tile*>& resolved_moves) {
  * TileAlly:
  *  - target player == current player
  */
-void Resolver::ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<Tile*>& resolved_moves, ePlayer player, bool is_test) {
+void Resolver::ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<Tile*>& resolved_moves, ePlayer player) {
     Tile* tile;
     int x=1;
     int t=move.repeat_max;
@@ -79,7 +79,7 @@ void Resolver::ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<
             // check target_requirement
             if (move.target_requirement == NoPiece) {
                 // tile must be empty
-                if (tile->GetPiece(is_test) != nullptr) {
+                if (tile->GetPiece() != nullptr) {
                     // tile is not empty
                     return;
                 }
@@ -89,7 +89,7 @@ void Resolver::ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<
                 }
             }
             else if (move.target_requirement == AnyPiece) {
-                ChessPiece* target_piece = tile->GetPiece(is_test);
+                ChessPiece* target_piece = tile->GetPiece();
                 switch (move.tile_requirement) {
                     case TileEmpty:
                         if (target_piece == nullptr) {
@@ -139,7 +139,7 @@ void Resolver::ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<
                 }
             }
             else { // target requirement needs piece match
-                ChessPiece* target_piece = tile->GetPiece(is_test);
+                ChessPiece* target_piece = tile->GetPiece();
                 if (target_piece != nullptr) {
                     if (target_piece->type == move.target_requirement) {
                         // match, add move
@@ -181,7 +181,7 @@ void Resolver::ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<
  * The check is done by looking checking each possible move (inverted direction)
  * with each piece type using the other player's move set.
  */
-void Resolver::GetThreatened(vector<ChessPiece*>& threats, sCoords location, ePlayer player, bool return_immediately, bool is_test) {
+void Resolver::GetThreatened(vector<ChessPiece*>& threats, sCoords location, ePlayer player, bool return_immediately) {
     // get the test pieces. The move sets could be different, so get the other player's pieces
     vector<ChessPiece>* test_pieces = player == BlackPlayer ? test_pieces_white : test_pieces_black;
     // set the position of the test pieces to the test position
@@ -199,10 +199,10 @@ void Resolver::GetThreatened(vector<ChessPiece*>& threats, sCoords location, ePl
             sRelCoords move = piece->moves[j].invert();
             // resolve moves with other player's inverted move set but with this player's color.
             // will find all of the other player's pieces that can capture this player's color at the test location.
-            ResolveSingleRelMove(move, location, resolved_moves, player, is_test);
+            ResolveSingleRelMove(move, location, resolved_moves, player);
             // clear out results that are empty
             for (int x=0; x<resolved_moves.size(); x++) {
-                ChessPiece* test_threat = resolved_moves[x]->GetPiece(is_test);
+                ChessPiece* test_threat = resolved_moves[x]->GetPiece();
                 // check the tile is not empty
                 if (test_threat != nullptr) {
                     // piece on tile, check that its type matches the test piece.
@@ -241,23 +241,33 @@ void Resolver::ValidateResolvedMoves(vector<Tile*>& resolved_moves, ChessPiece* 
  * Checks that the given move will not result in the King for the moving player being placed in check.
  */
 bool Resolver::ValidateMove(sCoords move, ChessPiece* moving_piece) {
-    // test move piece to location
+    // ### save start state ###
+    sCoords piece_location = moving_piece->GetLocation();
     // get the destination tile
     Tile* move_tile = chessboard->GetTile(move);
     // get the home tile
     Tile* home_tile = chessboard->GetTile(moving_piece->GetLocation());
+    ChessPiece* target_piece = move_tile->GetPiece();
+    
+    // ### set test state ###
+    // move piece to test location
+    moving_piece->SetLocation(move);
     // set destination tile to have the test piece
-    move_tile->TestPieceSet(moving_piece);
+    move_tile->SetPiece(moving_piece);
     // set the home tile to not have the testing piece
-    home_tile->TestPieceStash();
+    home_tile->RemovePiece();
 
+    // ### check test move ###
     // get king for this player
     KingPiece* king = moving_piece->player == WhitePlayer ? white_king : black_king;
     // see if king is in check now
-    bool bad_move = IsInCheck(king, true);
+    bool bad_move = IsInCheck(king);
 
+    // ### restore start state
     // clear test moves
-    move_tile->TestPieceRemove();
-    home_tile->TestPieceRestore();
+    move_tile->SetPiece(target_piece);
+    home_tile->SetPiece(moving_piece);
+    // reset piece back to its actual location
+    moving_piece->SetLocation(piece_location);
     return !bad_move;
 }
