@@ -151,7 +151,6 @@ public:
      */
     int GetActionOnTile(int rank, int file);
 
-
     /**
      * - update round number
      * - update current player = round number % 2
@@ -216,5 +215,15 @@ protected:
      * Converts the given vector of Tile pointers to a vector of coordinates.
      */
     vector<sCoords> TranslateVector(vector<Tile*>& vec);
+
+    /**
+     * Checks castling conditions and adds moves to king if met
+     */
+    void AddCastlingMoves();
+
+    /**
+     * Checks if the given castling rook and path meet all conditions required to allow castling.
+     */
+    bool CastlingValidOnSide(sCoords rook_loc, vector<Tile*>& path, ePlayer player);
 };
 #endif

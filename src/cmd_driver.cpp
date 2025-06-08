@@ -52,12 +52,15 @@ int main() {
         if (i%4 != 0) {
             continue;
         }
+        driver.PrintBoard();
         driver.RoundSetup();
         driver.GetSelectableTiles();
+        cout << "Selection:: " << vec[i+0] << ":" << vec[i+1] << endl;
         //driver.ClearSelection();
         //driver.GetSelectableTiles();
         driver.GetMoveTiles(vec[i+0], vec[i+1]);
         driver.MovePiece(vec[i+2], vec[i+3]);
+        cout << "Move:: " << vec[i+2] << ":" << vec[i+3] << endl;
         driver.RoundCleanup();
     }
     return 0;

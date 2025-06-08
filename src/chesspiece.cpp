@@ -22,20 +22,12 @@ sCoords ChessPiece::GetLocation() {
 }
 
 KingPiece::KingPiece(ePlayer _player, sCoords* _location) : ChessPiece(King, _player, _location) {
-    // TODO must move to a same-player Rook that has not moved. And trigger a castling event
     // King can move to all adjacent tiles
     moves = {
         // normal moves
         sRelCoords(1, 0, 0), sRelCoords(-1, 0, 0),
         sRelCoords(0, 1, 0), sRelCoords(0, -1, 0),
-        sRelCoords(1, 1, 0), sRelCoords(-1, -1, 0),
-        // castling moves
-        sRelCoords(1, 0, 2, Rook, TileAlly, true),
-        sRelCoords(-1, 0, 2, Rook, TileAlly, true),
-        sRelCoords(0, 1, 2, Rook, TileAlly, true),
-        sRelCoords(0, -1, 2, Rook, TileAlly, true),
-        sRelCoords(1, 1, 2, Rook, TileAlly, true),
-        sRelCoords(-1, -1, 2, Rook, TileAlly, true)
+        sRelCoords(1, 1, 0), sRelCoords(-1, -1, 0)
     };
     // King can capture at movement tiles
 };

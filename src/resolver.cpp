@@ -12,8 +12,24 @@ Resolver::Resolver(Board* board, KingPiece* _white_king, KingPiece* _black_king,
  * Finds if the given King is in check.
  */
 bool Resolver::IsInCheck(KingPiece* king) {
+    return IsThreatened(king);
+}
+
+/**
+ * Finds if the given piece is threatened.
+ */
+bool Resolver::IsThreatened(ChessPiece* piece) {
     vector<ChessPiece*> threats;
-    GetThreatened(threats, king->GetLocation(), king->player, true);
+    GetThreatened(threats, piece->GetLocation(), piece->player, true);
+    return threats.size() > 0;
+}
+
+/**
+ * Finds if the given tile is threatened by the other player.
+ */
+bool Resolver::IsThreatened(Tile* tile, ePlayer player) {
+    vector<ChessPiece*> threats;
+    GetThreatened(threats, tile->GetLocation(), player, true);
     return threats.size() > 0;
 }
 

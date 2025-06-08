@@ -20,6 +20,16 @@ public:
     bool IsInCheck(KingPiece* king);
 
     /**
+     * Finds if the given piece is threatened.
+     */
+    bool IsThreatened(ChessPiece* piece);
+
+    /**
+     * Finds if the given tile is threatened by the other player.
+     */
+    bool IsThreatened(Tile* tile, ePlayer player);
+
+    /**
      * Converts the move set of a given piece to a vector of tiles that the piece can physically move to.
      * Does not check if the move will put the King in check, only that the tiles are unobstructed or a capture can be made.
      */

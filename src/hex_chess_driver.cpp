@@ -167,6 +167,7 @@ void HexChessDriver::RoundSetup() {
     total_valid_moves_current_player = resolved_moves.size();
     // update all valid moves for piece
     king->valid_moves_this_turn = TranslateVector(resolved_moves);
+    AddCastlingMoves();
     
 
     // check Pieces
@@ -301,6 +302,81 @@ void HexChessDriver::ClearSelection() {
 }
 
 /**
+ * Checks castling conditions and adds moves to king if met
+ */
+void HexChessDriver::AddCastlingMoves() {
+    ePlayer player = static_cast<ePlayer>(round_number % 2);
+    KingPiece* king = player == WhitePlayer ? &white_king : &black_king;
+    if (!king->is_unmoved) {
+        return; // no castling
+    }
+    if (resolver.IsInCheck(king)) {
+        return; // no castling if king is in check
+    }
+    // ### Kingside ###
+    // locations of the rooks and paths
+    sCoords kingside_rook = player == WhitePlayer ? sCoords(3, i) : sCoords(10, i);
+    sCoords kingside_t1 = player == WhitePlayer ? sCoords(1, g) : sCoords(10, g);
+    sCoords kingside_t2 = player == WhitePlayer ? sCoords(2, h) : sCoords(10, h);
+    vector<Tile*> kingside_path = {chessboard.GetTile(kingside_t1), chessboard.GetTile(kingside_t2)};
+    // check contditions and add moves
+    if (CastlingValidOnSide(kingside_rook, kingside_path, player)) {
+        // add kingside castling to king's valid move set
+        king->valid_moves_this_turn.push_back(kingside_rook);
+        total_valid_moves_current_player++;
+    }
+
+    // ### Queenside ###
+    // locations of the rooks and paths
+    sCoords queenside_rook = player == WhitePlayer ? sCoords(0, c) : sCoords(7, c);
+    sCoords queenside_t1 = player == WhitePlayer ? sCoords(0, d) : sCoords(8, d);
+    sCoords queenside_t2 = player == WhitePlayer ? sCoords(0, e) : sCoords(9, e);
+    vector<Tile*> queenside_path = {chessboard.GetTile(queenside_t1), chessboard.GetTile(queenside_t2)};
+    // check contditions and add moves
+    if (CastlingValidOnSide(queenside_rook, queenside_path, player)) {
+        // add queenside castling to king's valid move set
+        king->valid_moves_this_turn.push_back(queenside_rook);
+        total_valid_moves_current_player++;
+    }
+}
+
+/**
+ * Checks if the given castling rook and path meet all conditions required to allow castling.
+ */
+bool HexChessDriver::CastlingValidOnSide(sCoords rook_loc, vector<Tile*>& path, ePlayer player) {
+    // check for unmoved rook of same player at the starting location
+    Tile* rook_tile = chessboard.GetTile(rook_loc);
+    // rook tile must contain the rook for this player
+    if (rook_tile == nullptr) {
+        return false;
+    }
+    ChessPiece* tile_piece = rook_tile->GetPiece();
+    // piece must be alive, unmoved, a rook, and same player
+    if (!tile_piece->is_alive ||
+        !tile_piece->is_unmoved ||
+        tile_piece->type != Rook ||
+        tile_piece->player != player
+        ) {
+        return false;
+    }
+    // rook tile can't be threatened
+    if (resolver.IsThreatened(rook_tile, player)) {
+        return false;
+    }
+    // every tile in the path must be empty and unthreatened
+    for (Tile* tile : path) {
+        if (tile->GetPiece() != nullptr) {
+            return false;
+        }
+        if (resolver.IsThreatened(tile, player)) {
+            return false;
+        }
+    }
+    // all checks passed
+    return true;
+}
+
+/**
  * Given the location of a selected piece, returns a vector of all valid move locations.
  */
 void HexChessDriver::GetMoveTiles(int rank, int file) {
@@ -335,21 +411,63 @@ void HexChessDriver::GetMoveTiles(int rank, int file) {
  */
 void HexChessDriver::MovePiece(int rank, int file) {
     selected_piece->is_unmoved = false;
+    // coordinates of target location
     sCoords target_loc = sCoords(rank, static_cast<eFiles>(file));
-    // move piece
-    ChessPiece* target = chessboard.GetTile(target_loc)->GetPiece();
-    //ChessPiece* selected_piece = chessboard.GetTile(selection_loc)->GetPiece();
+    // tile of target location
+    Tile* end_tile = chessboard.GetTile(target_loc);
+    // piece on target location
+    ChessPiece* target = end_tile->GetPiece();
+    // starting tile
+    Tile* start_tile = chessboard.GetTile(selected_piece->GetLocation());
+    
     // check for a capture
     if (target != nullptr) {
-        // moving piece will capture
-        // remove from list of player pieces
-        target->is_alive = false;
-        // update captures stat for this round
-        capture_this_round = true;
+        if (selected_piece->type == King &&
+            target->type == Rook &&
+            target->player == selected_piece->player) {
+            // this is a castling move, update rook first
+            int rank_diff = rank - selected_piece->GetLocation().rank;
+            int file_diff = file - selected_piece->GetLocation().file;
+            sCoords rook_new_loc = sCoords(0, a); // default location, will be overwritten
+            // diffs will be:
+            // black: kingside=0,3 queenside=-3,-3
+            // white: kingside=3,3 queenside=0,-3
+            if (file_diff > 0) {
+                // kingside
+                if (rank_diff == 0) {
+                    // black
+                    rook_new_loc = sCoords(rank, static_cast<eFiles>(file - 1));
+                }
+                else {
+                    // white
+                    rook_new_loc = sCoords(rank - 1, static_cast<eFiles>(file - 1));
+                }
+            }
+            else {
+                // queenside
+                if (rank_diff == 0) {
+                    // white
+                    rook_new_loc = sCoords(rank, static_cast<eFiles>(file + 1));
+                }
+                else {
+                    // black
+                    rook_new_loc = sCoords(rank + 1, static_cast<eFiles>(file + 1));
+                }
+            }
+            // move rook
+            Tile* new_rook_tile = chessboard.GetTile(rook_new_loc);
+            new_rook_tile->SetPiece(target);
+            target->SetLocation(rook_new_loc);
+            target->is_unmoved = false;
+        }
+        else {
+            // moving piece will capture
+            // remove from list of player pieces
+            target->is_alive = false;
+            // update captures stat for this round
+            capture_this_round = true;
+        }
     }
-    // move the piece
-    Tile* start_tile = chessboard.GetTile(selected_piece->GetLocation());
-    Tile* end_tile = chessboard.GetTile(target_loc);
     // remove piece from tile
     start_tile->RemovePiece();
     // set piece at new tile
@@ -358,14 +476,6 @@ void HexChessDriver::MovePiece(int rank, int file) {
     selected_piece->SetLocation(target_loc);
     // update if a pawn was moved
     pawn_moved = selected_piece->type == Pawn;
-    // check for pawn initial move if a pawn was moved
-    if (pawn_moved) {
-        // TODO add en_passant to valid moves, check this move was an initial move
-        // vector<sCoords> initial_moves = move_selection.GetMovingPiece()->inital_moves;
-        // if (CoordsInCoordsVector(&target_coords, &initial_moves) {
-            // ;
-        // }
-    }
 }
 
 /**
