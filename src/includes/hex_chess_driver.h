@@ -84,22 +84,22 @@ protected:
     sCoords empty_location = sCoords(0, a);
     // these pieces are only used for checking for threats and are never placed on the board
     vector<ChessPiece> test_pieces_white = {
-        KingPiece(WhitePlayer, &empty_location),
-        QueenPiece(WhitePlayer, &empty_location),
-        RookPiece(WhitePlayer, &empty_location),
-        KnightPiece(WhitePlayer, &empty_location),
-        BishopPiece(WhitePlayer, &empty_location),
-        PawnPiece(WhitePlayer, &empty_location)
+        KingPiece(WhitePlayer, empty_location),
+        QueenPiece(WhitePlayer, empty_location),
+        RookPiece(WhitePlayer, empty_location),
+        KnightPiece(WhitePlayer, empty_location),
+        BishopPiece(WhitePlayer, empty_location),
+        PawnPiece(WhitePlayer, empty_location)
     };
     // there is a version for the other player because pawns move in opposite directions
     // all pieces are included in case moves are different for the players.
     vector<ChessPiece> test_pieces_black = {
-        KingPiece(BlackPlayer, &empty_location),
-        QueenPiece(BlackPlayer, &empty_location),
-        RookPiece(BlackPlayer, &empty_location),
-        KnightPiece(BlackPlayer, &empty_location),
-        BishopPiece(BlackPlayer, &empty_location),
-        PawnPiece(BlackPlayer, &empty_location)
+        KingPiece(BlackPlayer, empty_location),
+        QueenPiece(BlackPlayer, empty_location),
+        RookPiece(BlackPlayer, empty_location),
+        KnightPiece(BlackPlayer, empty_location),
+        BishopPiece(BlackPlayer, empty_location),
+        PawnPiece(BlackPlayer, empty_location)
     };
     // A pointer to the currently selected piece
     ChessPiece* selected_piece = nullptr;
@@ -110,6 +110,10 @@ protected:
     // working selection and moves
     vector<sCoords> active_selection;
     vector<sCoords> active_moves;
+    vector<Tile*> white_promotion_tiles;
+    vector<Tile*> black_promotion_tiles;
+    // this holds the piece that can be promoted to a higher value piece
+    ChessPiece* promotion_piece = nullptr;
 
     Board chessboard = Board();
     Resolver resolver;
@@ -205,6 +209,25 @@ public:
      */
     void MovePiece(int rank, int file);
 
+    /**
+     * Returns the location of the promotable piece or 0 if there is none.
+     * The location is encoded as a two digit hex number stored as a single decimal number as follows:
+     *  rank 0-10 -> 0x1 - 0xb
+     *  file a-k  -> 0x1 - 0xb
+     *  Return value: rank file -> 0x11 - 0xbb -> 17 - 187
+     */
+    int GetPromotionTile();
+
+    /**
+     * Promotes the current promotion piece to the given selection.
+     * Selection is an int of the following form:
+     *  2 = Rook
+     *  3 = Bishop
+     *  4 = Knight
+     *  Any other value = Queen
+     */
+    void RunPromotion(int piece_selection);
+
 protected:
     /**
      * Checks if the given coordinates are contained in the given vector of coordinates.
@@ -225,5 +248,10 @@ protected:
      * Checks if the given castling rook and path meet all conditions required to allow castling.
      */
     bool CastlingValidOnSide(sCoords rook_loc, vector<Tile*>& path, ePlayer player);
+
+    /**
+     * Checks each promotion tile for a valid promotion, and updates the promotion piece if their is one.
+     */
+    void CheckForPromotion();
 };
 #endif

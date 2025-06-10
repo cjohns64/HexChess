@@ -2,6 +2,7 @@ extends GDHexChessDriver
 class_name HexChess
 
 signal gameOver(state:GameState, isWhiteTurn:bool)
+signal activate_promotion()
 enum ActionType {NoAction, Selectable, Move, MoveAndSelect}
 enum PieceType {King, Queen, Rook, Bishop, Knight, Pawn, NoPiece}
 enum GameState {Running, Checkmate, Stalemate, DeadPosistion, ThreefoldRepitition, FiftyMoveRule}
@@ -247,7 +248,10 @@ func OnTileClicked(rank:int, file:int) -> void:
 		MovePiece(rank, file)
 		UpdateBoard()
 		RoundCleanup() # round over, setup for next round
-		round_in_process = false
+		if GetPromotionTile() != 0:
+			activate_promotion.emit()
+		else:
+			round_in_process = false
 	else:
 		# tile has both a selection and a move
 		# TODO
@@ -293,3 +297,7 @@ func ParseActionType(action:int) -> ActionType:
 			return ActionType.MoveAndSelect
 		_:
 			return ActionType.NoAction
+
+func _on_ui_promotion_selected(selection: int) -> void:
+	RunPromotion(selection)
+	round_in_process = false

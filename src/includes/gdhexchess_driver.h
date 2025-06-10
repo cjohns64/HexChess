@@ -28,6 +28,8 @@ public:
     void ClearSelection();
     void GetMoveTiles(int rank, int file);
     void MovePiece(int rank, int file);
+    int GetPromotionTile();
+    void RunPromotion(int selection);
 
 protected:
     bool CoordsInCoordsVector(sCoords* test_coords, vector<sCoords>* test_vector_coords);

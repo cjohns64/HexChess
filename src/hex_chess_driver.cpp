@@ -20,48 +20,57 @@
  * Black Turn:
  * - same as White
  */
-HexChessDriver::HexChessDriver() : white_king(KingPiece(WhitePlayer, &inital_placement[0])),
-           black_king(KingPiece(BlackPlayer, &inital_placement[26])),
+HexChessDriver::HexChessDriver() : white_king(KingPiece(WhitePlayer, inital_placement[0])),
+           black_king(KingPiece(BlackPlayer, inital_placement[26])),
            resolver(Resolver(&chessboard, &white_king, &black_king, &test_pieces_white, &test_pieces_white))
            {
     // initial placement -- White
     for (int i=1; i<26; i++) {
         if (i>9) {
-            white_pieces.push_back(PawnPiece(WhitePlayer, &inital_placement[i]));
+            white_pieces.push_back(PawnPiece(WhitePlayer, inital_placement[i]));
         }
         else if (i>1 && i<=4) {
-            white_pieces.push_back(BishopPiece(WhitePlayer, &inital_placement[i]));
+            white_pieces.push_back(BishopPiece(WhitePlayer, inital_placement[i]));
         }
         else if (i>4 && i<=7) {
-            white_pieces.push_back(KnightPiece(WhitePlayer, &inital_placement[i]));
+            white_pieces.push_back(KnightPiece(WhitePlayer, inital_placement[i]));
         }
         else if (i>7 && i<=9) {
-            white_pieces.push_back(RookPiece(WhitePlayer, &inital_placement[i]));
+            white_pieces.push_back(RookPiece(WhitePlayer, inital_placement[i]));
         }
         else if (i==1) {
-            white_pieces.push_back(QueenPiece(WhitePlayer, &inital_placement[i]));
+            white_pieces.push_back(QueenPiece(WhitePlayer, inital_placement[i]));
         }
     }
     // initial placement -- Black 
     for (int i=27; i<52; i++) {
         if (i>35) {
-            black_pieces.push_back(PawnPiece(BlackPlayer, &inital_placement[i]));
+            black_pieces.push_back(PawnPiece(BlackPlayer, inital_placement[i]));
         }
         else if (i>27 && i<=30) {
-            black_pieces.push_back(BishopPiece(BlackPlayer, &inital_placement[i]));
+            black_pieces.push_back(BishopPiece(BlackPlayer, inital_placement[i]));
         }
         else if (i>30 && i<=33) {
-            black_pieces.push_back(KnightPiece(BlackPlayer, &inital_placement[i]));
+            black_pieces.push_back(KnightPiece(BlackPlayer, inital_placement[i]));
         }
         else if (i>33 && i<=35) {
-            black_pieces.push_back(RookPiece(BlackPlayer, &inital_placement[i]));
+            black_pieces.push_back(RookPiece(BlackPlayer, inital_placement[i]));
         }
         else if (i==27) {
-            black_pieces.push_back(QueenPiece(BlackPlayer, &inital_placement[i]));
+            black_pieces.push_back(QueenPiece(BlackPlayer, inital_placement[i]));
         }
     }
     // set the board with the actual pieces, the board will store pointers to each piece on their current Tile.
     chessboard.SetBoard(white_pieces, white_king, black_pieces, black_king);
+
+    // white promotion tile set
+    for (sCoords loc : back_rank_black) {
+        white_promotion_tiles.push_back(chessboard.GetTile(loc));
+    }
+    // black promotion tile set
+    for (sCoords loc : back_rank_white) {
+        black_promotion_tiles.push_back(chessboard.GetTile(loc));
+    }
 }
 
     /**
@@ -239,12 +248,82 @@ void HexChessDriver::RoundSetup() {
 }
 
 /**
+ * Checks each promotion tile for a valid promotion, and updates the promotion piece if their is one.
+ */
+void HexChessDriver::CheckForPromotion() {
+    // get the set of tiles where a promotion can happen for this player
+    vector<Tile*>* promotion_tiles = current_player == WhitePlayer ? &white_promotion_tiles : &black_promotion_tiles;
+    // look through all the tiles for a promotable piece
+    for (Tile* tile : *promotion_tiles) {
+        ChessPiece* piece = tile->GetPiece();
+        if (piece != nullptr && piece->is_alive && piece->is_promotable && piece->player == current_player) {
+            // set promotion piece
+            promotion_piece = piece;
+            // only one piece can be promoted per turn because only one piece can move per turn
+            return;
+        }
+    }
+}
+
+/**
+ * Returns the location of the promotable piece or 0 if there is none.
+ * The location is encoded as a two digit hex number stored as a single decimal number as follows:
+ *  rank 0-10 -> 0x1 - 0xb
+ *  file a-k  -> 0x1 - 0xb
+ *  Return value: rank file -> 0x11 - 0xbb -> 17 - 187
+ */
+int HexChessDriver::GetPromotionTile() {
+    if (promotion_piece != nullptr) {
+        int rank = promotion_piece->GetLocation().rank + 1;
+        int file = promotion_piece->GetLocation().file + 1;
+        return (rank * 16) + file;
+    }
+    else {
+        return 0;
+    }
+}
+
+/**
+ * Promotes the current promotion piece to the given selection.
+ * Selection is an int of the following form:
+ *  2 = Rook
+ *  3 = Bishop
+ *  4 = Knight
+ *  Any other value = Queen
+ */
+void HexChessDriver::RunPromotion(int piece_selection) {
+    sCoords loc = promotion_piece->GetLocation();
+    // update the value pointed to by promotion_piece
+    switch (piece_selection) {
+        case 2:
+            // update promotion piece to a Rook
+            *promotion_piece = RookPiece(current_player, loc);
+            break;
+        case 3:
+            // update promotion piece to a Bishop
+            *promotion_piece = BishopPiece(current_player, loc);
+            break;
+        case 4:
+            // update promotion piece to a Knight
+            *promotion_piece = KnightPiece(current_player, loc);
+            break;
+        default:
+            // update promotion piece to a Queen
+            *promotion_piece = QueenPiece(current_player, loc);
+            break;
+    }
+    // clear the reference
+    promotion_piece = nullptr;
+}
+
+/**
  * Post move cleanup before the next round can be setup.
  * This includes updating if a pawn moved this round or if there was a capture.
  *
  * Should be run immediately after the player makes a move
  */
 void HexChessDriver::RoundCleanup() {
+    CheckForPromotion();
     // 50 move rule updates
     if (!capture_this_round) {
         last_capture_round++;
@@ -266,10 +345,8 @@ void HexChessDriver::RoundCleanup() {
  * Returns a vector of the coordinates of all pieces with valid moves.
  */
 void HexChessDriver::GetSelectableTiles() {
-    // set the current player
-    ePlayer player = static_cast<ePlayer>(round_number % 2);
-    vector<ChessPiece>* pieces = player == WhitePlayer ? &white_pieces : &black_pieces;
-    KingPiece* king = player == WhitePlayer ? &white_king : &black_king;
+    vector<ChessPiece>* pieces = current_player == WhitePlayer ? &white_pieces : &black_pieces;
+    KingPiece* king = current_player == WhitePlayer ? &white_king : &black_king;
     active_selection.clear();
     active_moves.clear();
     // print list of all pieces with moves
@@ -305,8 +382,7 @@ void HexChessDriver::ClearSelection() {
  * Checks castling conditions and adds moves to king if met
  */
 void HexChessDriver::AddCastlingMoves() {
-    ePlayer player = static_cast<ePlayer>(round_number % 2);
-    KingPiece* king = player == WhitePlayer ? &white_king : &black_king;
+    KingPiece* king = current_player == WhitePlayer ? &white_king : &black_king;
     if (!king->is_unmoved) {
         return; // no castling
     }
@@ -315,12 +391,12 @@ void HexChessDriver::AddCastlingMoves() {
     }
     // ### Kingside ###
     // locations of the rooks and paths
-    sCoords kingside_rook = player == WhitePlayer ? sCoords(3, i) : sCoords(10, i);
-    sCoords kingside_t1 = player == WhitePlayer ? sCoords(1, g) : sCoords(10, g);
-    sCoords kingside_t2 = player == WhitePlayer ? sCoords(2, h) : sCoords(10, h);
+    sCoords kingside_rook = current_player == WhitePlayer ? sCoords(3, i) : sCoords(10, i);
+    sCoords kingside_t1 = current_player == WhitePlayer ? sCoords(1, g) : sCoords(10, g);
+    sCoords kingside_t2 = current_player == WhitePlayer ? sCoords(2, h) : sCoords(10, h);
     vector<Tile*> kingside_path = {chessboard.GetTile(kingside_t1), chessboard.GetTile(kingside_t2)};
     // check contditions and add moves
-    if (CastlingValidOnSide(kingside_rook, kingside_path, player)) {
+    if (CastlingValidOnSide(kingside_rook, kingside_path, current_player)) {
         // add kingside castling to king's valid move set
         king->valid_moves_this_turn.push_back(kingside_rook);
         total_valid_moves_current_player++;
@@ -328,12 +404,12 @@ void HexChessDriver::AddCastlingMoves() {
 
     // ### Queenside ###
     // locations of the rooks and paths
-    sCoords queenside_rook = player == WhitePlayer ? sCoords(0, c) : sCoords(7, c);
-    sCoords queenside_t1 = player == WhitePlayer ? sCoords(0, d) : sCoords(8, d);
-    sCoords queenside_t2 = player == WhitePlayer ? sCoords(0, e) : sCoords(9, e);
+    sCoords queenside_rook = current_player == WhitePlayer ? sCoords(0, c) : sCoords(7, c);
+    sCoords queenside_t1 = current_player == WhitePlayer ? sCoords(0, d) : sCoords(8, d);
+    sCoords queenside_t2 = current_player == WhitePlayer ? sCoords(0, e) : sCoords(9, e);
     vector<Tile*> queenside_path = {chessboard.GetTile(queenside_t1), chessboard.GetTile(queenside_t2)};
     // check contditions and add moves
-    if (CastlingValidOnSide(queenside_rook, queenside_path, player)) {
+    if (CastlingValidOnSide(queenside_rook, queenside_path, current_player)) {
         // add queenside castling to king's valid move set
         king->valid_moves_this_turn.push_back(queenside_rook);
         total_valid_moves_current_player++;

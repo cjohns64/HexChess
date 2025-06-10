@@ -20,10 +20,10 @@ public:
     std::vector<sCoords> valid_moves_this_turn;
 
 private:
-    sCoords* location;
+    sCoords location;
 
 public:
-    ChessPiece(eType _type, ePlayer _player, sCoords* _location);
+    ChessPiece(eType _type, ePlayer _player, sCoords _location);
 
     /**
      * Sets the location of the piece to the new value and updates is_unmoved to false.
@@ -38,45 +38,32 @@ public:
 
 class KingPiece: public ChessPiece {
     public:
-        int value = 0;
-
-        KingPiece(ePlayer _player, sCoords* _location);
+        KingPiece(ePlayer _player, sCoords _location);
 };
 
 class QueenPiece: public ChessPiece {
     public:
-        int value = 9;
-
-        QueenPiece(ePlayer _player, sCoords* _location);
+        QueenPiece(ePlayer _player, sCoords _location);
 };
 
 class RookPiece: public ChessPiece {
     public:
-        int value = 5;
-
-        RookPiece(ePlayer _player, sCoords* _location);
+        RookPiece(ePlayer _player, sCoords _location);
 };
 
 class BishopPiece: public ChessPiece {
     public:
-        int value = 3;
-
-        BishopPiece(ePlayer _player, sCoords* _location);
+        BishopPiece(ePlayer _player, sCoords _location);
 };
 
 class KnightPiece: public ChessPiece {
     public:
-        int value = 3;
-
-        KnightPiece(ePlayer _player, sCoords* _location);
+        KnightPiece(ePlayer _player, sCoords _location);
 };
 
 class PawnPiece: public ChessPiece {
     public:
-        bool is_promotable = true;
-        int value = 1;
-
-        PawnPiece(ePlayer _player, sCoords* _location);
+        PawnPiece(ePlayer _player, sCoords _location);
 };
 
 inline bool operator == (ChessPiece first, ChessPiece other) {

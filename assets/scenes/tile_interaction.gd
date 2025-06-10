@@ -4,7 +4,7 @@ class_name TileInteraction
 # matirial override
 @export var mat_override:Mat
 enum Mat {White, Black, Grey}
-@onready var mesh = $"transform-adjustments/tile-grey/Tile-applied"
+@onready var mesh = $"Container/tile-container/tile-grey/Tile-applied"
 var mat_set = {
 	Mat.Black:preload("res://assets/material/Tile-Black.tres"),
 	Mat.Grey:preload("res://assets/material/Tile-Grey.tres"),
@@ -12,15 +12,15 @@ var mat_set = {
 }
 
 # clicked signal
-@onready var click_area = $Area3D
+@onready var click_area = $Container/Area3D
 var rank:int = 0
 var file:int = 0
 signal tile_clicked(rank:int, file:int)
 
 # selectable/moveable
-@onready var select_obj = $selectable
-@onready var move_obj = $moveable
-@onready var current_obj = $current
+@onready var select_obj = $"Container/selection-highlight"
+@onready var move_obj = $"Container/movement-highlight"
+@onready var current_obj = $"Container/current-highlight"
 
 func _ready() -> void:
 	SetMaterial(mat_override)

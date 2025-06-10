@@ -13,6 +13,8 @@ void GDHexChessDriver::_bind_methods() {
     ClassDB::bind_method(D_METHOD("GetSelectableTiles"), &GDHexChessDriver::GetSelectableTiles);
     ClassDB::bind_method(D_METHOD("GetMoveTiles", "rank", "file"), &GDHexChessDriver::GetMoveTiles);
     ClassDB::bind_method(D_METHOD("GetActionOnTile", "rank", "file"), &GDHexChessDriver::GetActionOnTile);
+    ClassDB::bind_method(D_METHOD("GetPromotionTile"), &GDHexChessDriver::GetPromotionTile);
+    ClassDB::bind_method(D_METHOD("RunPromotion", "selection"), &GDHexChessDriver::RunPromotion);
 }
 
 
@@ -26,3 +28,5 @@ void GDHexChessDriver::GetSelectableTiles() { driver.GetSelectableTiles(); }
 void GDHexChessDriver::ClearSelection() { driver.ClearSelection(); }
 void GDHexChessDriver::GetMoveTiles(int rank, int file) { driver.GetMoveTiles(rank, file); }
 void GDHexChessDriver::MovePiece(int rank, int file) { driver.MovePiece(rank, file); }
+int GDHexChessDriver::GetPromotionTile() { return driver.GetPromotionTile(); }
+void GDHexChessDriver::RunPromotion(int selection) { driver.RunPromotion(selection); }
