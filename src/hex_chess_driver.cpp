@@ -292,6 +292,9 @@ int HexChessDriver::GetPromotionTile() {
  *  Any other value = Queen
  */
 void HexChessDriver::RunPromotion(int piece_selection) {
+    if (promotion_piece == nullptr) {
+        return;
+    }
     sCoords loc = promotion_piece->GetLocation();
     // update the value pointed to by promotion_piece
     switch (piece_selection) {
@@ -422,11 +425,15 @@ void HexChessDriver::AddCastlingMoves() {
 bool HexChessDriver::CastlingValidOnSide(sCoords rook_loc, vector<Tile*>& path, ePlayer player) {
     // check for unmoved rook of same player at the starting location
     Tile* rook_tile = chessboard.GetTile(rook_loc);
-    // rook tile must contain the rook for this player
+    // rook tile must exist
     if (rook_tile == nullptr) {
         return false;
     }
     ChessPiece* tile_piece = rook_tile->GetPiece();
+    // rook tile must contain the rook for this player
+    if (tile_piece == nullptr) {
+        return false;
+    }
     // piece must be alive, unmoved, a rook, and same player
     if (!tile_piece->is_alive ||
         !tile_piece->is_unmoved ||

@@ -139,16 +139,21 @@ func _process(delta: float) -> void:
 		# start next round
 		RoundSetup()
 		round_num += 1
+		#print("starting round ", round_num)
 		if ReturnGameState() == GameState.Running:
+			#print("finding selections")
 			GetSelectableTiles()
+			#print("updating board")
 			UpdateBoard()
 		else:
 			# game over
 			game_over = true
+			#print("GAME OVER")
 			gameOver.emit(ReturnGameState(), round_num % 2 == 0)
 
 func ReturnGameState() -> GameState:
 	var value:int = GetGameState()
+	#print("Game state is ", (value + 1) as GameState)
 	return (value + 1) as GameState
 
 func UpdateBoard() -> void:
@@ -157,10 +162,13 @@ func UpdateBoard() -> void:
 	for i in 11:
 		for j in x:
 			# get board state at coordinates
+			#print("--- update :: ", i, j+s)
 			var piece:ChessPiece = ParsePieceType(GetPieceOnTile(i, j + s))
 			# update piece on board at location
+			#print("---- update with piece :: ", piece.player, " ", piece.type)
 			SetPieceObjectOnTile(piece, i, j+s)
 			var action:ActionType = ParseActionType(GetActionOnTile(i, j + s))
+			#print("----- update with action :: ", action)
 			# update tile highlight at location
 			SetTileHighlight(action, i, j+s)
 		# files grow by one on the end before rank 5,
@@ -176,6 +184,7 @@ func GetCurrentPieceObjectOnTile(rank:int, file:int) -> ChessPiece:
 	return hexboard.get_tile(rank, file).piece
 
 func SetPieceObjectOnTile(piece:ChessPiece, rank:int, file:int) -> void:
+	#print("setting piece :: t%s p%s r%s f%s" % [piece.type, piece.player, rank, file])
 	if piece == GetCurrentPieceObjectOnTile(rank, file):
 		return # skip if no change
 	# update piece data

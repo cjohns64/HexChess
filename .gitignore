@@ -2,6 +2,7 @@
 *.os
 /gdexample/
 a.out
+cmd_hexchess
 .godot/
 /android/
 
