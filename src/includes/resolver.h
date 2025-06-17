@@ -10,6 +10,7 @@ private:
     KingPiece* black_king;
     vector<ChessPiece>* test_pieces_white;
     vector<ChessPiece>* test_pieces_black;
+    sCoords en_passant_location = sCoords(-1, a);
 
 public:
     Resolver(Board* board, KingPiece* _white_king, KingPiece* _black_king, vector<ChessPiece>* _test_pieces_white, vector<ChessPiece>* _test_pieces_black);
@@ -38,7 +39,7 @@ public:
     /**
      * Resolves a single movement direction represented by an sRelCoords object. Updates resolved_moves in place.
      */
-    void ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<Tile*>& resolved_moves, ePlayer player=WhitePlayer);
+    void ResolveSingleRelMove(eType piece_type, sRelCoords& move, sCoords& location, vector<Tile*>& resolved_moves, ePlayer player=WhitePlayer);
 
     /**
      * Function given a tile, will lookup pieces of the other player that threaten the piece on the input tile.
@@ -66,5 +67,10 @@ public:
      * Checks that the given move will not result in the King for the moving player being placed in check.
      */
     bool ValidateMove(sCoords move, ChessPiece* moving_piece);
+
+    sCoords GetEnPassantLocation();
+
+    void SetEnPassantLocation(sCoords location);
 };
+
 #endif

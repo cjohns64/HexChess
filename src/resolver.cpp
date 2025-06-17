@@ -56,8 +56,7 @@ void Resolver::ResolveMoves(ChessPiece& piece, vector<Tile*>& resolved_moves) {
         sRelCoords move = piece.moves[i];
         // skip resolving initial moves if piece has moved
         if ((piece.is_unmoved && move.initial_only) || !move.initial_only) {
-            //TODO check for castling and en passant
-            ResolveSingleRelMove(move, location, resolved_moves, piece.player);
+            ResolveSingleRelMove(piece.type, move, location, resolved_moves, piece.player);
         }
     }
 }
@@ -83,7 +82,7 @@ void Resolver::ResolveMoves(ChessPiece& piece, vector<Tile*>& resolved_moves) {
  * TileAlly:
  *  - target player == current player
  */
-void Resolver::ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<Tile*>& resolved_moves, ePlayer player) {
+void Resolver::ResolveSingleRelMove(eType piece_type, sRelCoords& move, sCoords& location, vector<Tile*>& resolved_moves, ePlayer player) {
     Tile* tile;
     int x=1;
     int t=move.repeat_max;
@@ -120,6 +119,18 @@ void Resolver::ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<
                         if (target_piece != nullptr && target_piece->player != player) {
                             resolved_moves.push_back(tile);
                             return; // stop at piece
+                        }
+                        else if (piece_type == Pawn && target_piece == nullptr) {
+                            // check for possible en passant capture
+                            if (en_passant_location.rank >= 0 && en_passant_location == tile->GetLocation()) {
+                                // en_passant_loc is active and same location as target tile
+                                resolved_moves.push_back(tile);
+                                return; // stop at piece
+                            }
+                            else {
+                                // condition failed
+                                return;
+                            }
                         }
                         else {
                             // condition failed
@@ -158,8 +169,20 @@ void Resolver::ResolveSingleRelMove(sRelCoords& move, sCoords& location, vector<
                 ChessPiece* target_piece = tile->GetPiece();
                 if (target_piece != nullptr) {
                     if (target_piece->type == move.target_requirement) {
-                        // match, add move
-                        resolved_moves.push_back(tile);
+                        if (move.tile_requirement == TileEnemy && target_piece->player != player) {
+                            // matched tile requirement
+                            resolved_moves.push_back(tile);
+                            return; // stop at piece
+                        }
+                        else if (move.tile_requirement == TileAlly && target_piece->player == player) {
+                            // matched tile requirement
+                            resolved_moves.push_back(tile);
+                            return; // stop at piece
+                        }
+                        else {
+                            // no added condition
+                            resolved_moves.push_back(tile);
+                        }
                     }
                     else {
                         // no match
@@ -215,7 +238,7 @@ void Resolver::GetThreatened(vector<ChessPiece*>& threats, sCoords location, ePl
             sRelCoords move = piece->moves[j].invert();
             // resolve moves with other player's inverted move set but with this player's color.
             // will find all of the other player's pieces that can capture this player's color at the test location.
-            ResolveSingleRelMove(move, location, resolved_moves, player);
+            ResolveSingleRelMove(piece->type, move, location, resolved_moves, player);
             // clear out results that are empty
             for (int x=0; x<resolved_moves.size(); x++) {
                 ChessPiece* test_threat = resolved_moves[x]->GetPiece();
@@ -286,4 +309,12 @@ bool Resolver::ValidateMove(sCoords move, ChessPiece* moving_piece) {
     // reset piece back to its actual location
     moving_piece->SetLocation(piece_location);
     return !bad_move;
+}
+
+sCoords Resolver::GetEnPassantLocation() {
+    return en_passant_location;
+}
+
+void Resolver::SetEnPassantLocation(sCoords location) {
+    en_passant_location = location;
 }

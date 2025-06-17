@@ -59,18 +59,18 @@ int main() {
     //             2, 6, // select w knight 1, //check promoted piece's move resolving and validation on [5, a]
     //             5, 8};// move w knight
     // crash at unknown
-    int vec[] = {
-                1,1,
-                3,1,
-                6,2,
-                5,2,
-                3,1,
-                5,2,
-                7,2,
-                5,2,
-                0,3,
-                2,2
-    };
+    // int vec[] = {
+    //             1,1,
+    //             3,1,
+    //             6,2,
+    //             5,2,
+    //             3,1,
+    //             5,2,
+    //             7,2,
+    //             5,2,
+    //             0,3,
+    //             2,2
+    // };
     // int vec[] = {0, 0,  // 
     //             2, 0,   // 
     //             6, 2,   // 
@@ -123,6 +123,26 @@ int main() {
     //              0 ,5,
     //              3 ,8,
     //              };
+    // en passant
+    // int vec[] = {
+    //              1 ,1,
+    //              3 ,1,
+    //              6 ,2,
+    //              4 ,2
+    //              };
+    //  faulty en passant capture
+    int vec[] = {
+            0 ,0,
+            2 ,0,
+            5 ,1,
+            3 ,1,
+            2 ,0,
+            4 ,1,
+            5 ,0,
+            3 ,0,
+                 };
+
+
     int n = sizeof(vec) / sizeof(vec[0]);
     for (int i=0; i<n; i++) {
         if (i%4 != 0) {

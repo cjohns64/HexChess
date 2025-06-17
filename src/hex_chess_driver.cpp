@@ -163,6 +163,8 @@ void HexChessDriver::RoundSetup() {
         // clear the en_passant_piece if it has made it back to the player that used it
         if (en_passant_piece->player == current_player) {
             en_passant_piece = nullptr;
+            // set location to an invalid location
+            resolver.SetEnPassantLocation(sCoords(-1, a));
         }
     }
     // check King
@@ -363,7 +365,6 @@ void HexChessDriver::GetSelectableTiles() {
             active_selection.push_back((*pieces)[i].GetLocation());
         }
     }
-    // return active_selection;
 }
 
 /**
@@ -470,20 +471,11 @@ void HexChessDriver::GetMoveTiles(int rank, int file) {
     active_selection.clear();
     // check selected piece is valid
     if (selected_piece != nullptr) {
-        // print possible moves for piece
         for (sCoords move : selected_piece->valid_moves_this_turn) {
             // add move to active moves vector
             active_moves.push_back(move);
-            // get a possible target piece
-            ChessPiece* target = chessboard.GetTile(move)->GetPiece();
-            // check if move is a capture
-            if (selected_piece->type == Pawn && en_passant_piece != nullptr) {
-                // check for en_passant
-                // TODO
-            }
         }
     }
-    //return active_moves;
 }
 
 #include <bits/stdc++.h>
@@ -505,6 +497,7 @@ void HexChessDriver::MovePiece(int rank, int file) {
     
     // check for a capture
     if (target != nullptr) {
+        // check for castling
         if (selected_piece->type == King &&
             target->type == Rook &&
             target->player == selected_piece->player) {
@@ -545,10 +538,39 @@ void HexChessDriver::MovePiece(int rank, int file) {
         }
         else {
             // moving piece will capture
-            // remove from list of player pieces
+            // remove from list of enemy player pieces
             target->is_alive = false;
             // update captures stat for this round
             capture_this_round = true;
+        }
+    }
+    else { 
+        // target is empty
+        // check for en passant capture
+        if (selected_piece->type == Pawn && target_loc == resolver.GetEnPassantLocation()) {
+            // en passant capture, remove en passant piece from board
+            chessboard.GetTile(en_passant_piece->GetLocation())->RemovePiece();
+            // remove from list of enemy player pieces
+            en_passant_piece->is_alive = false;
+            // clear en passant piece
+            en_passant_piece = nullptr;
+            // set en passant location to an invalid value
+            resolver.SetEnPassantLocation(sCoords(-1, a));
+            // update captures stat for this round
+            capture_this_round = true;
+        }
+        else {
+            // check for pawn double move, can't have a double move and a en passant capture on the same round
+            // with the hex board, diagonal movement also has a dela rank of 2
+            int delta_rank = target_loc.rank - selected_piece->GetLocation().rank;
+            int delta_file = target_loc.file - selected_piece->GetLocation().file;
+            if (delta_rank < 0) { delta_rank = -delta_rank; } // absolute value of delta_rank
+            if (selected_piece->type == Pawn && delta_rank == 2 && delta_file == 0) {
+                // double move, add en passant piece
+                en_passant_piece = selected_piece;
+                int offset = current_player == WhitePlayer ? 1 : -1; // offset of en passant location from moving pawns starting location
+                resolver.SetEnPassantLocation(selected_piece->GetLocation() + sRelCoords(offset, 0));
+            }
         }
     }
     // remove piece from tile
