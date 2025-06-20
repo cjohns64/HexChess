@@ -22,6 +22,10 @@ var BlackPieces:Dictionary[PieceType, PackedScene] = {
 	PieceType.Knight:preload("res://assets/scenes/pieces/Knight-Black.tscn"),
 	PieceType.Pawn:preload("res://assets/scenes/pieces/Pawn-Black.tscn")
 	}
+signal move_selection_button(new_location:Vector2)
+signal disable_undo_button()
+@export var undo_button_offset:Vector3
+
 
 class Chessboard:
 	var _internal_array: Array[TileObject] = []
@@ -132,6 +136,7 @@ func _ready() -> void:
 
 var round_in_process:bool = true
 var game_over:bool = false
+var menu_active:bool = false
 var round_num:int = -1
 func _process(delta: float) -> void:
 	if !game_over and !round_in_process:
@@ -141,6 +146,7 @@ func _process(delta: float) -> void:
 		round_num += 1
 		#print("starting round ", round_num)
 		if ReturnGameState() == GameState.Running:
+			disable_undo_button.emit()
 			#print("finding selections")
 			GetSelectableTiles()
 			#print("updating board")
@@ -148,6 +154,8 @@ func _process(delta: float) -> void:
 		else:
 			# game over
 			game_over = true
+			menu_active = true
+			ClearHighlights()
 			#print("GAME OVER")
 			gameOver.emit(ReturnGameState(), round_num % 2 == 0)
 
@@ -155,6 +163,18 @@ func ReturnGameState() -> GameState:
 	var value:int = GetGameState()
 	#print("Game state is ", (value + 1) as GameState)
 	return (value + 1) as GameState
+	
+func ClearHighlights() -> void:
+	var x:int = 6
+	var s:int = 0
+	for i in 11:
+		for j in x:
+			SetTileHighlight(ActionType.NoAction, i, j+s)
+		if i >= 5:
+			x -= 1
+			s += 1
+		else:
+			x += 1
 
 func UpdateBoard() -> void:
 	var x:int = 6
@@ -230,11 +250,14 @@ func SetTileHighlight(action:ActionType, rank:int, file:int) -> void:
 		tmp.move_obj.hide()
 
 func ClearCurrentSelection() -> void:
+	disable_undo_button.emit()
 	ClearSelection() # remove current selection
 	GetSelectableTiles() # update selectable tiles
 	UpdateBoard()
 
 func OnTileClicked(rank:int, file:int) -> void:
+	if menu_active:
+		return # ignore tile click if a menu is active
 	print("OnTileClicked Called:: rank=%d file=%d" % [rank, file])
 	# verifiy coordinates are within board range
 	if rank > 10 or rank < 0:
@@ -246,6 +269,7 @@ func OnTileClicked(rank:int, file:int) -> void:
 	if action == ActionType.NoAction:
 		return
 	elif action == ActionType.Selectable:
+		SetUndoSelectionButtonLocation(rank, file)
 		# update tiles with moves for selectable
 		GetMoveTiles(rank, file) # notify driver of piece selection
 		UpdateBoard()
@@ -253,18 +277,27 @@ func OnTileClicked(rank:int, file:int) -> void:
 		var tmp:TileInteraction = hexboard.get_tile(rank, file).tile_instance as TileInteraction
 		tmp.current_obj.show()
 	elif action == ActionType.Move:
+		disable_undo_button.emit()
 		# notify driver of move
 		MovePiece(rank, file)
 		UpdateBoard()
 		RoundCleanup() # round over, setup for next round
 		if GetPromotionTile() != 0:
 			activate_promotion.emit()
+			menu_active = true
 		else:
 			round_in_process = false
 	else:
 		# tile has both a selection and a move
 		# TODO
 		print("NOT IMPLEMENTED :: Tile has both selection and move types!")
+
+func SetUndoSelectionButtonLocation(rank:int, file:int) -> void:
+	# https://forum.godotengine.org/t/how-to-tie-a-ui-node-to-a-3d-node/37292/3
+	var pos_3d := hexboard.get_tile(rank, file).tile_instance.global_position + undo_button_offset
+	var cam := get_viewport().get_camera_3d()
+	var pos_2d := cam.unproject_position(pos_3d)
+	move_selection_button.emit(pos_2d)
 
 func ParsePieceType(piece:int) -> ChessPiece:
 	if piece == 0:
@@ -309,4 +342,5 @@ func ParseActionType(action:int) -> ActionType:
 
 func _on_ui_promotion_selected(selection: int) -> void:
 	RunPromotion(selection)
+	menu_active = false
 	round_in_process = false

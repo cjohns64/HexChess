@@ -1,7 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bspcr5htv00bl"]
 
-[ext_resource type="PackedScene" uid="uid://dvyvoidm6v5t7" path="res://assets/scenes/world.tscn" id="1_anrac"]
+[ext_resource type="Script" uid="uid://chb2rlxdot7p4" path="res://assets/scenes/game_ctrl.gd" id="1_6kbre"]
 
 [node name="Game" type="Node3D"]
-
-[node name="World" parent="." instance=ExtResource("1_anrac")]
+script = ExtResource("1_6kbre")

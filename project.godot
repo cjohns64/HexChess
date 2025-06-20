@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="HexChessGodot"
-run/main_scene="uid://dvyvoidm6v5t7"
+run/main_scene="uid://bspcr5htv00bl"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 

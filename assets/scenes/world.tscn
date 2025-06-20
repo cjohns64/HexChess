@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://dvyvoidm6v5t7"]
+[gd_scene load_steps=9 format=3 uid="uid://dvyvoidm6v5t7"]
 
 [ext_resource type="PackedScene" uid="uid://daefdlpvxwe0y" path="res://assets/scenes/chessboard.tscn" id="1_betll"]
+[ext_resource type="Script" uid="uid://b54wrmijwgedh" path="res://assets/scenes/button_relay.gd" id="1_gc7y0"]
 [ext_resource type="PackedScene" uid="uid://odthg3iaugrp" path="res://assets/scenes/ui.tscn" id="2_ypxwc"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ye5td"]
@@ -21,6 +22,7 @@ albedo_color = Color(0.0132863, 0.0263918, 0.0504466, 1)
 [sub_resource type="PlaneMesh" id="PlaneMesh_5efah"]
 
 [node name="World" type="Node3D"]
+script = ExtResource("1_gc7y0")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
@@ -31,6 +33,9 @@ environment = SubResource("Environment_oo56v")
 
 [node name="Chessboard" parent="." instance=ExtResource("1_betll")]
 transform = Transform3D(1.08253, 0, -0.625, 0, 1.25, 0, 0.625, 0, 1.08253, 0, 0, 0)
+
+[node name="HexChessDriver" parent="Chessboard" index="0"]
+undo_button_offset = Vector3(0.25, 0, 0.25)
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.973338, -0.137553, 0.183552, 0.0104087, 0.825897, 0.563725, -0.229137, -0.546785, 0.805309, 4.40276, 17.7286, 24.0319)
@@ -47,9 +52,12 @@ mesh = SubResource("PlaneMesh_5efah")
 mouse_filter = 1
 
 [connection signal="activate_promotion" from="Chessboard/HexChessDriver" to="UI" method="activate_promotion_pannel"]
+[connection signal="disable_undo_button" from="Chessboard/HexChessDriver" to="UI/UndoSelectionButton" method="_on_hex_chess_driver_disable_undo_button"]
 [connection signal="gameOver" from="Chessboard/HexChessDriver" to="UI" method="_on_hex_chess_driver_game_over"]
+[connection signal="move_selection_button" from="Chessboard/HexChessDriver" to="UI/UndoSelectionButton" method="_on_hex_chess_driver_move_selection_button"]
 [connection signal="promotion_selected" from="UI" to="Chessboard/HexChessDriver" method="_on_ui_promotion_selected"]
-[connection signal="pressed" from="UI/Button" to="Chessboard/HexChessDriver" method="ClearCurrentSelection"]
+[connection signal="pressed" from="UI/UndoSelectionButton/Button" to="Chessboard/HexChessDriver" method="ClearCurrentSelection"]
+[connection signal="pressed" from="UI/Panel/Button" to="." method="_on_button_pressed"]
 
 [editable path="Chessboard"]
 [editable path="UI"]
