@@ -3,6 +3,7 @@ class_name HexChess
 
 signal gameOver(state:GameState, isWhiteTurn:bool)
 signal activate_promotion()
+signal play_clank_sound()
 enum ActionType {NoAction, Selectable, Move, MoveAndSelect}
 enum PieceType {King, Queen, Rook, Bishop, Knight, Pawn, NoPiece}
 enum GameState {Running, Checkmate, Stalemate, DeadPosistion, ThreefoldRepitition, FiftyMoveRule}
@@ -258,7 +259,7 @@ func ClearCurrentSelection() -> void:
 func OnTileClicked(rank:int, file:int) -> void:
 	if menu_active:
 		return # ignore tile click if a menu is active
-	print("OnTileClicked Called:: rank=%d file=%d" % [rank, file])
+	print("Tile Clicked :: rank=%d file=%d" % [rank, file])
 	# verifiy coordinates are within board range
 	if rank > 10 or rank < 0:
 		print("ERROR:: rank not in range :: ", rank)
@@ -278,6 +279,7 @@ func OnTileClicked(rank:int, file:int) -> void:
 		tmp.current_obj.show()
 	elif action == ActionType.Move:
 		disable_undo_button.emit()
+		play_clank_sound.emit()
 		# notify driver of move
 		MovePiece(rank, file)
 		UpdateBoard()
