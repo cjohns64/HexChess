@@ -22,7 +22,7 @@ sRelCoords::sRelCoords(int _rel_rank, int _rel_file, int _repeat_max, eType _tar
  * Returns the relative movement in the opposite direction
  */
 sRelCoords sRelCoords::invert() {
-    return sRelCoords(-rel_rank, -rel_file, repeat_max);
+    return sRelCoords(-rel_rank, -rel_file, repeat_max, target_requirement, tile_requirement, initial_only);
 }
 
 // overload == for compairing rel coordinates

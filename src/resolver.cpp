@@ -223,19 +223,21 @@ void Resolver::ResolveSingleRelMove(eType piece_type, sRelCoords& move, sCoords&
 void Resolver::GetThreatened(vector<ChessPiece*>& threats, sCoords location, ePlayer player, bool return_immediately) {
     // get the test pieces. The move sets could be different, so get the other player's pieces
     vector<ChessPiece>* test_pieces = player == BlackPlayer ? test_pieces_white : test_pieces_black;
-    // set the position of the test pieces to the test position
-    // this will set all the other test pieces since they all point to the same location
-    (*test_pieces)[0].SetLocation(location);
     // check each piece in the test piece vector
     for (int i=0; i<test_pieces->size(); i++) {
         // get a piece
         ChessPiece* piece = &(*test_pieces)[i];
+        // set the position of the test pieces to the test position
+        piece->SetLocation(location);
         // setup resolver vector for this piece
         vector<Tile*> resolved_moves;
         // resolve each capture move
         for (int j=0; j<piece->moves.size(); j++) {
             // check each capture move one at a time and invert their direction
             sRelCoords move = piece->moves[j].invert();
+            if (move.target_requirement == NoPiece || move.tile_requirement == TileEmpty) {
+                continue; // skip move since it can't threaten a square
+            }
             // resolve moves with other player's inverted move set but with this player's color.
             // will find all of the other player's pieces that can capture this player's color at the test location.
             ResolveSingleRelMove(piece->type, move, location, resolved_moves, player);
