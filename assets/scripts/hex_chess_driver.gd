@@ -3,7 +3,7 @@ class_name HexChess
 
 signal gameOver(state:GameState, isWhiteTurn:bool)
 signal activate_promotion()
-signal play_clank_sound()
+signal play_clank_sound(type:int)
 enum ActionType {NoAction, Selectable, Move, MoveAndSelect}
 enum PieceType {King, Queen, Rook, Bishop, Knight, Pawn, NoPiece}
 enum GameState {Running, Checkmate, Stalemate, DeadPosistion, ThreefoldRepitition, FiftyMoveRule}
@@ -252,6 +252,7 @@ func SetTileHighlight(action:ActionType, rank:int, file:int) -> void:
 
 func ClearCurrentSelection() -> void:
 	disable_undo_button.emit()
+	play_clank_sound.emit(1)
 	ClearSelection() # remove current selection
 	GetSelectableTiles() # update selectable tiles
 	UpdateBoard()
@@ -271,6 +272,7 @@ func OnTileClicked(rank:int, file:int) -> void:
 		return
 	elif action == ActionType.Selectable:
 		SetUndoSelectionButtonLocation(rank, file)
+		play_clank_sound.emit(1)
 		# update tiles with moves for selectable
 		GetMoveTiles(rank, file) # notify driver of piece selection
 		UpdateBoard()
@@ -343,6 +345,7 @@ func ParseActionType(action:int) -> ActionType:
 			return ActionType.NoAction
 
 func _on_ui_promotion_selected(selection: int) -> void:
+	play_clank_sound.emit(1)
 	RunPromotion(selection)
 	menu_active = false
 	round_in_process = false
