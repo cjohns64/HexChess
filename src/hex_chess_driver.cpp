@@ -158,6 +158,14 @@ void HexChessDriver::RoundSetup() {
     round_number++;
     // set the current player
     current_player = static_cast<ePlayer>(round_number % 2);
+    // update game log
+    if (current_player == WhitePlayer) {
+        LogGamePosition();
+        if (CheckForThreefoldRepetition()) {
+            game_state = ThreefoldRepitition;
+            return;
+        }
+    }
     // skip checking nullptr en passant pieces
     if (en_passant_piece != nullptr) {
         // clear the en_passant_piece if it has made it back to the player that used it
@@ -605,4 +613,113 @@ vector<sCoords> HexChessDriver::TranslateVector(vector<Tile*>& vec) {
         translate_vec.push_back(vec[i]->GetLocation());
     }
     return translate_vec;
+}
+
+/**
+ * Checks the position_log for a row that appears 3 times.
+ */
+bool HexChessDriver::CheckForThreefoldRepetition() {
+    if (position_log.size() < 3) {
+        // threefold repetition is impossible with less then 3 rounds
+        return false;
+    }
+    // check each position in the position histogram, if a count value is >= 3, there is a threefold repetition
+    for (map<string, int>::iterator it = position_histogram.begin(); it != position_histogram.end(); ++it) {
+        if (it->second >= 3) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * logs the content of each tile on the board into a compressed bit format stored in the position_log vector,
+ * one tile is stored as follows:
+ * 0b0000 = No value
+ * 0b0001 = black king
+ * 0b0010 = black queen
+ * 0b0011 = black rook
+ * 0b0100 = black bishop
+ * 0b0101 = black knight
+ * 0b0110 = black pawn
+ * 0b0111   -- not used --
+ * 0b1000   -- not used --
+ * 0b1001 = white king
+ * 0b1010 = white queen
+ * 0b1011 = white rook
+ * 0b1100 = white bishop
+ * 0b1101 = white knight
+ * 0b1110 = white pawn
+ * 0b1111 = empty tile
+ *
+ * Each row of the position_log vector is 23 elements long with each element containing 4 tiles.
+ * Each tile is stored in order from 0a -> 10k = 0 -> 90,
+ * and each row of the position_log vector is a full game board.
+ */
+void HexChessDriver::LogGamePosition() {
+    int file_offset = 0; // starting file for the current rank, ranks after the midpoint start at higher values
+    int current_rank = 0; // current rank value
+    int tiles_in_rank = 6; // first and last ranks have 6 tiles each
+    int tile_rank_index = 0; // index of current tile in the current rank
+    const int total_tiles = 91; // total number of tiles in the board
+    const int num_tiles_per_element = 4; // how many tiles fit in a single element of the round log
+    vector<unsigned int> round_log((total_tiles / num_tiles_per_element) + 1, 0);
+
+    // each loop adds one tile to log
+    for (int tile_index=0; tile_index<total_tiles; tile_index++) {
+        // detect rank transitions
+        if (tile_rank_index >= tiles_in_rank) {
+tile_rank_index = 0;
+            current_rank++;
+            // update number of tiles in current rank, grow until half way point, then shrink
+            if (tile_index > total_tiles / 2) {
+                tiles_in_rank--;
+                file_offset++;
+            }
+            else {
+                tiles_in_rank++;
+            }
+        }
+        // cout << "rank: " << current_rank << " file: " << file_offset + tile_rank_index << " tile index:: " << tile_index << endl;
+        Tile* tile = chessboard.GetTile(sCoords(current_rank, static_cast<eFiles>(tile_rank_index + file_offset)));
+        ChessPiece* piece = tile->GetPiece();
+        // log value for this tile
+        unsigned int element;
+
+        if (piece == nullptr) {
+            // no piece 0xF
+            element = 0xF; // 0b1111
+        }
+        else {
+            // value of piece
+            element = (unsigned int) piece->type + 1;
+            // add player to element
+            if (piece->player == WhitePlayer) {
+                element += 0x8; // 0b1000
+            }
+        }
+
+        // shift later tiles to higher bit values
+        element = (element << (4 * (tile_index % num_tiles_per_element)));
+        round_log[tile_index / num_tiles_per_element] += element;
+        // track location within rank
+        tile_rank_index++;
+    }
+
+    stringstream stream;
+    for (unsigned int x : round_log) {
+        stream << setw(num_tiles_per_element) << setfill('0') << hex << x;
+    }
+    string key(stream.str());
+    // add position to game log
+    position_log.push_back(key);
+    // add position to map and count number
+    if (position_histogram.find(key) == position_histogram.end()) {
+        // add position with count 1
+        position_histogram.insert({key, 1});
+    }
+    else {
+        // key found increment count
+        position_histogram[key] += 1;
+    }
 }

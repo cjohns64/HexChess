@@ -4,6 +4,7 @@
 #include "util.h"
 #include "resolver.h"
 #include <vector>
+#include <map>
 
 
 /**
@@ -117,6 +118,8 @@ protected:
 
     Board chessboard = Board();
     Resolver resolver;
+    vector<string> position_log; // log of board state, each row is a full game board just before white's turn
+    map<string, int> position_histogram;
 
 public:
     HexChessDriver();
@@ -253,5 +256,36 @@ protected:
      * Checks each promotion tile for a valid promotion, and updates the promotion piece if their is one.
      */
     void CheckForPromotion();
+
+    /**
+     * checks the position_histogram for positions that have occurred 3 or more times.
+     */
+    bool CheckForThreefoldRepetition();
+
+    /**
+     * logs the content of each tile on the board into a compressed bit format stored in the position_log vector,
+     * one tile is stored as follows:
+     * 0b0000 = No value
+     * 0b0001 = black king
+     * 0b0010 = black queen
+     * 0b0011 = black rook
+     * 0b0100 = black bishop
+     * 0b0101 = black knight
+     * 0b0110 = black pawn
+     * 0b0111   -- not used --
+     * 0b1000   -- not used --
+     * 0b1001 = white king
+     * 0b1010 = white queen
+     * 0b1011 = white rook
+     * 0b1100 = white bishop
+     * 0b1101 = white knight
+     * 0b1110 = white pawn
+     * 0b1111 = empty tile
+     *
+     * Each row of the position_log vector is 23 elements long with each element containing 4 tiles.
+     * Each tile is stored in order from 0a -> 10k = 0 -> 90,
+     * and each row of the position_log vector is a full game board.
+     */
+    void LogGamePosition();
 };
 #endif
