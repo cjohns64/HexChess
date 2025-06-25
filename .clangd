@@ -1,0 +1,11 @@
+# https://docs.godotengine.org/en/stable/tutorials/scripting/gdextension/gdextension_cpp_example.html#next-steps
+# config needed for clangd lsp in neovim
+# "/home/cory/Documents/Projects/ChessGame/HexChess/" is the absolute path to my project folder
+CompileFlags:
+  Add: [
+      "-I/home/cory/Documents/Projects/ChessGame/HexChess/", # relative path didn't work
+      "-I/home/cory/Documents/Projects/ChessGame/HexChess/godot-cpp/gen/include",
+      "-I/home/cory/Documents/Projects/ChessGame/HexChess/godot-cpp/include",
+      "-I/home/cory/Documents/Projects/ChessGame/HexChess/godot-cpp/gdextension",
+      "-I/home/cory/Documents/Projects/ChessGame/HexChess/src",
+    ]
