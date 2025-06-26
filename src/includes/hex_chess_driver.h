@@ -84,24 +84,10 @@ protected:
     // data for testing threats without hardcoding different moves
     sCoords empty_location = sCoords(0, a);
     // these pieces are only used for checking for threats and are never placed on the board
-    vector<ChessPiece> test_pieces_white = {
-        KingPiece(WhitePlayer, empty_location),
-        QueenPiece(WhitePlayer, empty_location),
-        RookPiece(WhitePlayer, empty_location),
-        KnightPiece(WhitePlayer, empty_location),
-        BishopPiece(WhitePlayer, empty_location),
-        PawnPiece(WhitePlayer, empty_location)
-    };
+    vector<ChessPiece> test_pieces_white;
     // there is a version for the other player because pawns move in opposite directions
     // all pieces are included in case moves are different for the players.
-    vector<ChessPiece> test_pieces_black = {
-        KingPiece(BlackPlayer, empty_location),
-        QueenPiece(BlackPlayer, empty_location),
-        RookPiece(BlackPlayer, empty_location),
-        KnightPiece(BlackPlayer, empty_location),
-        BishopPiece(BlackPlayer, empty_location),
-        PawnPiece(BlackPlayer, empty_location)
-    };
+    vector<ChessPiece> test_pieces_black;
     // A pointer to the currently selected piece
     ChessPiece* selected_piece = nullptr;
     // A pointer to the piece that may be captured by en-passant, only valid for one opponent turn.

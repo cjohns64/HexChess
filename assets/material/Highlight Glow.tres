@@ -2,7 +2,5 @@
 
 [resource]
 transparency = 1
-albedo_color = Color(0, 0.5, 1, 0.666667)
-emission_enabled = true
-emission = Color(4.04298e-06, 0.880981, 0.982381, 1)
-emission_energy_multiplier = 1.09
+shading_mode = 0
+albedo_color = Color(0, 0.266666, 1, 0.784314)

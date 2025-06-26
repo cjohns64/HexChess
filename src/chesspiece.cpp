@@ -1,8 +1,6 @@
 #include "includes/chesspiece.h"
 
-ChessPiece::ChessPiece(eType _type, ePlayer _player, sCoords _location): location(_location) {
-    type = _type;
-    player = _player;
+ChessPiece::ChessPiece(eType _type, ePlayer _player, sCoords _location): location(_location), player(_player), type(_type) {
 };
 
 /**
@@ -87,7 +85,7 @@ PawnPiece::PawnPiece(ePlayer _player, sCoords _location) : ChessPiece(Pawn, _pla
     // Pawn can move two tile in direction of opponent first time it moves
     // Pawn can move one tile in direction of opponent
     // Pawn can capture at first diagonals in direction of opponent
-    if (player == WhitePlayer) {
+    if (_player == WhitePlayer) {
         moves = {sRelCoords(1, 0, 0, NoPiece, TileEmpty),
             // initial move can repeat
             sRelCoords(1, 0, 1, NoPiece, TileEmpty, true),

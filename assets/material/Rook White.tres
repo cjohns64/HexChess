@@ -5,7 +5,7 @@
 [resource]
 resource_name = "rook mat"
 cull_mode = 2
-albedo_color = Color(0.576471, 0.576471, 0.576471, 1)
+albedo_color = Color(0.779291, 0.779291, 0.779291, 1)
 roughness = 0.309091
 normal_enabled = true
 normal_texture = ExtResource("1_x66re")

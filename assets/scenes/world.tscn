@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://dvyvoidm6v5t7"]
 
 [ext_resource type="PackedScene" uid="uid://daefdlpvxwe0y" path="res://assets/scenes/chessboard.tscn" id="1_betll"]
-[ext_resource type="Script" uid="uid://b54wrmijwgedh" path="res://assets/scenes/button_relay.gd" id="1_gc7y0"]
+[ext_resource type="Script" uid="uid://b54wrmijwgedh" path="res://assets/scripts/button_relay.gd" id="1_gc7y0"]
 [ext_resource type="PackedScene" uid="uid://odthg3iaugrp" path="res://assets/scenes/ui.tscn" id="2_ypxwc"]
 [ext_resource type="PackedScene" uid="uid://cbhcplu1osw4m" path="res://assets/scenes/clank_sound_player.tscn" id="4_0moxn"]
 
@@ -14,6 +14,7 @@ sky_material = SubResource("ProceduralSkyMaterial_ye5td")
 
 [sub_resource type="Environment" id="Environment_oo56v"]
 background_mode = 2
+background_energy_multiplier = 0.5
 sky = SubResource("Sky_5efah")
 tonemap_mode = 2
 
@@ -25,10 +26,6 @@ albedo_color = Color(0.0132863, 0.0263918, 0.0504466, 1)
 [node name="World" type="Node3D"]
 script = ExtResource("1_gc7y0")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
-shadow_enabled = true
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_oo56v")
 
@@ -37,12 +34,6 @@ transform = Transform3D(1.08253, 0, -0.625, 0, 1.25, 0, 0.625, 0, 1.08253, 0, 0,
 
 [node name="HexChessDriver" parent="Chessboard" index="0"]
 undo_button_offset = Vector3(0.25, 0, 0.25)
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.973338, -0.137553, 0.183552, 0.0104087, 0.825897, 0.563725, -0.229137, -0.546785, 0.805309, 4.40276, 17.7286, 24.0319)
-projection = 1
-size = 16.823
-far = 1083.33
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(35, 0, 0, 0, 35, 0, 0, 0, 35, 0, -0.0122933, 0)
@@ -54,11 +45,59 @@ mouse_filter = 1
 
 [node name="ClankSoundPlayer" parent="." instance=ExtResource("4_0moxn")]
 
+[node name="Lights" type="Node3D" parent="."]
+
+[node name="TableLight" type="SpotLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 28.436, 0)
+light_color = Color(0.722703, 0.758391, 0.80396, 1)
+light_energy = 6.0
+shadow_enabled = true
+spot_range = 42.461
+spot_attenuation = 0.15
+spot_angle = 40.57
+
+[node name="backlight" type="SpotLight3D" parent="Lights"]
+transform = Transform3D(0.345266, -0.651329, -0.675694, -0.701215, -0.657554, 0.275537, -0.62377, 0.378673, -0.683753, -14.2442, 4.34483, -17.6602)
+visible = false
+light_color = Color(0.940395, 0.453269, 0.195295, 1)
+light_energy = 10.0
+shadow_enabled = true
+spot_range = 40.0
+spot_angle = 40.57
+
+[node name="backlight2" type="SpotLight3D" parent="Lights"]
+transform = Transform3D(-0.865399, -0.0115199, 0.50095, 0.0471094, 0.993437, 0.104227, -0.498863, 0.113798, -0.859177, 11.8961, 4.96459, -17.5397)
+visible = false
+light_color = Color(0.870623, 0.799314, 0.239176, 1)
+light_energy = 4.36
+shadow_enabled = true
+spot_range = 40.0
+spot_angle = 40.57
+
+[node name="keylight" type="SpotLight3D" parent="Lights"]
+transform = Transform3D(-0.872799, -0.0258826, -0.487392, -0.211443, -0.879972, 0.425372, -0.439901, 0.47432, 0.762566, -10.6668, 9.03862, 16.8324)
+light_color = Color(0.645177, 0.762736, 0.933926, 1)
+light_energy = 2.0
+shadow_enabled = true
+spot_range = 40.0
+spot_attenuation = 0.39
+spot_angle = 28.69
+
+[node name="filllight" type="SpotLight3D" parent="Lights"]
+transform = Transform3D(-0.782131, 0.160709, 0.602033, 0.0860796, -0.929038, 0.359832, 0.61714, 0.333258, 0.712795, 12.1731, 6.63611, 13.8898)
+light_color = Color(0.474974, 0.568297, 0.666487, 1)
+light_energy = 1.69
+shadow_enabled = true
+spot_range = 40.0
+spot_attenuation = 0.5
+spot_angle = 32.59
+
 [connection signal="activate_promotion" from="Chessboard/HexChessDriver" to="UI" method="activate_promotion_pannel"]
 [connection signal="disable_undo_button" from="Chessboard/HexChessDriver" to="UI/UndoSelectionButton" method="_on_hex_chess_driver_disable_undo_button"]
 [connection signal="gameOver" from="Chessboard/HexChessDriver" to="UI" method="_on_hex_chess_driver_game_over"]
 [connection signal="move_selection_button" from="Chessboard/HexChessDriver" to="UI/UndoSelectionButton" method="_on_hex_chess_driver_move_selection_button"]
 [connection signal="play_clank_sound" from="Chessboard/HexChessDriver" to="ClankSoundPlayer" method="play_sound"]
+[connection signal="turn_changed" from="Chessboard/HexChessDriver" to="UI" method="on_turn_changed"]
 [connection signal="promotion_selected" from="UI" to="Chessboard/HexChessDriver" method="_on_ui_promotion_selected"]
 [connection signal="pressed" from="UI/UndoSelectionButton/Button" to="Chessboard/HexChessDriver" method="ClearCurrentSelection"]
 [connection signal="pressed" from="UI/Panel/Button" to="." method="_on_button_pressed"]

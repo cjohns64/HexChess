@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://cplq4thvqd6ua"]
 
-[ext_resource type="Script" uid="uid://ckcy7rhpid6pc" path="res://assets/scenes/tile_interaction.gd" id="1_hsif7"]
+[ext_resource type="Script" uid="uid://ckcy7rhpid6pc" path="res://assets/scripts/tile_interaction.gd" id="1_hsif7"]
 [ext_resource type="PackedScene" uid="uid://culonsosevj52" path="res://assets/meshes/tile-grey.glb" id="1_wlc15"]
 [ext_resource type="Material" uid="uid://cl63vcivpyi1m" path="res://assets/material/Highlight Glow.tres" id="4_mvcd3"]
 [ext_resource type="PackedScene" uid="uid://cdof0cmk86iu6" path="res://assets/meshes/tile-highlight-01.glb" id="5_dovqi"]

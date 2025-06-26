@@ -4,6 +4,7 @@ class_name HexChess
 signal gameOver(state:GameState, isWhiteTurn:bool)
 signal activate_promotion()
 signal play_clank_sound(type:int)
+signal turn_changed(is_white_turn:bool)
 enum ActionType {NoAction, Selectable, Move, MoveAndSelect}
 enum PieceType {King, Queen, Rook, Bishop, Knight, Pawn, NoPiece}
 enum GameState {Running, Checkmate, Stalemate, DeadPosistion, ThreefoldRepitition, FiftyMoveRule}
@@ -138,13 +139,14 @@ func _ready() -> void:
 var round_in_process:bool = true
 var game_over:bool = false
 var menu_active:bool = false
-var round_num:int = -1
+var round_num:int = 0 # _ready will run the first round
 func _process(delta: float) -> void:
 	if !game_over and !round_in_process:
 		round_in_process = true
 		# start next round
 		RoundSetup()
 		round_num += 1
+		turn_changed.emit(round_num % 2 == 0)
 		#print("starting round ", round_num)
 		if ReturnGameState() == GameState.Running:
 			disable_undo_button.emit()

@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://cbhcplu1osw4m"]
 
 [ext_resource type="AudioStream" uid="uid://cxstowv8o2ra" path="res://assets/sounds/low-thump-01.mp3" id="1_8hjn0"]
-[ext_resource type="Script" uid="uid://d1xkbv4gdptt6" path="res://assets/scenes/clank_sound_player.gd" id="1_tffb3"]
+[ext_resource type="Script" uid="uid://d1xkbv4gdptt6" path="res://assets/scripts/clank_sound_player.gd" id="1_tffb3"]
 [ext_resource type="AudioStream" uid="uid://caesl3qo4n0um" path="res://assets/sounds/low-thump-02.mp3" id="2_tffb3"]
 [ext_resource type="AudioStream" uid="uid://bxhosvb2tuv8c" path="res://assets/sounds/low-thump-03.mp3" id="3_50dgr"]
 [ext_resource type="AudioStream" uid="uid://clmfj7ojkv64m" path="res://assets/sounds/low-thump-04.mp3" id="4_f2hjx"]

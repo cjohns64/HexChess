@@ -22,7 +22,7 @@
  */
 HexChessDriver::HexChessDriver() : white_king(KingPiece(WhitePlayer, inital_placement[0])),
            black_king(KingPiece(BlackPlayer, inital_placement[26])),
-           resolver(Resolver(&chessboard, &white_king, &black_king, &test_pieces_white, &test_pieces_white))
+           resolver(Resolver(&chessboard, &white_king, &black_king, &test_pieces_white, &test_pieces_black))
            {
     // initial placement -- White
     for (int i=1; i<26; i++) {
@@ -71,6 +71,20 @@ HexChessDriver::HexChessDriver() : white_king(KingPiece(WhitePlayer, inital_plac
     for (sCoords loc : back_rank_white) {
         black_promotion_tiles.push_back(chessboard.GetTile(loc));
     }
+    // initialize test pieces
+    test_pieces_white.push_back(KingPiece(WhitePlayer, empty_location));
+    test_pieces_white.push_back(QueenPiece(WhitePlayer, empty_location));
+    test_pieces_white.push_back(RookPiece(WhitePlayer, empty_location));
+    test_pieces_white.push_back(BishopPiece(WhitePlayer, empty_location));
+    test_pieces_white.push_back(KnightPiece(WhitePlayer, empty_location));
+    test_pieces_white.push_back(PawnPiece(WhitePlayer, empty_location));
+    // black test pieces
+    test_pieces_black.push_back(KingPiece(BlackPlayer, empty_location));
+    test_pieces_black.push_back(QueenPiece(BlackPlayer, empty_location));
+    test_pieces_black.push_back(RookPiece(BlackPlayer, empty_location));
+    test_pieces_black.push_back(BishopPiece(BlackPlayer, empty_location));
+    test_pieces_black.push_back(KnightPiece(BlackPlayer, empty_location));
+    test_pieces_black.push_back(PawnPiece(BlackPlayer, empty_location));
 }
 
     /**
