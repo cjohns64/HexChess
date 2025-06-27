@@ -11,7 +11,7 @@ func _on_hex_chess_driver_game_over(state: HexChess.GameState, isWhiteTurn:bool)
 	game_over_pannel.show();
 	match state:
 		HexChess.GameState.Checkmate:
-			if !isWhiteTurn:
+			if isWhiteTurn:
 				game_over_text.text = "Checkmate, Black Wins"
 			else:
 				game_over_text.text = "Checkmate, White Wins"
