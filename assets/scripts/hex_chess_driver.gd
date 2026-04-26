@@ -173,11 +173,11 @@ func SyncWithOtherPlayer() -> void:
 	if not isActivePlayerTurn():
 		ClearHighlights()
 		var move_invalid:bool = true
-		while move_invalid:
-			# TODO listen for other player's move
-			# test with White: select r1 f1, move r3 f1
-			var responce:String = "1131"
-			move_invalid = not ProcessMoveRequest(responce)
+		#while move_invalid:
+			## TODO listen for other player's move
+			## test with White: select r1 f1, move r3 f1
+			#var responce:String = "1131"
+			#move_invalid = not ProcessMoveRequest(responce)
 
 func ProcessMoveRequest(responce:String) -> bool:
 	# decode move
@@ -201,10 +201,11 @@ func AskForMoveValidation(move:String) -> bool:
 	var validation_label:Label = validation_relay.activate_validation_pannel()
 	validation_label.text = "Sending move to opponent..."
 	var move_data:String = CurrentSelection + move
-	# TODO send to opponent
-	await get_tree().create_timer(0.5).timeout
-	# TODO read responce
-	var valid_move:bool = true
+	# send to opponent
+	var responce:bool = validation_relay.message_other_player(move_data, IsWhitePlayer)
+	#await get_tree().create_timer(0.5).timeout
+	# read responce
+	var valid_move:bool = responce
 	# if move did not pass validation, ask for a different move
 	if not valid_move:
 		validation_label.text = "Move was invalid"

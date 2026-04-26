@@ -1,12 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://bspcr5htv00bl"]
+[gd_scene format=3 uid="uid://bspcr5htv00bl"]
 
 [ext_resource type="Script" uid="uid://chb2rlxdot7p4" path="res://assets/scripts/game_ctrl.gd" id="1_6kbre"]
 
-[node name="Game" type="Node3D"]
+[node name="Game" type="Node3D" unique_id=542802772]
 script = ExtResource("1_6kbre")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.973338, -0.137553, 0.183552, 0.0104087, 0.825897, 0.563725, -0.229137, -0.546785, 0.805309, 4.40276, 17.7286, 24.0319)
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1863607861]
+transform = Transform3D(0.97333854, -0.13755259, 0.1835523, 0.010408706, 0.8258968, 0.56372523, -0.22913712, -0.54678494, 0.80530894, 13.900649, 17.729, 14.752804)
 projection = 1
-size = 16.823
+size = 29.375
 far = 1083.33

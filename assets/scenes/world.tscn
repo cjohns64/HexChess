@@ -36,8 +36,288 @@ transform = Transform3D(1.08253, 0, -0.625, 0, 1.25, 0, 0.625, 0, 1.08253, 0, 0,
 undo_button_offset = Vector3(0.25, 0, 0.25)
 validation_relay = NodePath("../..")
 
+[node name="Chessboard-other" parent="." unique_id=656306827 instance=ExtResource("1_betll")]
+transform = Transform3D(1.08253, 0, -0.625, 0, 1.25, 0, 0.625, 0, 1.08253, 0, 0, 0)
+
+[node name="HexChessDriver" parent="Chessboard-other" index="0" node_paths=PackedStringArray("validation_relay")]
+undo_button_offset = Vector3(0.25, 0, 0.25)
+validation_relay = NodePath("../..")
+
+[node name="Tile1" parent="Chessboard-other/HexChessDriver" index="0"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 2.113881, 0, -13.364332)
+
+[node name="Tile2" parent="Chessboard-other/HexChessDriver" index="1"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 3.845931, 0, -12.364332)
+
+[node name="Tile3" parent="Chessboard-other/HexChessDriver" index="2"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 5.577981, 0, -11.364332)
+
+[node name="Tile4" parent="Chessboard-other/HexChessDriver" index="3"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 7.310031, 0, -10.364332)
+
+[node name="Tile5" parent="Chessboard-other/HexChessDriver" index="4"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 9.042081, 0, -9.364332)
+
+[node name="Tile6" parent="Chessboard-other/HexChessDriver" index="5"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 10.774126, 0, -8.364332)
+
+[node name="Tile7" parent="Chessboard-other/HexChessDriver" index="6"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 2.0978508, 0, -15.336582)
+
+[node name="Tile8" parent="Chessboard-other/HexChessDriver" index="7"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 3.8299012, 0, -14.336582)
+
+[node name="Tile9" parent="Chessboard-other/HexChessDriver" index="8"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 5.561951, 0, -13.336582)
+
+[node name="Tile10" parent="Chessboard-other/HexChessDriver" index="9"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 7.294001, 0, -12.336582)
+
+[node name="Tile11" parent="Chessboard-other/HexChessDriver" index="10"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 9.026051, 0, -11.336582)
+
+[node name="Tile12" parent="Chessboard-other/HexChessDriver" index="11"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 10.758101, 0, -10.336582)
+
+[node name="Tile13" parent="Chessboard-other/HexChessDriver" index="12"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 12.490151, 0, -9.336572)
+
+[node name="Tile14" parent="Chessboard-other/HexChessDriver" index="13"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 2.081831, 0, -17.308819)
+
+[node name="Tile15" parent="Chessboard-other/HexChessDriver" index="14"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 3.813881, 0, -16.308823)
+
+[node name="Tile16" parent="Chessboard-other/HexChessDriver" index="15"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 5.5459213, 0, -15.308822)
+
+[node name="Tile17" parent="Chessboard-other/HexChessDriver" index="16"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 7.2779713, 0, -14.308822)
+
+[node name="Tile18" parent="Chessboard-other/HexChessDriver" index="17"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 9.010021, 0, -13.308822)
+
+[node name="Tile19" parent="Chessboard-other/HexChessDriver" index="18"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 10.742076, 0, -12.308822)
+
+[node name="Tile20" parent="Chessboard-other/HexChessDriver" index="19"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 12.474121, 0, -11.308822)
+
+[node name="Tile21" parent="Chessboard-other/HexChessDriver" index="20"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 14.206171, 0, -10.308822)
+
+[node name="Tile22" parent="Chessboard-other/HexChessDriver" index="21"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 2.0658007, 0, -19.281061)
+
+[node name="Tile23" parent="Chessboard-other/HexChessDriver" index="22"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 3.797851, 0, -18.281061)
+
+[node name="Tile24" parent="Chessboard-other/HexChessDriver" index="23"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 5.529901, 0, -17.281061)
+
+[node name="Tile25" parent="Chessboard-other/HexChessDriver" index="24"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 7.2619514, 0, -16.281061)
+
+[node name="Tile26" parent="Chessboard-other/HexChessDriver" index="25"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 8.994001, 0, -15.281062)
+
+[node name="Tile27" parent="Chessboard-other/HexChessDriver" index="26"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 10.726051, 0, -14.281062)
+
+[node name="Tile28" parent="Chessboard-other/HexChessDriver" index="27"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 12.458101, 0, -13.281062)
+
+[node name="Tile29" parent="Chessboard-other/HexChessDriver" index="28"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 14.190151, 0, -12.281062)
+
+[node name="Tile30" parent="Chessboard-other/HexChessDriver" index="29"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 15.922201, 0, -11.281062)
+
+[node name="Tile31" parent="Chessboard-other/HexChessDriver" index="30"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 2.0497713, 0, -21.253302)
+
+[node name="Tile32" parent="Chessboard-other/HexChessDriver" index="31"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 3.7818313, 0, -20.253302)
+
+[node name="Tile33" parent="Chessboard-other/HexChessDriver" index="32"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 5.513881, 0, -19.253302)
+
+[node name="Tile34" parent="Chessboard-other/HexChessDriver" index="33"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 7.245931, 0, -18.253304)
+
+[node name="Tile35" parent="Chessboard-other/HexChessDriver" index="34"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 8.977971, 0, -17.253304)
+
+[node name="Tile36" parent="Chessboard-other/HexChessDriver" index="35"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 10.710026, 0, -16.253302)
+
+[node name="Tile37" parent="Chessboard-other/HexChessDriver" index="36"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 12.442071, 0, -15.253302)
+
+[node name="Tile38" parent="Chessboard-other/HexChessDriver" index="37"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 14.174121, 0, -14.253302)
+
+[node name="Tile39" parent="Chessboard-other/HexChessDriver" index="38"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 15.906172, 0, -13.253302)
+
+[node name="Tile40" parent="Chessboard-other/HexChessDriver" index="39"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 17.638222, 0, -12.253302)
+
+[node name="Tile41" parent="Chessboard-other/HexChessDriver" index="40"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 2.0337515, 0, -23.225552)
+
+[node name="Tile42" parent="Chessboard-other/HexChessDriver" index="41"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 3.765801, 0, -22.225552)
+
+[node name="Tile43" parent="Chessboard-other/HexChessDriver" index="42"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 5.497851, 0, -21.225552)
+
+[node name="Tile44" parent="Chessboard-other/HexChessDriver" index="43"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 7.2299013, 0, -20.225552)
+
+[node name="Tile45" parent="Chessboard-other/HexChessDriver" index="44"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 8.961951, 0, -19.225552)
+
+[node name="Tile46" parent="Chessboard-other/HexChessDriver" index="45"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 10.694003, 0, -18.225552)
+
+[node name="Tile47" parent="Chessboard-other/HexChessDriver" index="46"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 12.426051, 0, -17.225552)
+
+[node name="Tile48" parent="Chessboard-other/HexChessDriver" index="47"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 14.158101, 0, -16.225552)
+
+[node name="Tile49" parent="Chessboard-other/HexChessDriver" index="48"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 15.890151, 0, -15.225552)
+
+[node name="Tile50" parent="Chessboard-other/HexChessDriver" index="49"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 17.6222, 0, -14.225552)
+
+[node name="Tile51" parent="Chessboard-other/HexChessDriver" index="50"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 19.354252, 0, -13.225552)
+
+[node name="Tile52" parent="Chessboard-other/HexChessDriver" index="51"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 3.7497811, 0, -24.197792)
+
+[node name="Tile53" parent="Chessboard-other/HexChessDriver" index="52"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 5.481831, 0, -23.197792)
+
+[node name="Tile54" parent="Chessboard-other/HexChessDriver" index="53"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 7.213881, 0, -22.197792)
+
+[node name="Tile55" parent="Chessboard-other/HexChessDriver" index="54"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 8.945931, 0, -21.197792)
+
+[node name="Tile56" parent="Chessboard-other/HexChessDriver" index="55"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 10.677977, 0, -20.197792)
+
+[node name="Tile57" parent="Chessboard-other/HexChessDriver" index="56"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 12.410021, 0, -19.197788)
+
+[node name="Tile58" parent="Chessboard-other/HexChessDriver" index="57"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 14.142071, 0, -18.19779)
+
+[node name="Tile59" parent="Chessboard-other/HexChessDriver" index="58"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 15.874121, 0, -17.197792)
+
+[node name="Tile60" parent="Chessboard-other/HexChessDriver" index="59"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 17.60617, 0, -16.197792)
+
+[node name="Tile61" parent="Chessboard-other/HexChessDriver" index="60"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 19.33823, 0, -15.197792)
+
+[node name="Tile62" parent="Chessboard-other/HexChessDriver" index="61"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 5.4658012, 0, -25.170033)
+
+[node name="Tile63" parent="Chessboard-other/HexChessDriver" index="62"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 7.197851, 0, -24.170033)
+
+[node name="Tile64" parent="Chessboard-other/HexChessDriver" index="63"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 8.929901, 0, -23.170033)
+
+[node name="Tile65" parent="Chessboard-other/HexChessDriver" index="64"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 10.661951, 0, -22.170033)
+
+[node name="Tile66" parent="Chessboard-other/HexChessDriver" index="65"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 12.394001, 0, -21.170033)
+
+[node name="Tile67" parent="Chessboard-other/HexChessDriver" index="66"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 14.126051, 0, -20.170033)
+
+[node name="Tile68" parent="Chessboard-other/HexChessDriver" index="67"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 15.858101, 0, -19.170033)
+
+[node name="Tile69" parent="Chessboard-other/HexChessDriver" index="68"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 17.59015, 0, -18.170033)
+
+[node name="Tile70" parent="Chessboard-other/HexChessDriver" index="69"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 19.3222, 0, -17.170033)
+
+[node name="Tile71" parent="Chessboard-other/HexChessDriver" index="70"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 7.1818314, 0, -26.142282)
+
+[node name="Tile72" parent="Chessboard-other/HexChessDriver" index="71"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 8.913881, 0, -25.142282)
+
+[node name="Tile73" parent="Chessboard-other/HexChessDriver" index="72"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 10.645931, 0, -24.142282)
+
+[node name="Tile74" parent="Chessboard-other/HexChessDriver" index="73"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 12.377981, 0, -23.142282)
+
+[node name="Tile75" parent="Chessboard-other/HexChessDriver" index="74"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 14.110031, 0, -22.142282)
+
+[node name="Tile76" parent="Chessboard-other/HexChessDriver" index="75"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 15.842081, 0, -21.142282)
+
+[node name="Tile77" parent="Chessboard-other/HexChessDriver" index="76"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 17.574131, 0, -20.142282)
+
+[node name="Tile78" parent="Chessboard-other/HexChessDriver" index="77"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 19.306181, 0, -19.142282)
+
+[node name="Tile79" parent="Chessboard-other/HexChessDriver" index="78"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 8.8978615, 0, -27.114521)
+
+[node name="Tile80" parent="Chessboard-other/HexChessDriver" index="79"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 10.629907, 0, -26.114521)
+
+[node name="Tile81" parent="Chessboard-other/HexChessDriver" index="80"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 12.361961, 0, -25.114521)
+
+[node name="Tile82" parent="Chessboard-other/HexChessDriver" index="81"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 14.094001, 0, -24.114521)
+
+[node name="Tile83" parent="Chessboard-other/HexChessDriver" index="82"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 15.826052, 0, -23.114521)
+
+[node name="Tile84" parent="Chessboard-other/HexChessDriver" index="83"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 17.558102, 0, -22.114521)
+
+[node name="Tile85" parent="Chessboard-other/HexChessDriver" index="84"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 19.29015, 0, -21.114521)
+
+[node name="Tile86" parent="Chessboard-other/HexChessDriver" index="85"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 10.613876, 0, -28.086761)
+
+[node name="Tile87" parent="Chessboard-other/HexChessDriver" index="86"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 12.345931, 0, -27.086761)
+
+[node name="Tile88" parent="Chessboard-other/HexChessDriver" index="87"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 14.077981, 0, -26.086761)
+
+[node name="Tile89" parent="Chessboard-other/HexChessDriver" index="88"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 15.810031, 0, -25.086761)
+
+[node name="Tile90" parent="Chessboard-other/HexChessDriver" index="89"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 17.54208, 0, -24.086761)
+
+[node name="Tile91" parent="Chessboard-other/HexChessDriver" index="90"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 19.27412, 0, -23.086761)
+
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=151490677]
-transform = Transform3D(35, 0, 0, 0, 35, 0, 0, 0, 35, 0, -0.0122933, 0)
+transform = Transform3D(35, 0, 0, 0, 35, 0, 0, 0, 35, 5.100581, -0.012291392, -9.66407)
 material_override = SubResource("StandardMaterial3D_ye5td")
 mesh = SubResource("PlaneMesh_5efah")
 
@@ -47,6 +327,7 @@ mouse_filter = 1
 [node name="ClankSoundPlayer" parent="." unique_id=109508806 instance=ExtResource("4_0moxn")]
 
 [node name="Lights" type="Node3D" parent="." unique_id=715133524]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.100581, 1.9073486e-06, -9.66407)
 
 [node name="TableLight" type="SpotLight3D" parent="Lights" unique_id=233880795]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 28.436, 0)
@@ -100,9 +381,17 @@ spot_angle = 32.59
 [connection signal="move_validation" from="Chessboard/HexChessDriver" to="." method="_on_hex_chess_driver_move_validation"]
 [connection signal="play_clank_sound" from="Chessboard/HexChessDriver" to="ClankSoundPlayer" method="play_sound"]
 [connection signal="turn_changed" from="Chessboard/HexChessDriver" to="UI" method="on_turn_changed"]
+[connection signal="activate_promotion" from="Chessboard-other/HexChessDriver" to="UI" method="activate_promotion_pannel"]
+[connection signal="disable_undo_button" from="Chessboard-other/HexChessDriver" to="UI/UndoSelectionButton" method="_on_hex_chess_driver_disable_undo_button"]
+[connection signal="gameOver" from="Chessboard-other/HexChessDriver" to="UI" method="_on_hex_chess_driver_game_over"]
+[connection signal="move_selection_button" from="Chessboard-other/HexChessDriver" to="UI/UndoSelectionButton" method="_on_hex_chess_driver_move_selection_button"]
+[connection signal="move_validation" from="Chessboard-other/HexChessDriver" to="." method="_on_hex_chess_driver_move_validation"]
+[connection signal="play_clank_sound" from="Chessboard-other/HexChessDriver" to="ClankSoundPlayer" method="play_sound"]
+[connection signal="turn_changed" from="Chessboard-other/HexChessDriver" to="UI" method="on_turn_changed"]
 [connection signal="promotion_selected" from="UI" to="Chessboard/HexChessDriver" method="_on_ui_promotion_selected"]
 [connection signal="pressed" from="UI/UndoSelectionButton/Button" to="Chessboard/HexChessDriver" method="ClearCurrentSelection"]
 [connection signal="pressed" from="UI/Panel/Button" to="." method="_on_button_pressed"]
 
 [editable path="Chessboard"]
+[editable path="Chessboard-other"]
 [editable path="UI"]
