@@ -65,5 +65,7 @@ func _on_validation_continue_pressed() -> void:
 	validation_panel.hide()
 
 func on_validation_move(state:bool) -> void:
-	if not state:
+	if state:
+		validation_panel.hide()
+	else:
 		validation_button.show()

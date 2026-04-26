@@ -1,8 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://cplq4thvqd6ua"]
+[gd_scene format=3 uid="uid://cplq4thvqd6ua"]
 
 [ext_resource type="Script" uid="uid://ckcy7rhpid6pc" path="res://assets/scripts/tile_interaction.gd" id="1_hsif7"]
 [ext_resource type="PackedScene" uid="uid://culonsosevj52" path="res://assets/meshes/tile-grey.glb" id="1_wlc15"]
-[ext_resource type="Material" uid="uid://cl63vcivpyi1m" path="res://assets/material/Highlight Glow.tres" id="4_mvcd3"]
+[ext_resource type="Material" uid="uid://cl63vcivpyi1m" path="res://assets/material/Highlight Glow Red.tres" id="4_mvcd3"]
 [ext_resource type="PackedScene" uid="uid://cdof0cmk86iu6" path="res://assets/meshes/tile-highlight-01.glb" id="5_dovqi"]
 [ext_resource type="PackedScene" uid="uid://cknjfed264sve" path="res://assets/meshes/tile-highlight-02.glb" id="6_qongt"]
 
@@ -10,40 +10,40 @@
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_mvcd3"]
 
-[node name="Tile" type="Node3D"]
+[node name="Tile" type="Node3D" unique_id=1590887101]
 script = ExtResource("1_hsif7")
 
-[node name="Container" type="Node3D" parent="."]
+[node name="Container" type="Node3D" parent="." unique_id=181143442]
 transform = Transform3D(1.15, 0, 0, 0, 1.15, 0, 0, 0, 1.15, 0, 0, 0)
 
-[node name="tile-container" type="Node3D" parent="Container"]
+[node name="tile-container" type="Node3D" parent="Container" unique_id=235482601]
 
-[node name="tile-grey" parent="Container/tile-container" instance=ExtResource("1_wlc15")]
+[node name="tile-grey" parent="Container/tile-container" unique_id=2065781920 instance=ExtResource("1_wlc15")]
 
-[node name="selection-highlight" type="Node3D" parent="Container"]
+[node name="selection-highlight" type="Node3D" parent="Container" unique_id=276943835]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Container/selection-highlight"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Container/selection-highlight" unique_id=512115258]
 transform = Transform3D(1.57, 0, 0, 0, 0.065, 0, 0, 0, 1.57, 0, 0.1, 0)
 material_override = ExtResource("4_mvcd3")
 mesh = SubResource("CylinderMesh_m8fsc")
 
-[node name="current-highlight" type="Node3D" parent="Container"]
+[node name="current-highlight" type="Node3D" parent="Container" unique_id=797226406]
 
-[node name="tile-highlight-01" parent="Container/current-highlight" instance=ExtResource("5_dovqi")]
+[node name="tile-highlight-01" parent="Container/current-highlight" unique_id=193514769 instance=ExtResource("5_dovqi")]
 
 [node name="highlight-move" parent="Container/current-highlight/tile-highlight-01" index="0"]
 material_override = ExtResource("4_mvcd3")
 
-[node name="movement-highlight" type="Node3D" parent="Container"]
+[node name="movement-highlight" type="Node3D" parent="Container" unique_id=429632198]
 
-[node name="tile-highlight-02" parent="Container/movement-highlight" instance=ExtResource("6_qongt")]
+[node name="tile-highlight-02" parent="Container/movement-highlight" unique_id=1326262183 instance=ExtResource("6_qongt")]
 
 [node name="highlight-move_001" parent="Container/movement-highlight/tile-highlight-02" index="0"]
 material_override = ExtResource("4_mvcd3")
 
-[node name="Area3D" type="Area3D" parent="Container"]
+[node name="Area3D" type="Area3D" parent="Container" unique_id=967229066]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Container/Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Container/Area3D" unique_id=883251116]
 transform = Transform3D(1.605, 0, 0, 0, 1.605, 0, 0, 0, 1.605, 0, 0, 0)
 shape = SubResource("SphereShape3D_mvcd3")
 

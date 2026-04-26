@@ -112,21 +112,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_g18s6")
 
-[node name="MoveValidationLabel" type="Label" parent="ValidationPanel" unique_id=356480857]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -120.0
-offset_top = 15.0
-offset_right = 120.0
-offset_bottom = 55.0
-grow_horizontal = 2
-text = "Validating Move
-with Opponent"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="Text" type="Label" parent="ValidationPanel" unique_id=1981852152]
 layout_mode = 1
 anchors_preset = 8

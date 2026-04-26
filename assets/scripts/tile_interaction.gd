@@ -21,6 +21,19 @@ signal tile_clicked(rank:int, file:int)
 @onready var select_obj = $"Container/selection-highlight"
 @onready var move_obj = $"Container/movement-highlight"
 @onready var current_obj = $"Container/current-highlight"
+# selectable color
+const HIGHLIGHT_GLOW_BLUE = preload("res://assets/material/Highlight Glow Blue.tres")
+const HIGHLIGHT_GLOW_RED = preload("res://assets/material/Highlight Glow Red.tres")
+
+func SetSelectionColor(color_index:int) -> void:
+	if color_index == 0:
+		select_obj.get_child(0).material_override = HIGHLIGHT_GLOW_BLUE
+		move_obj.get_child(0).get_child(0).material_override = HIGHLIGHT_GLOW_BLUE
+		current_obj.get_child(0).get_child(0).material_override = HIGHLIGHT_GLOW_BLUE
+	else:
+		select_obj.get_child(0).material_override = HIGHLIGHT_GLOW_RED
+		move_obj.get_child(0).get_child(0).material_override = HIGHLIGHT_GLOW_RED
+		current_obj.get_child(0).get_child(0).material_override = HIGHLIGHT_GLOW_RED
 
 func _ready() -> void:
 	SetMaterial(mat_override)
