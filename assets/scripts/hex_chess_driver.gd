@@ -5,6 +5,7 @@ signal gameOver(state:GameState, isWhiteTurn:bool)
 signal activate_promotion()
 signal play_clank_sound(type:int)
 signal turn_changed(is_white_turn:bool)
+signal move_validation(state:bool)
 enum ActionType {NoAction, Selectable, Move, MoveAndSelect}
 enum PieceType {King, Queen, Rook, Bishop, Knight, Pawn, NoPiece}
 enum GameState {Running, Checkmate, Stalemate, DeadPosistion, ThreefoldRepitition, FiftyMoveRule}
@@ -27,6 +28,7 @@ var BlackPieces:Dictionary[PieceType, PackedScene] = {
 signal move_selection_button(new_location:Vector2)
 signal disable_undo_button()
 @export var undo_button_offset:Vector3
+@export var validation_relay: Node3D
 
 
 class Chessboard:
@@ -282,6 +284,18 @@ func OnTileClicked(rank:int, file:int) -> void:
 		var tmp:TileInteraction = hexboard.get_tile(rank, file).tile_instance as TileInteraction
 		tmp.current_obj.show()
 	elif action == ActionType.Move:
+		# TODO ask other player to validate move selection
+		var validation_label:Label = validation_relay.activate_validation_pannel()
+		validation_label.text = "Sending move to opponent..."
+		await get_tree().create_timer(0.5).timeout
+		var valid_move:bool = false
+		# if move did not pass validation, ask for a different move
+		if not valid_move:
+			validation_label.text = "Move was invalid"
+			move_validation.emit(false)
+			ClearCurrentSelection()
+			return
+		# move passed validation
 		disable_undo_button.emit()
 		play_clank_sound.emit()
 		# notify driver of move

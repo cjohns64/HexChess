@@ -4,6 +4,9 @@ extends Control
 @onready var promotion_pannel:Node = $PromotionPanel
 @onready var wturn_text:Label = $TurnPanel/WhiteTurn
 @onready var bturn_text:Label = $TurnPanel/BlackTurn
+@onready var validation_panel: Panel = $ValidationPanel
+@onready var validation_text: Label = $ValidationPanel/Text
+@onready var validation_button: Button = $ValidationPanel/Button
 
 signal promotion_selected(selection:int)
 
@@ -25,6 +28,11 @@ func _on_hex_chess_driver_game_over(state: HexChess.GameState, isWhiteTurn:bool)
 			game_over_text.text = "Draw, 50 Move Rule"
 		_:
 			pass
+
+func activate_validation_pannel() -> Label:
+	validation_panel.show()
+	validation_button.hide()
+	return validation_text
 
 func activate_promotion_pannel() -> void:
 	promotion_pannel.show()
@@ -52,3 +60,10 @@ func on_turn_changed(is_white_turn:bool) -> void:
 	else:
 		wturn_text.hide()
 		bturn_text.show()
+
+func _on_validation_continue_pressed() -> void:
+	validation_panel.hide()
+
+func on_validation_move(state:bool) -> void:
+	if not state:
+		validation_button.show()

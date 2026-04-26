@@ -1,10 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://odthg3iaugrp"]
+[gd_scene format=3 uid="uid://odthg3iaugrp"]
 
 [ext_resource type="Script" uid="uid://cg5ca8f1m48nl" path="res://assets/scripts/ui_interface.gd" id="1_21nk7"]
 [ext_resource type="Theme" uid="uid://b2gdj14bf7yym" path="res://assets/themes/blue_theme.tres" id="2_g18s6"]
 [ext_resource type="Script" uid="uid://bs5rwur6dkiuv" path="res://assets/scripts/undoselection_button_mover.gd" id="3_ybygq"]
 
-[node name="Control" type="Control"]
+[node name="Control" type="Control" unique_id=474914264]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,7 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_21nk7")
 
-[node name="UndoSelectionButton" type="Panel" parent="."]
+[node name="UndoSelectionButton" type="Panel" parent="." unique_id=245856587]
 visible = false
 layout_mode = 1
 offset_right = 152.0
@@ -21,7 +21,7 @@ offset_bottom = 48.0
 theme = ExtResource("2_g18s6")
 script = ExtResource("3_ybygq")
 
-[node name="Button" type="Button" parent="UndoSelectionButton"]
+[node name="Button" type="Button" parent="UndoSelectionButton" unique_id=511621314]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,7 +35,7 @@ grow_vertical = 2
 theme = ExtResource("2_g18s6")
 text = "Undo Selection"
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=1520833382]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -51,7 +51,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_g18s6")
 
-[node name="GameOverLabel" type="Label" parent="Panel"]
+[node name="GameOverLabel" type="Label" parent="Panel" unique_id=184580040]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -65,7 +65,7 @@ text = "Game Over!"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Text" type="Label" parent="Panel"]
+[node name="Text" type="Label" parent="Panel" unique_id=1691545735]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -81,7 +81,7 @@ grow_vertical = 2
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button" type="Button" parent="Panel"]
+[node name="Button" type="Button" parent="Panel" unique_id=849833833]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -96,7 +96,69 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Restart"
 
-[node name="PromotionPanel" type="Panel" parent="."]
+[node name="ValidationPanel" type="Panel" parent="." unique_id=1182964978]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -127.5
+offset_top = -88.0
+offset_right = 127.5
+offset_bottom = 88.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_g18s6")
+
+[node name="MoveValidationLabel" type="Label" parent="ValidationPanel" unique_id=356480857]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_top = 15.0
+offset_right = 120.0
+offset_bottom = 55.0
+grow_horizontal = 2
+text = "Validating Move
+with Opponent"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Text" type="Label" parent="ValidationPanel" unique_id=1981852152]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -34.0
+offset_right = 80.0
+offset_bottom = 34.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="ValidationPanel" unique_id=718394141]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -92.0
+offset_top = -32.0
+offset_right = 92.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Continue"
+
+[node name="PromotionPanel" type="Panel" parent="." unique_id=1560822417]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -112,7 +174,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_g18s6")
 
-[node name="Label" type="Label" parent="PromotionPanel"]
+[node name="Label" type="Label" parent="PromotionPanel" unique_id=539316508]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -126,7 +188,7 @@ text = "Select Promotion"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PromotionPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PromotionPanel" unique_id=1504225700]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -140,23 +202,23 @@ offset_bottom = 92.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="QueenButton" type="Button" parent="PromotionPanel/VBoxContainer"]
+[node name="QueenButton" type="Button" parent="PromotionPanel/VBoxContainer" unique_id=1548807038]
 layout_mode = 2
 text = "Queen"
 
-[node name="RookButton" type="Button" parent="PromotionPanel/VBoxContainer"]
+[node name="RookButton" type="Button" parent="PromotionPanel/VBoxContainer" unique_id=1374014435]
 layout_mode = 2
 text = "Rook"
 
-[node name="KnightButton" type="Button" parent="PromotionPanel/VBoxContainer"]
+[node name="KnightButton" type="Button" parent="PromotionPanel/VBoxContainer" unique_id=2036266315]
 layout_mode = 2
 text = "Knight"
 
-[node name="BishopButton" type="Button" parent="PromotionPanel/VBoxContainer"]
+[node name="BishopButton" type="Button" parent="PromotionPanel/VBoxContainer" unique_id=238395575]
 layout_mode = 2
 text = "Bishop"
 
-[node name="TurnPanel" type="Panel" parent="."]
+[node name="TurnPanel" type="Panel" parent="." unique_id=396242277]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -170,7 +232,7 @@ offset_bottom = -16.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="WhiteTurn" type="Label" parent="TurnPanel"]
+[node name="WhiteTurn" type="Label" parent="TurnPanel" unique_id=756077649]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -181,7 +243,7 @@ text = "White Turn"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BlackTurn" type="Label" parent="TurnPanel"]
+[node name="BlackTurn" type="Label" parent="TurnPanel" unique_id=749592559]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -193,6 +255,7 @@ text = "Black Turn"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[connection signal="pressed" from="ValidationPanel/Button" to="." method="_on_validation_continue_pressed"]
 [connection signal="pressed" from="PromotionPanel/VBoxContainer/QueenButton" to="." method="_on_queen_button_pressed"]
 [connection signal="pressed" from="PromotionPanel/VBoxContainer/RookButton" to="." method="_on_rook_button_pressed"]
 [connection signal="pressed" from="PromotionPanel/VBoxContainer/KnightButton" to="." method="_on_knight_button_pressed"]
