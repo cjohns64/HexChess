@@ -6,6 +6,8 @@ signal activate_promotion()
 signal play_clank_sound(type:int)
 signal turn_changed(is_white_turn:bool)
 signal move_validation(state:bool)
+var IS_LOCAL:bool = false
+
 enum ActionType {NoAction, Selectable, Move, MoveAndSelect}
 enum PieceType {King, Queen, Rook, Bishop, Knight, Pawn, NoPiece}
 enum GameState {Running, Checkmate, Stalemate, DeadPosistion, ThreefoldRepitition, FiftyMoveRule}
@@ -29,12 +31,14 @@ signal move_selection_button(new_location:Vector2)
 signal disable_undo_button()
 @export var undo_button_offset:Vector3
 @export var validation_relay: Node3D
-var IsWhitePlayer: bool = false
+var IsWhitePlayer: bool = true
 var CurrentSelection: String = ""
+var validation_label:Label
+var move_data:String
 
 class Chessboard:
 	var _internal_array: Array[TileObject] = []
-	func _init(root:HexChess):
+	func _init(root:Node3D, driver:HexChess):
 		# instantiate an empty chessboard
 		var x:int = 6
 		var s:int = 0
@@ -51,7 +55,7 @@ class Chessboard:
 				tile_script.rank = i
 				tile_script.file = j + s
 				# connect to on clicked signal
-				tile_script.tile_clicked.connect(func(rank:int, file:int): root.OnTileClicked(rank, file))
+				tile_script.tile_clicked.connect(func(rank:int, file:int): driver.OnTileClicked(rank, file))
 				#tile_script.PrintStats()
 				# add to reference
 				_internal_array.push_back(
@@ -111,7 +115,7 @@ class Chessboard:
 				return _internal_array[0] # default should never happen
 
 var hexboard:Chessboard
-var root_node:HexChess
+var board_mesh: Node3D
 
 class ChessPiece:
 	var player:bool
@@ -133,18 +137,17 @@ class TileObject:
 		tile_instance = _tile_instance
 
 func _ready() -> void:
-	root_node = $"."
-	hexboard = Chessboard.new(root_node)
-	#RoundSetup() # declare a new round
-	#GetSelectableTiles()
-	#UpdateBoard()
-	#SyncWithOtherPlayer.call_deferred()
+	board_mesh = $"../BoardMesh"
+	self.__init_hexboard.call_deferred(board_mesh) # board_mesh is initailaized after hexchess driver
+	
+func __init_hexboard(_board_mesh:Node3D) -> void:
+	hexboard = Chessboard.new(board_mesh, self)
 
 var round_in_process:bool = false
 var game_over:bool = false
 var menu_active:bool = false
 var round_num:int = -1 # _ready will run the first round
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if !game_over and !round_in_process:
 		round_in_process = true
 		# start next round
@@ -166,60 +169,71 @@ func _process(delta: float) -> void:
 			ClearHighlights()
 			#print("GAME OVER")
 			gameOver.emit(ReturnGameState(), round_num % 2 == 0)
-		SyncWithOtherPlayer()
+		if not isActivePlayerTurn():
+			ClearHighlights()
 
-func SyncWithOtherPlayer() -> void:
-	# handle sync with other player
-	if not isActivePlayerTurn():
-		ClearHighlights()
-		var move_invalid:bool = true
-		#while move_invalid:
-			## TODO listen for other player's move
-			## test with White: select r1 f1, move r3 f1
-			#var responce:String = "1131"
-			#move_invalid = not ProcessMoveRequest(responce)
-
-func ProcessMoveRequest(responce:String) -> bool:
+@rpc("any_peer")
+func ProcessMoveRequest(responce:String) -> void:
 	# decode move
 	var other_move:Array[int] = [responce[0].hex_to_int(), responce[1].hex_to_int(), responce[2].hex_to_int(), responce[3].hex_to_int()]
 	# validate
 	# check selection
 	var action:ActionType = ParseActionType(GetActionOnTile(other_move[0], other_move[1]))
-	if action != ActionType.Selectable: return false # invalid selection
-	
-	# select tile
-	GetMoveTiles(other_move[0], other_move[1]) # notify driver of piece selection
-	# check move
-	action = ParseActionType(GetActionOnTile(other_move[2], other_move[3]))
-	if action != ActionType.Move: return false # invalid move
-	# apply move
-	__ApplyMove(other_move[2], other_move[3])
-	return true
+	if IS_LOCAL:
+		MoveValidationResult(true)
+	else:
+		if action != ActionType.Selectable:
+			MoveValidationResult.rpc(false) # invalid selection
+			return
+		# select tile
+		GetMoveTiles(other_move[0], other_move[1]) # notify driver of piece selection
+		# check move
+		action = ParseActionType(GetActionOnTile(other_move[2], other_move[3]))
+		if action != ActionType.Move:
+			MoveValidationResult.rpc(false) # invalid move
+			return
+		# apply move
+		__ApplyMove(other_move[2], other_move[3])
+		MoveValidationResult.rpc(true)
+	return
 
-func AskForMoveValidation(move:String) -> bool:
-	# Function for the current player to ask the other player to validate their move
-	var validation_label:Label = validation_relay.activate_validation_pannel()
-	validation_label.text = "Sending move to opponent..."
-	var move_data:String = CurrentSelection + move
-	# send to opponent
-	var responce:bool = validation_relay.message_other_player(move_data, IsWhitePlayer)
-	#await get_tree().create_timer(0.5).timeout
+@rpc("any_peer")
+func MoveValidationResult(result:bool) -> void:
 	# read responce
-	var valid_move:bool = responce
+	var valid_move:bool = result
 	# if move did not pass validation, ask for a different move
 	if not valid_move:
-		validation_label.text = "Move was invalid"
+		if not IS_LOCAL: validation_label.text = "Move was invalid"
 		move_validation.emit(false)
 		ClearCurrentSelection()
-		return false
+		return
 	# move passed validation
-	validation_label.text = "Move was valid"
+	if not IS_LOCAL: validation_label.text = "Move was valid"
 	move_validation.emit(true)
-	return true
+	disable_undo_button.emit()
+	var _move:Array[int] = [move_data[0].hex_to_int(), move_data[1].hex_to_int(), move_data[2].hex_to_int(), move_data[3].hex_to_int()]
+	__ApplyMove(_move[2], _move[3])
+	return
+
+func AskForMoveValidation(move:String) -> void:
+	# Function for the current player to ask the other player to validate their move
+	if IS_LOCAL:
+		move_data = CurrentSelection + move
+		# send to self
+		ProcessMoveRequest(move_data)
+	else:
+		validation_label = validation_relay.activate_validation_pannel()
+		validation_label.text = "Sending move to opponent..."
+		move_data = CurrentSelection + move
+		# send to opponent
+		ProcessMoveRequest.rpc(move_data)
 
 func isActivePlayerTurn() -> bool:
 	# check if current turn is the this player's turn
-	return IsWhitePlayer == (round_num % 2 == 0)
+	if IS_LOCAL:
+		return true
+	else:
+		return IsWhitePlayer == (round_num % 2 == 0)
 
 func ReturnGameState() -> GameState:
 	var value:int = GetGameState()
@@ -345,11 +359,11 @@ func OnTileClicked(rank:int, file:int) -> void:
 		var tmp:TileInteraction = hexboard.get_tile(rank, file).tile_instance as TileInteraction
 		tmp.current_obj.show()
 	elif action == ActionType.Move:
-		# TODO ask other player to validate move selection
-		if not await AskForMoveValidation("%x%x" % [rank, file]): return # on reject, no action
-		
-		disable_undo_button.emit()
-		__ApplyMove(rank, file)
+		# TODO double click?
+		# ask other player to validate move selection
+		AskForMoveValidation("%x%x" % [rank, file])
+		await get_tree().create_timer(1.5).timeout
+		return
 	else:
 		# tile has both a selection and a move
 		# TODO

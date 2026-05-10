@@ -1,0 +1,144 @@
+[gd_scene format=3 uid="uid://380xaaeyiyha"]
+
+[ext_resource type="Theme" uid="uid://b2gdj14bf7yym" path="res://assets/themes/blue_theme.tres" id="1_u804d"]
+[ext_resource type="Texture2D" uid="uid://ydxhgypqxti4" path="res://assets/textures/HexChessLogo.jpg" id="1_vqap6"]
+[ext_resource type="Script" uid="uid://diohn7srcjla3" path="res://assets/scripts/main_menu.gd" id="2_c1eu8"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_u804d"]
+content_margin_left = 4.0
+content_margin_top = 0.0
+content_margin_right = 4.0
+content_margin_bottom = 0.0
+thickness = 0
+
+[node name="MainMenu" type="Control" unique_id=1919039400]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_u804d")
+script = ExtResource("2_c1eu8")
+
+[node name="Panel" type="Panel" parent="." unique_id=1287976446]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel" unique_id=131469069]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.701
+anchor_bottom = 1.0
+grow_vertical = 2
+size_flags_vertical = 3
+texture = ExtResource("1_vqap6")
+stretch_mode = 5
+
+[node name="RootPanel" type="Panel" parent="Panel" unique_id=63355066]
+modulate = Color(1, 1, 1, 0.78431374)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.7
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/RootPanel" unique_id=1664422827]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="NewGameButton" type="Button" parent="Panel/RootPanel/VBoxContainer" unique_id=89378349]
+layout_mode = 2
+text = "New Game"
+
+[node name="GameTypePanel" type="Panel" parent="Panel" unique_id=765498371]
+visible = false
+modulate = Color(1, 1, 1, 0.78431374)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.7
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/GameTypePanel" unique_id=411648293]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LocalButton" type="Button" parent="Panel/GameTypePanel/VBoxContainer" unique_id=267604581]
+layout_mode = 2
+text = "Local One Window"
+
+[node name="LocalButton2" type="Button" parent="Panel/GameTypePanel/VBoxContainer" unique_id=296039880]
+layout_mode = 2
+text = "Local Two Window"
+
+[node name="RemoteButton" type="Button" parent="Panel/GameTypePanel/VBoxContainer" unique_id=282476]
+layout_mode = 2
+text = "Online"
+
+[node name="HSeparator" type="HSeparator" parent="Panel/GameTypePanel/VBoxContainer" unique_id=1573729723]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/separator = SubResource("StyleBoxLine_u804d")
+
+[node name="ReturnButton" type="Button" parent="Panel/GameTypePanel/VBoxContainer" unique_id=1967749097]
+layout_mode = 2
+text = "Return To Menu"
+
+[node name="ConnectionPanel" type="Panel" parent="Panel" unique_id=826978258]
+modulate = Color(1, 1, 1, 0.78431374)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.7
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/ConnectionPanel" unique_id=1024138336]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ServerButton" type="Button" parent="Panel/ConnectionPanel/VBoxContainer" unique_id=1404259452]
+layout_mode = 2
+text = "Start Server"
+
+[node name="ClientButton" type="Button" parent="Panel/ConnectionPanel/VBoxContainer" unique_id=502071334]
+layout_mode = 2
+text = "Connect to Sever"
+
+[node name="HSeparator" type="HSeparator" parent="Panel/ConnectionPanel/VBoxContainer" unique_id=2112737205]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/separator = SubResource("StyleBoxLine_u804d")
+
+[node name="ReturnButton" type="Button" parent="Panel/ConnectionPanel/VBoxContainer" unique_id=970262811]
+layout_mode = 2
+text = "Return To Menu"
+
+[connection signal="pressed" from="Panel/RootPanel/VBoxContainer/NewGameButton" to="." method="_on_new_game_button_pressed"]
+[connection signal="pressed" from="Panel/GameTypePanel/VBoxContainer/LocalButton" to="." method="_on_local_button_pressed"]
+[connection signal="pressed" from="Panel/GameTypePanel/VBoxContainer/LocalButton2" to="." method="_on_local_button_2window_pressed"]
+[connection signal="pressed" from="Panel/GameTypePanel/VBoxContainer/RemoteButton" to="." method="_on_remote_button_pressed"]
+[connection signal="pressed" from="Panel/GameTypePanel/VBoxContainer/ReturnButton" to="." method="_on_return_button_pressed"]
+[connection signal="pressed" from="Panel/ConnectionPanel/VBoxContainer/ReturnButton" to="." method="_on_return_button_pressed"]

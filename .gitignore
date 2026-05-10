@@ -5,6 +5,7 @@ a.out
 cmd_hexchess
 .godot/
 /android/
+/recordings/
 
 # scons
 .sconsign.dblite

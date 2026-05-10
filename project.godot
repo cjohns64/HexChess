@@ -24,6 +24,11 @@ config/icon="res://icon.svg"
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 
+[editor]
+
+movie_writer/ogv/encoding_speed=1
+movie_writer/movie_file="/home/cory/Documents/Projects/Games/ChessGame/HexChess/recordings/hexchess-multiplayer.avi"
+
 [input]
 
 mouseInteract={

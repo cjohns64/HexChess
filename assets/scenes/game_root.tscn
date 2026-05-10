@@ -1,12 +1,11 @@
 [gd_scene format=3 uid="uid://bspcr5htv00bl"]
 
 [ext_resource type="Script" uid="uid://chb2rlxdot7p4" path="res://assets/scripts/game_ctrl.gd" id="1_6kbre"]
+[ext_resource type="PackedScene" uid="uid://380xaaeyiyha" path="res://assets/scenes/MainMenu.tscn" id="2_anrac"]
 
 [node name="Game" type="Node3D" unique_id=542802772]
 script = ExtResource("1_6kbre")
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=1863607861]
-transform = Transform3D(0.97333854, -0.13755259, 0.1835523, 0.010408706, 0.8258968, 0.56372523, -0.22913712, -0.54678494, 0.80530894, 13.900649, 17.729, 14.752804)
-projection = 1
-size = 29.375
-far = 1083.33
+[node name="MainMenu" parent="." unique_id=1919039400 instance=ExtResource("2_anrac")]
+
+[connection signal="StartLocal" from="MainMenu" to="." method="_on_main_menu_start_local"]

@@ -1,283 +1,285 @@
-[gd_scene load_steps=3 format=3 uid="uid://daefdlpvxwe0y"]
+[gd_scene format=3 uid="uid://daefdlpvxwe0y"]
 
 [ext_resource type="PackedScene" uid="uid://cplq4thvqd6ua" path="res://assets/scenes/tile.tscn" id="3_fnrg5"]
 [ext_resource type="Script" uid="uid://b7qgo28dj1u83" path="res://assets/scripts/hex_chess_driver.gd" id="4_emxaf"]
 
-[node name="Chessboard" type="Node3D"]
+[node name="Chessboard" type="Node3D" unique_id=1278013005]
 transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 0, 0, 0)
 
-[node name="HexChessDriver" type="GDHexChessDriver" parent="."]
+[node name="HexChessDriver" type="GDHexChessDriver" parent="." unique_id=1768500]
 script = ExtResource("4_emxaf")
 
-[node name="Tile1" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -8.57092, 0, 4.84528)
+[node name="BoardMesh" type="Node3D" parent="." unique_id=522490695]
 
-[node name="Tile2" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -6.83887, 0, 5.84528)
+[node name="Tile1" parent="BoardMesh" unique_id=2069212131 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -4.999995, 0, 8.4816)
 
-[node name="Tile3" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -5.10682, 0, 6.84528)
+[node name="Tile2" parent="BoardMesh" unique_id=1516326229 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -2.9999945, 0, 8.481601)
 
-[node name="Tile4" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -3.37477, 0, 7.84528)
+[node name="Tile3" parent="BoardMesh" unique_id=450354235 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -0.9999945, 0, 8.481601)
 
-[node name="Tile5" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -1.64272, 0, 8.84528)
+[node name="Tile4" parent="BoardMesh" unique_id=1204626499 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 1.000006, 0, 8.481601)
 
-[node name="Tile6" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 0.089325, 0, 9.84528)
+[node name="Tile5" parent="BoardMesh" unique_id=936602687 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 3.000006, 0, 8.4816)
 
-[node name="Tile7" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -8.58695, 0, 2.87303)
+[node name="Tile6" parent="BoardMesh" unique_id=833957675 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 5.000002, 0, 8.481603)
 
-[node name="Tile8" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -6.8549, 0, 3.87303)
+[node name="Tile7" parent="BoardMesh" unique_id=92982439 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -6.0000033, 0, 6.7815967)
 
-[node name="Tile9" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -5.12285, 0, 4.87303)
+[node name="Tile8" parent="BoardMesh" unique_id=1484232532 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -4.0000024, 0, 6.781596)
 
-[node name="Tile10" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -3.3908, 0, 5.87303)
+[node name="Tile9" parent="BoardMesh" unique_id=1622174173 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -2.0000024, 0, 6.7815967)
 
-[node name="Tile11" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -1.65875, 0, 6.87303)
+[node name="Tile10" parent="BoardMesh" unique_id=1742288980 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -2.3841858e-06, 0, 6.781596)
 
-[node name="Tile12" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 0.0732999, 0, 7.87303)
+[node name="Tile11" parent="BoardMesh" unique_id=1886737372 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 1.9999979, 0, 6.7815967)
 
-[node name="Tile13" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 1.80535, 0, 8.87304)
+[node name="Tile12" parent="BoardMesh" unique_id=780045130 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 3.999998, 0, 6.781596)
 
-[node name="Tile14" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -8.60297, 0, 0.900793)
+[node name="Tile13" parent="BoardMesh" unique_id=864118981 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 6.0000033, 0, 6.7816052)
 
-[node name="Tile15" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -6.87092, 0, 1.90079)
+[node name="Tile14" parent="BoardMesh" unique_id=1841165630 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -6.999996, 0, 5.0815988)
 
-[node name="Tile16" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -5.13888, 0, 2.90079)
+[node name="Tile15" parent="BoardMesh" unique_id=1976312649 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -4.9999976, 0, 5.081596)
 
-[node name="Tile17" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -3.40683, 0, 3.90079)
+[node name="Tile16" parent="BoardMesh" unique_id=1117340458 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -3.0000057, 0, 5.0816007)
 
-[node name="Tile18" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -1.67478, 0, 4.90079)
+[node name="Tile17" parent="BoardMesh" unique_id=1713134574 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -1.0000056, 0, 5.0816007)
 
-[node name="Tile19" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 0.0572748, 0, 5.90079)
+[node name="Tile18" parent="BoardMesh" unique_id=1577384969 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 0.99999475, 0, 5.081601)
 
-[node name="Tile20" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 1.78932, 0, 6.90079)
+[node name="Tile19" parent="BoardMesh" unique_id=236781974 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 2.999999, 0, 5.0815983)
 
-[node name="Tile21" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 3.52137, 0, 7.90079)
+[node name="Tile20" parent="BoardMesh" unique_id=1647271669 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 4.999995, 0, 5.0816007)
 
-[node name="Tile22" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -8.619, 0, -1.07145)
+[node name="Tile21" parent="BoardMesh" unique_id=1013423450 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 6.999995, 0, 5.0816007)
 
-[node name="Tile23" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -6.88695, 0, -0.07145)
+[node name="Tile22" parent="BoardMesh" unique_id=1052685308 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -8.000001, 0, 3.3816009)
 
-[node name="Tile24" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -5.1549, 0, 0.92855)
+[node name="Tile23" parent="BoardMesh" unique_id=1770468796 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -6.000001, 0, 3.3816004)
 
-[node name="Tile25" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -3.42285, 0, 1.92855)
+[node name="Tile24" parent="BoardMesh" unique_id=691220017 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -4.0000005, 0, 3.3816004)
 
-[node name="Tile26" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -1.6908, 0, 2.92855)
+[node name="Tile25" parent="BoardMesh" unique_id=1275736574 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -2, 0, 3.3816004)
 
-[node name="Tile27" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 0.04125, 0, 3.92855)
+[node name="Tile26" parent="BoardMesh" unique_id=310036746 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 0, 0, 3.3816004)
 
-[node name="Tile28" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 1.7733, 0, 4.92855)
+[node name="Tile27" parent="BoardMesh" unique_id=1265433430 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 2.0000002, 0, 3.3816001)
 
-[node name="Tile29" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 3.50535, 0, 5.92855)
+[node name="Tile28" parent="BoardMesh" unique_id=1167845906 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 4.0000005, 0, 3.3815997)
 
-[node name="Tile30" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 5.2374, 0, 6.92855)
+[node name="Tile29" parent="BoardMesh" unique_id=1943271454 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 6.0000005, 0, 3.3816)
 
-[node name="Tile31" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -8.63503, 0, -3.04369)
+[node name="Tile30" parent="BoardMesh" unique_id=1030821631 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 8.000001, 0, 3.3815997)
 
-[node name="Tile32" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -6.90297, 0, -2.04369)
+[node name="Tile31" parent="BoardMesh" unique_id=976486507 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -9.000004, 0, 1.6816051)
 
-[node name="Tile33" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -5.17092, 0, -1.04369)
+[node name="Tile32" parent="BoardMesh" unique_id=1457030383 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -6.999995, 0, 1.6815997)
 
-[node name="Tile34" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -3.43887, 0, -0.0436925)
+[node name="Tile33" parent="BoardMesh" unique_id=212128131 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -4.9999948, 0, 1.6815999)
 
-[node name="Tile35" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -1.70683, 0, 0.956308)
+[node name="Tile34" parent="BoardMesh" unique_id=1271196665 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -2.999996, 0, 1.6815976)
 
-[node name="Tile36" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 0.025225, 0, 1.95631)
+[node name="Tile35" parent="BoardMesh" unique_id=2119607531 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -1.0000042, 0, 1.681603)
 
-[node name="Tile37" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 1.75727, 0, 2.95631)
+[node name="Tile36" parent="BoardMesh" unique_id=1736328101 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 1.0000013, 0, 1.6816022)
 
-[node name="Tile38" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 3.48932, 0, 3.95631)
+[node name="Tile37" parent="BoardMesh" unique_id=793212250 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 2.9999971, 0, 1.6816049)
 
-[node name="Tile39" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 5.22137, 0, 4.95631)
+[node name="Tile38" parent="BoardMesh" unique_id=1418609706 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 4.9999976, 0, 1.6816047)
 
-[node name="Tile40" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 6.95342, 0, 5.95631)
+[node name="Tile39" parent="BoardMesh" unique_id=1473387743 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 6.9999976, 0, 1.6816044)
 
-[node name="Tile41" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -8.65105, 0, -5.01594)
+[node name="Tile40" parent="BoardMesh" unique_id=1487041423 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 8.999998, 0, 1.6816041)
 
-[node name="Tile42" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -6.919, 0, -4.01594)
+[node name="Tile41" parent="BoardMesh" unique_id=793959805 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -10.000004, 0, -0.018404484)
 
-[node name="Tile43" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -5.18695, 0, -3.01594)
+[node name="Tile42" parent="BoardMesh" unique_id=448372174 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -8.000004, 0, -0.018404484)
 
-[node name="Tile44" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -3.4549, 0, -2.01594)
+[node name="Tile43" parent="BoardMesh" unique_id=539632014 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -6.0000033, 0, -0.018404245)
 
-[node name="Tile45" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -1.72285, 0, -1.01594)
+[node name="Tile44" parent="BoardMesh" unique_id=1706325311 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -4.000003, 0, -0.018404365)
 
-[node name="Tile46" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 0.00920235, 0, -0.0159389)
+[node name="Tile45" parent="BoardMesh" unique_id=1836405021 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -2.0000026, 0, -0.018404424)
 
-[node name="Tile47" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 1.74125, 0, 0.984061)
+[node name="Tile46" parent="BoardMesh" unique_id=1877721956 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 1.4901161e-08, 0, -0.018404676)
 
-[node name="Tile48" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 3.4733, 0, 1.98406)
+[node name="Tile47" parent="BoardMesh" unique_id=765037200 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 1.9999981, 0, -0.01840365)
 
-[node name="Tile49" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 5.20535, 0, 2.98406)
+[node name="Tile48" parent="BoardMesh" unique_id=760088065 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 3.9999979, 0, -0.018404484)
 
-[node name="Tile50" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 6.9374, 0, 3.98406)
+[node name="Tile49" parent="BoardMesh" unique_id=1557110392 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 5.9999976, 0, -0.018404484)
 
-[node name="Tile51" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 8.66945, 0, 4.98406)
+[node name="Tile50" parent="BoardMesh" unique_id=1445661993 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 7.999998, 0, -0.018404484)
 
-[node name="Tile52" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -6.93502, 0, -5.98818)
+[node name="Tile51" parent="BoardMesh" unique_id=523392548 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 9.999998, 0, -0.01840496)
 
-[node name="Tile53" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -5.20297, 0, -4.98818)
+[node name="Tile52" parent="BoardMesh" unique_id=733936023 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -8.999998, 0, -1.718405)
 
-[node name="Tile54" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -3.47092, 0, -3.98818)
+[node name="Tile53" parent="BoardMesh" unique_id=491462028 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -6.999998, 0, -1.7184048)
 
-[node name="Tile55" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -1.73887, 0, -2.98818)
+[node name="Tile54" parent="BoardMesh" unique_id=786786562 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -4.9999976, 0, -1.7184048)
 
-[node name="Tile56" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -0.00682497, 0, -1.98818)
+[node name="Tile55" parent="BoardMesh" unique_id=1394695241 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -2.9999971, 0, -1.7184048)
 
-[node name="Tile57" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 1.72522, 0, -0.988177)
+[node name="Tile56" parent="BoardMesh" unique_id=1362821661 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -1.0000014, 0, -1.7184025)
 
-[node name="Tile58" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 3.45727, 0, 0.0118227)
+[node name="Tile57" parent="BoardMesh" unique_id=1037283371 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 0.99999595, 0, -1.7183974)
 
-[node name="Tile59" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 5.18932, 0, 1.01182)
+[node name="Tile58" parent="BoardMesh" unique_id=346378418 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 2.999996, 0, -1.7183976)
 
-[node name="Tile60" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 6.92137, 0, 2.01182)
+[node name="Tile59" parent="BoardMesh" unique_id=1571781874 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 4.9999948, 0, -1.7184001)
 
-[node name="Tile61" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 8.65343, 0, 3.01182)
+[node name="Tile60" parent="BoardMesh" unique_id=1499977997 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 6.999995, 0, -1.7184)
 
-[node name="Tile62" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -5.219, 0, -6.96042)
+[node name="Tile61" parent="BoardMesh" unique_id=101458582 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 9.000004, 0, -1.7184052)
 
-[node name="Tile63" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -3.48695, 0, -5.96042)
+[node name="Tile62" parent="BoardMesh" unique_id=1238446792 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -8.000001, 0, -3.4184005)
 
-[node name="Tile64" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -1.7549, 0, -4.96042)
+[node name="Tile63" parent="BoardMesh" unique_id=125097256 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -6.000001, 0, -3.4184008)
 
-[node name="Tile65" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -0.0228499, 0, -3.96042)
+[node name="Tile64" parent="BoardMesh" unique_id=732490619 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -4.000001, 0, -3.4184005)
 
-[node name="Tile66" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 1.7092, 0, -2.96042)
+[node name="Tile65" parent="BoardMesh" unique_id=396768091 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -2.0000002, 0, -3.4184003)
 
-[node name="Tile67" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 3.44125, 0, -1.96042)
+[node name="Tile66" parent="BoardMesh" unique_id=1539448679 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 0, 0, -3.4184003)
 
-[node name="Tile68" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 5.1733, 0, -0.96042)
+[node name="Tile67" parent="BoardMesh" unique_id=603463771 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 2.0000002, 0, -3.4184005)
 
-[node name="Tile69" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 6.90535, 0, 0.0395801)
+[node name="Tile68" parent="BoardMesh" unique_id=1251525951 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 4, 0, -3.4184005)
 
-[node name="Tile70" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 8.6374, 0, 1.03958)
+[node name="Tile69" parent="BoardMesh" unique_id=1319125268 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 6.000001, 0, -3.4184005)
 
-[node name="Tile71" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -3.50297, 0, -7.93267)
+[node name="Tile70" parent="BoardMesh" unique_id=783929216 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 8, 0, -3.4184008)
 
-[node name="Tile72" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -1.77092, 0, -6.93267)
+[node name="Tile71" parent="BoardMesh" unique_id=638279861 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -7.0000005, 0, -5.1184096)
 
-[node name="Tile73" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -0.0388699, 0, -5.93267)
+[node name="Tile72" parent="BoardMesh" unique_id=2144891836 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -5, 0, -5.1184096)
 
-[node name="Tile74" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 1.69318, 0, -4.93267)
+[node name="Tile73" parent="BoardMesh" unique_id=1700430286 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -2.9999998, 0, -5.1184096)
 
-[node name="Tile75" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 3.42523, 0, -3.93267)
+[node name="Tile74" parent="BoardMesh" unique_id=444703500 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -0.9999999, 0, -5.1184096)
 
-[node name="Tile76" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 5.15728, 0, -2.93267)
+[node name="Tile75" parent="BoardMesh" unique_id=1077216034 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 1.0000005, 0, -5.11841)
 
-[node name="Tile77" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 6.88933, 0, -1.93267)
+[node name="Tile76" parent="BoardMesh" unique_id=2128429362 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 3.0000005, 0, -5.11841)
 
-[node name="Tile78" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 8.62138, 0, -0.932671)
+[node name="Tile77" parent="BoardMesh" unique_id=1160024815 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 5.000001, 0, -5.1184096)
 
-[node name="Tile79" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -1.78694, 0, -8.90491)
+[node name="Tile78" parent="BoardMesh" unique_id=451390229 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 7.0000005, 0, -5.1184106)
 
-[node name="Tile80" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -0.0548949, 0, -7.90491)
+[node name="Tile79" parent="BoardMesh" unique_id=384996872 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -5.9999948, 0, -6.81841)
 
-[node name="Tile81" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 1.67716, 0, -6.90491)
+[node name="Tile80" parent="BoardMesh" unique_id=2056894698 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -3.9999988, 0, -6.8184075)
 
-[node name="Tile82" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 3.4092, 0, -5.90491)
+[node name="Tile81" parent="BoardMesh" unique_id=695676911 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -1.9999943, 0, -6.81841)
 
-[node name="Tile83" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 5.14125, 0, -4.90491)
+[node name="Tile82" parent="BoardMesh" unique_id=210592918 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -2.6226044e-06, 0, -6.818405)
 
-[node name="Tile84" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 6.8733, 0, -3.90491)
+[node name="Tile83" parent="BoardMesh" unique_id=337106519 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 1.9999974, 0, -6.818405)
 
-[node name="Tile85" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 8.60535, 0, -2.90491)
+[node name="Tile84" parent="BoardMesh" unique_id=1909471895 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 3.9999979, 0, -6.818405)
 
-[node name="Tile86" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -0.0709248, 0, -9.87715)
+[node name="Tile85" parent="BoardMesh" unique_id=2058168878 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 5.999997, 0, -6.818405)
 
-[node name="Tile87" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 1.66113, 0, -8.87715)
+[node name="Tile86" parent="BoardMesh" unique_id=1004494981 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -5.000002, 0, -8.518403)
 
-[node name="Tile88" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 3.39318, 0, -7.87715)
+[node name="Tile87" parent="BoardMesh" unique_id=1421832549 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -2.9999974, 0, -8.518405)
 
-[node name="Tile89" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 5.12523, 0, -6.87715)
+[node name="Tile88" parent="BoardMesh" unique_id=1376968398 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -0.9999974, 0, -8.518406)
 
-[node name="Tile90" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 6.85728, 0, -5.87715)
+[node name="Tile89" parent="BoardMesh" unique_id=1989339746 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 1.0000026, 0, -8.518406)
 
-[node name="Tile91" parent="HexChessDriver" instance=ExtResource("3_fnrg5")]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 8.58932, 0, -4.87715)
+[node name="Tile90" parent="BoardMesh" unique_id=389229509 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 3.000003, 0, -8.518406)
+
+[node name="Tile91" parent="BoardMesh" unique_id=275504101 instance=ExtResource("3_fnrg5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 4.9999948, 0, -8.518401)
