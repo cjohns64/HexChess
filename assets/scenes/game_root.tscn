@@ -2,10 +2,15 @@
 
 [ext_resource type="Script" uid="uid://chb2rlxdot7p4" path="res://assets/scripts/game_ctrl.gd" id="1_6kbre"]
 [ext_resource type="PackedScene" uid="uid://380xaaeyiyha" path="res://assets/scenes/MainMenu.tscn" id="2_anrac"]
+[ext_resource type="Script" uid="uid://bmy1on611oj1w" path="res://assets/scripts/hexchess_network_manager.gd" id="3_6kbre"]
 
 [node name="Game" type="Node3D" unique_id=542802772]
 script = ExtResource("1_6kbre")
 
 [node name="MainMenu" parent="." unique_id=1919039400 instance=ExtResource("2_anrac")]
 
+[node name="hexchess_network_manager" type="Node" parent="." unique_id=71565635]
+script = ExtResource("3_6kbre")
+
 [connection signal="StartLocal" from="MainMenu" to="." method="_on_main_menu_start_local"]
+[connection signal="StartOnline" from="MainMenu" to="." method="_on_main_menu_start_online"]

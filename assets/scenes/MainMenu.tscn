@@ -57,6 +57,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="OptionButton" type="OptionButton" parent="Panel/RootPanel/VBoxContainer" unique_id=1547759028]
+layout_mode = 2
+selected = 0
+item_count = 2
+popup/item_0/text = "White"
+popup/item_0/id = 0
+popup/item_1/text = "Black"
+popup/item_1/id = 1
+
 [node name="NewGameButton" type="Button" parent="Panel/RootPanel/VBoxContainer" unique_id=89378349]
 layout_mode = 2
 text = "New Game"
@@ -85,6 +94,7 @@ layout_mode = 2
 text = "Local One Window"
 
 [node name="LocalButton2" type="Button" parent="Panel/GameTypePanel/VBoxContainer" unique_id=296039880]
+visible = false
 layout_mode = 2
 text = "Local Two Window"
 
@@ -102,6 +112,7 @@ layout_mode = 2
 text = "Return To Menu"
 
 [node name="ConnectionPanel" type="Panel" parent="Panel" unique_id=826978258]
+visible = false
 modulate = Color(1, 1, 1, 0.78431374)
 layout_mode = 1
 anchors_preset = -1
@@ -141,4 +152,6 @@ text = "Return To Menu"
 [connection signal="pressed" from="Panel/GameTypePanel/VBoxContainer/LocalButton2" to="." method="_on_local_button_2window_pressed"]
 [connection signal="pressed" from="Panel/GameTypePanel/VBoxContainer/RemoteButton" to="." method="_on_remote_button_pressed"]
 [connection signal="pressed" from="Panel/GameTypePanel/VBoxContainer/ReturnButton" to="." method="_on_return_button_pressed"]
+[connection signal="pressed" from="Panel/ConnectionPanel/VBoxContainer/ServerButton" to="." method="_on_server_button_pressed"]
+[connection signal="pressed" from="Panel/ConnectionPanel/VBoxContainer/ClientButton" to="." method="_on_client_button_pressed"]
 [connection signal="pressed" from="Panel/ConnectionPanel/VBoxContainer/ReturnButton" to="." method="_on_return_button_pressed"]

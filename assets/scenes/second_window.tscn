@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://h3iar11y11a6"]
+
+[ext_resource type="Script" uid="uid://ctdv2qknu5jy3" path="res://assets/scripts/second_window.gd" id="1_601h4"]
+
+[node name="SecondWindow" type="Window" unique_id=1841435969]
+oversampling_override = 1.0
+position = Vector2i(0, 36)
+size = Vector2i(960, 540)
+script = ExtResource("1_601h4")

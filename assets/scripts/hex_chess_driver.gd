@@ -210,7 +210,6 @@ func MoveValidationResult(result:bool) -> void:
 	# move passed validation
 	if not IS_LOCAL: validation_label.text = "Move was valid"
 	move_validation.emit(true)
-	disable_undo_button.emit()
 	var _move:Array[int] = [move_data[0].hex_to_int(), move_data[1].hex_to_int(), move_data[2].hex_to_int(), move_data[3].hex_to_int()]
 	__ApplyMove(_move[2], _move[3])
 	return
@@ -362,6 +361,7 @@ func OnTileClicked(rank:int, file:int) -> void:
 		# TODO double click?
 		# ask other player to validate move selection
 		AskForMoveValidation("%x%x" % [rank, file])
+		disable_undo_button.emit()
 		await get_tree().create_timer(1.5).timeout
 		return
 	else:
