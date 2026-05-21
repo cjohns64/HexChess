@@ -147,6 +147,47 @@ theme_override_styles/separator = SubResource("StyleBoxLine_u804d")
 layout_mode = 2
 text = "Return To Menu"
 
+[node name="NetworkPanel" type="Panel" parent="." unique_id=999485287]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.3
+anchor_top = 0.3
+anchor_right = 0.7
+anchor_bottom = 0.7
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_u804d")
+
+[node name="Text" type="Label" parent="NetworkPanel" unique_id=1482315601]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.1
+anchor_right = 0.9
+anchor_bottom = 0.9
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Button" type="Button" parent="NetworkPanel" unique_id=388234431]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -92.0
+offset_top = -32.0
+offset_right = 92.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Main Menu"
+
 [connection signal="pressed" from="Panel/RootPanel/VBoxContainer/NewGameButton" to="." method="_on_new_game_button_pressed"]
 [connection signal="pressed" from="Panel/GameTypePanel/VBoxContainer/LocalButton" to="." method="_on_local_button_pressed"]
 [connection signal="pressed" from="Panel/GameTypePanel/VBoxContainer/LocalButton2" to="." method="_on_local_button_2window_pressed"]
@@ -155,3 +196,4 @@ text = "Return To Menu"
 [connection signal="pressed" from="Panel/ConnectionPanel/VBoxContainer/ServerButton" to="." method="_on_server_button_pressed"]
 [connection signal="pressed" from="Panel/ConnectionPanel/VBoxContainer/ClientButton" to="." method="_on_client_button_pressed"]
 [connection signal="pressed" from="Panel/ConnectionPanel/VBoxContainer/ReturnButton" to="." method="_on_return_button_pressed"]
+[connection signal="pressed" from="NetworkPanel/Button" to="." method="_on_network_panel_button_pressed"]

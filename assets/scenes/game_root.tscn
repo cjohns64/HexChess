@@ -12,5 +12,7 @@ script = ExtResource("1_6kbre")
 [node name="hexchess_network_manager" type="Node" parent="." unique_id=71565635]
 script = ExtResource("3_6kbre")
 
+[connection signal="EndGame" from="MainMenu" to="." method="_on_main_menu_end_game"]
 [connection signal="StartLocal" from="MainMenu" to="." method="_on_main_menu_start_local"]
 [connection signal="StartOnline" from="MainMenu" to="." method="_on_main_menu_start_online"]
+[connection signal="PeerConnectionChange" from="hexchess_network_manager" to="." method="_on_hexchess_network_manager_peer_connection_change"]

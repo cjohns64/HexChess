@@ -3,8 +3,19 @@ extends Control
 @onready var game_type_panel: Panel = $Panel/GameTypePanel
 @onready var connection_panel: Panel = $Panel/ConnectionPanel
 @onready var option_button: OptionButton = $Panel/RootPanel/VBoxContainer/OptionButton
+@onready var network_panel: Panel = $NetworkPanel
+@onready var network_pannel_text: Label = $NetworkPanel/Text
+@onready var network_pannel_button: Button = $NetworkPanel/Button
+
+signal EndGame
 signal StartLocal(num_windows:int)
 signal StartOnline(server:bool, is_white_player:bool)
+
+func _hide() -> void:
+	$Panel.hide()
+
+func _show() -> void:
+	$Panel.show()
 
 func _ready() -> void:
 	init_menu()
@@ -38,3 +49,6 @@ func _on_server_button_pressed() -> void:
 
 func _on_client_button_pressed() -> void:
 	StartOnline.emit(false, option_button.selected == 0)
+
+func _on_network_panel_button_pressed() -> void:
+	EndGame.emit()

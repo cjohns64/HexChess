@@ -146,8 +146,10 @@ func __init_hexboard(_board_mesh:Node3D) -> void:
 var round_in_process:bool = false
 var game_over:bool = false
 var menu_active:bool = false
+var game_start:bool = false
 var round_num:int = -1 # _ready will run the first round
 func _process(_delta: float) -> void:
+	if not game_start: return
 	if !game_over and !round_in_process:
 		round_in_process = true
 		# start next round
