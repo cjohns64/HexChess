@@ -89,6 +89,7 @@ func _process(_delta: float) -> void:
 		print("Starting Game")
 		self.game_scene.hex_chess_driver.game_start = true
 		self.game_scene.hex_chess_driver.IsWhitePlayer = self.is_white
+		self.game_scene.set_ui_turn_labels()
 		game_ready = false
 	elif self.send_color_info and self.is_server:
 		self.send_color_info = false
