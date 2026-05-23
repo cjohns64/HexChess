@@ -95,12 +95,16 @@ func _process(_delta: float) -> void:
 		require_color.rpc(not self.is_white)
 
 func set_network_notification(txt:String, end_button:bool=false) -> void:
-	# TODO disable interaction
+	# disable interaction
+	if self.game_scene and self.game_scene.hex_chess_driver:
+		self.game_scene.hex_chess_driver.menu_active += 1
 	main_menu.network_panel.show()
 	if end_button: main_menu.network_pannel_button.show()
 	main_menu.network_pannel_text.text = txt
 
 func hide_network_notification() -> void:
+	if self.game_scene and self.game_scene.hex_chess_driver:
+		self.game_scene.hex_chess_driver.menu_active -= 1
 	main_menu.network_pannel_button.hide()
 	main_menu.network_panel.hide()
 

@@ -145,7 +145,7 @@ func __init_hexboard(_board_mesh:Node3D) -> void:
 
 var round_in_process:bool = false
 var game_over:bool = false
-var menu_active:bool = false
+var menu_active:int = 0
 var game_start:bool = false
 var round_num:int = -1 # _ready will run the first round
 func _process(_delta: float) -> void:
@@ -167,12 +167,12 @@ func _process(_delta: float) -> void:
 		else:
 			# game over
 			game_over = true
-			menu_active = true
+			menu_active += 1
 			ClearHighlights()
 			#print("GAME OVER")
 			gameOver.emit(ReturnGameState(), round_num % 2 == 0)
-		if not isActivePlayerTurn():
-			ClearHighlights()
+		#if not isActivePlayerTurn():
+			#ClearHighlights()
 
 @rpc("any_peer")
 func ProcessMoveRequest(responce:String) -> void:
@@ -302,21 +302,22 @@ func SetPieceObjectOnTile(piece:ChessPiece, rank:int, file:int) -> void:
 	
 
 func SetTileHighlight(action:ActionType, rank:int, file:int, color:int) -> void:
+	var highlight_allowed:bool = isActivePlayerTurn() # don't highlight on inactive player's turn
 	var tmp:TileInteraction = hexboard.get_tile(rank, file).tile_instance as TileInteraction
 	# set new Highlight
 	tmp.current_obj.hide()
 	tmp.SetSelectionColor(color)
-	if action == ActionType.Selectable:
+	if highlight_allowed and action == ActionType.Selectable:
 		#tmp.select_obj.process_mode = Node.PROCESS_MODE_INHERIT
 		#tmp.move_obj.process_mode = Node.PROCESS_MODE_DISABLED
 		tmp.select_obj.show()
 		tmp.move_obj.hide()
-	elif action == ActionType.Move:
+	elif highlight_allowed and action == ActionType.Move:
 		#tmp.select_obj.process_mode = Node.PROCESS_MODE_DISABLED
 		#tmp.move_obj.process_mode = Node.PROCESS_MODE_INHERIT
 		tmp.select_obj.hide()
 		tmp.move_obj.show()
-	elif action == ActionType.MoveAndSelect:
+	elif highlight_allowed and action == ActionType.MoveAndSelect:
 		#tmp.select_obj.process_mode = Node.PROCESS_MODE_INHERIT
 		#tmp.move_obj.process_mode = Node.PROCESS_MODE_INHERIT
 		tmp.select_obj.show()
@@ -336,7 +337,7 @@ func ClearCurrentSelection() -> void:
 	UpdateBoard()
 
 func OnTileClicked(rank:int, file:int) -> void:
-	if menu_active or not isActivePlayerTurn():
+	if menu_active > 0 or not isActivePlayerTurn():
 		return # ignore tile click if a menu is active or it is not this player's turn
 	print("Tile Clicked :: rank=%d file=%d" % [rank, file])
 	# verifiy coordinates are within board range
@@ -364,7 +365,7 @@ func OnTileClicked(rank:int, file:int) -> void:
 		# ask other player to validate move selection
 		AskForMoveValidation("%x%x" % [rank, file])
 		disable_undo_button.emit()
-		await get_tree().create_timer(1.5).timeout
+		#await get_tree().create_timer(1.5).timeout
 		return
 	else:
 		# tile has both a selection and a move
@@ -378,8 +379,11 @@ func __ApplyMove(rank:int, file:int) -> void:
 	UpdateBoard()
 	RoundCleanup() # round over, setup for next round
 	if GetPromotionTile() != 0:
-		activate_promotion.emit()
-		menu_active = true
+		if isActivePlayerTurn():
+			activate_promotion.emit()
+			menu_active += 1
+		else:
+			pass # auto promotion
 	else:
 		round_in_process = false
 
@@ -431,8 +435,14 @@ func ParseActionType(action:int) -> ActionType:
 		_:
 			return ActionType.NoAction
 
+@rpc("any_peer")
+func sync_promotion(selection:int) -> void:
+	RunPromotion(selection)
+	round_in_process = false
+
 func _on_ui_promotion_selected(selection: int) -> void:
 	play_clank_sound.emit(1)
 	RunPromotion(selection)
-	menu_active = false
+	sync_promotion.rpc(selection)
+	menu_active -= 1
 	round_in_process = false
