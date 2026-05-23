@@ -6,10 +6,17 @@ extends Control
 @onready var network_panel: Panel = $NetworkPanel
 @onready var network_pannel_text: Label = $NetworkPanel/Text
 @onready var network_pannel_button: Button = $NetworkPanel/Button
+# ip address selection
+@onready var ip_1_spin_box: SpinBox = $Panel/ip_config_panel/VBoxContainer/HBoxContainer/IP1_SpinBox
+@onready var ip_2_spin_box: SpinBox = $Panel/ip_config_panel/VBoxContainer/HBoxContainer/IP2_SpinBox
+@onready var ip_3_spin_box: SpinBox = $Panel/ip_config_panel/VBoxContainer/HBoxContainer/IP3_SpinBox
+@onready var ip_4_spin_box: SpinBox = $Panel/ip_config_panel/VBoxContainer/HBoxContainer/IP4_SpinBox
+
+@onready var ip_config_panel: Panel = $Panel/ip_config_panel
 
 signal EndGame
 signal StartLocal(num_windows:int)
-signal StartOnline(server:bool, is_white_player:bool)
+signal StartOnline(server:bool, is_white_player:bool, ip_addr:String)
 
 func _hide() -> void:
 	$Panel.hide()
@@ -48,7 +55,13 @@ func _on_server_button_pressed() -> void:
 	StartOnline.emit(true, option_button.selected == 0)
 
 func _on_client_button_pressed() -> void:
-	StartOnline.emit(false, option_button.selected == 0)
+	ip_config_panel.show()
+	connection_panel.hide()
 
 func _on_network_panel_button_pressed() -> void:
 	EndGame.emit()
+
+func _on_ip_config_button_pressed() -> void:
+	var ip_addr:String = "%d.%d.%d.%d" % [ip_1_spin_box.value, ip_2_spin_box.value, ip_3_spin_box.value, ip_4_spin_box.value]
+	ip_config_panel.hide()
+	StartOnline.emit(false, option_button.selected == 0, ip_addr)

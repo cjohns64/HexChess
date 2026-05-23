@@ -49,7 +49,7 @@ func _on_main_menu_start_local(num_windows: int) -> void:
 		#player2_scene.hex_chess_driver.multiplayer.multiplayer_peer = peer2
 		#player2_scene.hex_chess_driver.IsWhitePlayer = false
 
-func _on_main_menu_start_online(server: bool, is_white_player: bool) -> void:
+func _on_main_menu_start_online(server: bool, is_white_player: bool, ip_addr:String="127.0.0.1") -> void:
 	self.is_server = server
 	self.is_white = is_white_player
 	set_network_notification("waiting for connection..")
@@ -58,7 +58,7 @@ func _on_main_menu_start_online(server: bool, is_white_player: bool) -> void:
 		self.multiplayer.multiplayer_peer = network_manager.start_server()
 		#game_scene.hex_chess_driver.IsWhitePlayer = is_white_player
 	else:
-		self.multiplayer.multiplayer_peer = network_manager.start_client()
+		self.multiplayer.multiplayer_peer = network_manager.start_client(ip_addr)
 
 @rpc("authority")
 func require_color(is_white_player:bool) -> void:

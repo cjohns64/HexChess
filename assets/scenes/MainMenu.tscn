@@ -11,6 +11,8 @@ content_margin_right = 4.0
 content_margin_bottom = 0.0
 thickness = 0
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u804d"]
+
 [node name="MainMenu" type="Control" unique_id=1919039400]
 layout_mode = 3
 anchors_preset = 15
@@ -147,6 +149,88 @@ theme_override_styles/separator = SubResource("StyleBoxLine_u804d")
 layout_mode = 2
 text = "Return To Menu"
 
+[node name="ip_config_panel" type="Panel" parent="Panel" unique_id=1108560527]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.3
+anchor_top = 0.3
+anchor_right = 0.7
+anchor_bottom = 0.7
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_u804d")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/ip_config_panel" unique_id=1532951983]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Text" type="Label" parent="Panel/ip_config_panel/VBoxContainer" unique_id=277328596]
+layout_mode = 2
+text = "Enter IP Address of Player 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/ip_config_panel/VBoxContainer" unique_id=1336064654]
+layout_mode = 2
+
+[node name="VSeparator2" type="VSeparator" parent="Panel/ip_config_panel/VBoxContainer/HBoxContainer" unique_id=1784080209]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_u804d")
+
+[node name="Label" type="Label" parent="Panel/ip_config_panel/VBoxContainer/HBoxContainer" unique_id=421648617]
+layout_mode = 2
+text = "Connection IP:"
+
+[node name="VSeparator" type="VSeparator" parent="Panel/ip_config_panel/VBoxContainer/HBoxContainer" unique_id=1700817314]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_u804d")
+
+[node name="IP1_SpinBox" type="SpinBox" parent="Panel/ip_config_panel/VBoxContainer/HBoxContainer" unique_id=831381670]
+layout_mode = 2
+max_value = 255.0
+value = 127.0
+rounded = true
+
+[node name="dot_label" type="Label" parent="Panel/ip_config_panel/VBoxContainer/HBoxContainer" unique_id=798186491]
+layout_mode = 2
+text = "."
+
+[node name="IP2_SpinBox" type="SpinBox" parent="Panel/ip_config_panel/VBoxContainer/HBoxContainer" unique_id=868051143]
+layout_mode = 2
+max_value = 255.0
+rounded = true
+
+[node name="dot_label2" type="Label" parent="Panel/ip_config_panel/VBoxContainer/HBoxContainer" unique_id=193022442]
+layout_mode = 2
+text = "."
+
+[node name="IP3_SpinBox" type="SpinBox" parent="Panel/ip_config_panel/VBoxContainer/HBoxContainer" unique_id=1901643675]
+layout_mode = 2
+max_value = 255.0
+rounded = true
+
+[node name="dot_label3" type="Label" parent="Panel/ip_config_panel/VBoxContainer/HBoxContainer" unique_id=1305131559]
+layout_mode = 2
+text = "."
+
+[node name="IP4_SpinBox" type="SpinBox" parent="Panel/ip_config_panel/VBoxContainer/HBoxContainer" unique_id=262591644]
+layout_mode = 2
+max_value = 255.0
+value = 1.0
+rounded = true
+
+[node name="Button" type="Button" parent="Panel/ip_config_panel/VBoxContainer" unique_id=1437118144]
+layout_mode = 2
+text = "Done"
+
 [node name="NetworkPanel" type="Panel" parent="." unique_id=999485287]
 visible = false
 layout_mode = 1
@@ -196,4 +280,5 @@ text = "Main Menu"
 [connection signal="pressed" from="Panel/ConnectionPanel/VBoxContainer/ServerButton" to="." method="_on_server_button_pressed"]
 [connection signal="pressed" from="Panel/ConnectionPanel/VBoxContainer/ClientButton" to="." method="_on_client_button_pressed"]
 [connection signal="pressed" from="Panel/ConnectionPanel/VBoxContainer/ReturnButton" to="." method="_on_return_button_pressed"]
+[connection signal="pressed" from="Panel/ip_config_panel/VBoxContainer/Button" to="." method="_on_ip_config_button_pressed"]
 [connection signal="pressed" from="NetworkPanel/Button" to="." method="_on_network_panel_button_pressed"]
