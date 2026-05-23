@@ -1,8 +1,6 @@
 extends Node3D
 var game_scene:Node3D
-#var other_scene:Window
 var game_asset := preload("res://assets/scenes/world_one_window.tscn")
-#const SECOND_WINDOW = preload("res://assets/scenes/second_window.tscn")
 var is_server:bool = false
 var game_ready:bool = false
 var is_white:bool = false
@@ -19,41 +17,27 @@ func _on_world_restart_pressed() -> void:
 	main_menu._show()
 	main_menu.init_menu()
 	
-func NewGame() -> void:
+func NewGame(set_turn_labels:bool=true) -> void:
 	if game_scene: game_scene.queue_free()
 	main_menu._hide()
 	game_scene = game_asset.instantiate()
 	game_scene.restart_pressed.connect(_on_world_restart_pressed)
 	add_child(game_scene)
+	hide_network_notification()
+	print("Starting Game")
+	self.game_scene.hex_chess_driver.game_start = true
+	self.game_scene.hex_chess_driver.IsWhitePlayer = self.is_white
+	if set_turn_labels: self.game_scene.set_ui_turn_labels()
 
-func _on_main_menu_start_local(num_windows: int) -> void:
-	if num_windows == 1:
-		NewGame()
-		game_scene.hex_chess_driver.IS_LOCAL = true
-	else:
-		pass
-		#game_scene = game_asset.instantiate()
-		#var player2_scene:Window = SECOND_WINDOW.instantiate()
-		##get_viewport().set_embedding_subwindows(false)
-		#get_window().title = "HexChess - White"
-		#player2_scene.title = "HexChess - Black"
-		#main_menu.hide()
-		#add_child(game_scene)
-		#add_child(player2_scene)
-		## white player
-		#var peer1:ENetMultiplayerPeer = network_manager.get_multiplayer_api_two_window(true)
-		#game_scene.hex_chess_driver.multiplayer.multiplayer_peer = peer1
-		#game_scene.hex_chess_driver.IsWhitePlayer = true
-		## black player
-		#var peer2:ENetMultiplayerPeer = network_manager.get_multiplayer_api_two_window(false)
-		#player2_scene.hex_chess_driver.multiplayer.multiplayer_peer = peer2
-		#player2_scene.hex_chess_driver.IsWhitePlayer = false
-
+func _on_main_menu_start_local(is_white_player: bool) -> void:
+	self.is_white = is_white_player
+	NewGame(false)
+	game_scene.hex_chess_driver.IS_LOCAL = true
+	
 func _on_main_menu_start_online(server: bool, is_white_player: bool, ip_addr:String="127.0.0.1") -> void:
 	self.is_server = server
 	self.is_white = is_white_player
 	set_network_notification("waiting for connection..")
-	#NewGame()
 	if server:
 		self.multiplayer.multiplayer_peer = network_manager.start_server()
 		#game_scene.hex_chess_driver.IsWhitePlayer = is_white_player
@@ -78,18 +62,14 @@ func _on_hexchess_network_manager_peer_connection_change(_ID: int, con: bool) ->
 			print("client player is %s" % ("White" if self.is_white else "Black"))
 	else:
 		# lost connection
-		print("client player is %s" % ("White" if self.is_white else "Black"))
-		set_network_notification("lost connection with other player, waiting for reconnect...")
+		if not self.game_scene.hex_chess_driver.game_over:
+			print("client player is %s" % ("White" if self.is_white else "Black"))
+			set_network_notification("lost connection with other player, waiting for reconnect...")
 
 func _process(_delta: float) -> void:
 	if self.game_ready:
 		# launch game
 		NewGame()
-		hide_network_notification()
-		print("Starting Game")
-		self.game_scene.hex_chess_driver.game_start = true
-		self.game_scene.hex_chess_driver.IsWhitePlayer = self.is_white
-		self.game_scene.set_ui_turn_labels()
 		game_ready = false
 	elif self.send_color_info and self.is_server:
 		self.send_color_info = false
