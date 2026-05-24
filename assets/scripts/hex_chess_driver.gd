@@ -11,6 +11,8 @@ var IS_LOCAL:bool = false
 enum ActionType {NoAction, Selectable, Move, MoveAndSelect}
 enum PieceType {King, Queen, Rook, Bishop, Knight, Pawn, NoPiece}
 enum GameState {Running, Checkmate, Stalemate, DeadPosistion, ThreefoldRepitition, FiftyMoveRule}
+enum RPC_STATE {NoAction, MoveV_PROCESS, MoveV_RESULT, Promotion}
+var call_state_ctrl:RPC_STATE = RPC_STATE.NoAction
 var WhitePieces:Dictionary[PieceType, PackedScene] = {
 	PieceType.King:preload("res://assets/scenes/pieces/King-White.tscn"),
 	PieceType.Queen:preload("res://assets/scenes/pieces/Queen-White.tscn"),
@@ -171,11 +173,12 @@ func _process(_delta: float) -> void:
 			ClearHighlights()
 			#print("GAME OVER")
 			gameOver.emit(ReturnGameState(), round_num % 2 == 0)
-		#if not isActivePlayerTurn():
-			#ClearHighlights()
+		if not isActivePlayerTurn():
+			call_state_ctrl = RPC_STATE.MoveV_PROCESS # ready for opponent's move request
 
 @rpc("any_peer")
 func ProcessMoveRequest(responce:String) -> void:
+	if not IS_LOCAL and call_state_ctrl != RPC_STATE.MoveV_PROCESS: return
 	# decode move
 	var other_move:Array[int] = [responce[0].hex_to_int(), responce[1].hex_to_int(), responce[2].hex_to_int(), responce[3].hex_to_int()]
 	# validate
@@ -201,6 +204,7 @@ func ProcessMoveRequest(responce:String) -> void:
 
 @rpc("any_peer")
 func MoveValidationResult(result:bool) -> void:
+	if not IS_LOCAL and call_state_ctrl != RPC_STATE.MoveV_RESULT: return
 	# read responce
 	var valid_move:bool = result
 	# if move did not pass validation, ask for a different move
@@ -227,6 +231,7 @@ func AskForMoveValidation(move:String) -> void:
 		validation_label.text = "Sending move to opponent..."
 		move_data = CurrentSelection + move
 		# send to opponent
+		call_state_ctrl = RPC_STATE.MoveV_RESULT # ready for reply
 		ProcessMoveRequest.rpc(move_data)
 
 func isActivePlayerTurn() -> bool:
@@ -376,6 +381,7 @@ func __ApplyMove(rank:int, file:int) -> void:
 	play_clank_sound.emit()
 	# notify driver of move
 	MovePiece(rank, file)
+	call_state_ctrl = RPC_STATE.NoAction
 	UpdateBoard()
 	RoundCleanup() # round over, setup for next round
 	if GetPromotionTile() != 0:
@@ -383,7 +389,8 @@ func __ApplyMove(rank:int, file:int) -> void:
 			activate_promotion.emit()
 			menu_active += 1
 		else:
-			pass # auto promotion
+			call_state_ctrl = RPC_STATE.Promotion
+			# ready for auto promotion
 	else:
 		round_in_process = false
 
@@ -437,8 +444,10 @@ func ParseActionType(action:int) -> ActionType:
 
 @rpc("any_peer")
 func sync_promotion(selection:int) -> void:
+	if not IS_LOCAL and call_state_ctrl != RPC_STATE.Promotion: return
 	RunPromotion(selection)
 	round_in_process = false
+	call_state_ctrl = RPC_STATE.NoAction
 
 func _on_ui_promotion_selected(selection: int) -> void:
 	play_clank_sound.emit(1)

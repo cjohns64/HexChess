@@ -37,11 +37,12 @@ func _on_main_menu_start_local(is_white_player: bool) -> void:
 func _on_main_menu_start_online(server: bool, is_white_player: bool, ip_addr:String="127.0.0.1") -> void:
 	self.is_server = server
 	self.is_white = is_white_player
-	set_network_notification("waiting for connection..")
 	if server:
 		self.multiplayer.multiplayer_peer = network_manager.start_server()
+		set_network_notification("Your IP is %s\nwaiting for connection.." % (network_manager.server_ip))
 		#game_scene.hex_chess_driver.IsWhitePlayer = is_white_player
 	else:
+		set_network_notification("waiting for connection..")
 		self.multiplayer.multiplayer_peer = network_manager.start_client(ip_addr)
 
 @rpc("authority")
@@ -78,6 +79,7 @@ func _process(_delta: float) -> void:
 func set_network_notification(txt:String, end_button:bool=false) -> void:
 	# disable interaction
 	if self.game_scene and self.game_scene.hex_chess_driver:
+		print("net menu active")
 		self.game_scene.hex_chess_driver.menu_active += 1
 	main_menu.network_panel.show()
 	if end_button: main_menu.network_pannel_button.show()
@@ -85,7 +87,9 @@ func set_network_notification(txt:String, end_button:bool=false) -> void:
 
 func hide_network_notification() -> void:
 	if self.game_scene and self.game_scene.hex_chess_driver:
-		self.game_scene.hex_chess_driver.menu_active -= 1
+		print("net menu inactive")
+		if self.game_scene.hex_chess_driver.menu_active > 0:
+			self.game_scene.hex_chess_driver.menu_active -= 1
 	main_menu.network_pannel_button.hide()
 	main_menu.network_panel.hide()
 

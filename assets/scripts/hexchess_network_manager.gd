@@ -1,6 +1,7 @@
 extends Node
 
 @export var LOCAL_PORT = 1909
+var server_ip:String
 signal PeerConnectionChange(ID:int, con:bool)
 
 func start_server() -> ENetMultiplayerPeer:
@@ -10,6 +11,8 @@ func start_server() -> ENetMultiplayerPeer:
 	server.create_server(LOCAL_PORT, 1)
 	server.peer_connected.connect(_on_peer_connect)
 	server.peer_disconnected.connect(_on_peer_disconnect)
+	server_ip = IP.get_local_addresses()[0]
+	print("Server IP is: ", server_ip)
 	return server
 	
 func start_client(IP_Address:String) -> ENetMultiplayerPeer:
