@@ -176,6 +176,14 @@ func _process(_delta: float) -> void:
 		if not isActivePlayerTurn():
 			call_state_ctrl = RPC_STATE.MoveV_PROCESS # ready for opponent's move request
 
+func ForceDraw() -> void:
+	# game over
+	game_over = true
+	menu_active += 1
+	ClearHighlights()
+	#print("GAME OVER")
+	gameOver.emit(GameState.Stalemate, round_num % 2 == 0)
+	
 @rpc("any_peer")
 func ProcessMoveRequest(responce:String) -> void:
 	if not IS_LOCAL and call_state_ctrl != RPC_STATE.MoveV_PROCESS: return
@@ -189,6 +197,7 @@ func ProcessMoveRequest(responce:String) -> void:
 	else:
 		if action != ActionType.Selectable:
 			MoveValidationResult.rpc(false) # invalid selection
+			ForceDraw()
 			return
 		# select tile
 		GetMoveTiles(other_move[0], other_move[1]) # notify driver of piece selection
@@ -196,6 +205,7 @@ func ProcessMoveRequest(responce:String) -> void:
 		action = ParseActionType(GetActionOnTile(other_move[2], other_move[3]))
 		if action != ActionType.Move:
 			MoveValidationResult.rpc(false) # invalid move
+			ForceDraw()
 			return
 		# apply move
 		__ApplyMove(other_move[2], other_move[3])
@@ -212,6 +222,7 @@ func MoveValidationResult(result:bool) -> void:
 		if not IS_LOCAL: validation_label.text = "Move was invalid"
 		move_validation.emit(false)
 		ClearCurrentSelection()
+		ForceDraw()
 		return
 	# move passed validation
 	if not IS_LOCAL: validation_label.text = "Move was valid"

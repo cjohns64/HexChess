@@ -95,3 +95,8 @@ func hide_network_notification() -> void:
 
 func _on_main_menu_end_game() -> void:
 	self._on_world_restart_pressed()
+
+func _on_hexchess_network_manager_de_sync_draw() -> void:
+	if self.game_scene and self.game_scene.hex_chess_driver:
+		self.game_scene.hex_chess_driver.ForceDraw()
+		hide_network_notification()
