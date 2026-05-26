@@ -15,4 +15,5 @@ shadow_size = 10
 shadow_offset = Vector2(5, 5)
 
 [resource]
+default_font_size = 20
 Panel/styles/panel = SubResource("StyleBoxFlat_u15ku")

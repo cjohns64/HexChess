@@ -19,7 +19,6 @@ func _on_world_restart_pressed() -> void:
 	
 func NewGame(set_turn_labels:bool=true) -> void:
 	if game_scene: game_scene.queue_free()
-	main_menu._hide()
 	game_scene = game_asset.instantiate()
 	game_scene.restart_pressed.connect(_on_world_restart_pressed)
 	add_child(game_scene)
@@ -28,6 +27,7 @@ func NewGame(set_turn_labels:bool=true) -> void:
 	self.game_scene.hex_chess_driver.game_start = true
 	self.game_scene.hex_chess_driver.IsWhitePlayer = self.is_white
 	if set_turn_labels: self.game_scene.set_ui_turn_labels()
+	main_menu._hide()
 
 func _on_main_menu_start_local(is_white_player: bool) -> void:
 	self.is_white = is_white_player

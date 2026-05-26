@@ -7,6 +7,8 @@ signal play_clank_sound(type:int)
 signal turn_changed(is_white_turn:bool)
 signal move_validation(state:bool)
 var IS_LOCAL:bool = false
+var FAILURE_COUNT_MAX:int = 3
+var current_failure_count:int = 0
 
 enum ActionType {NoAction, Selectable, Move, MoveAndSelect}
 enum PieceType {King, Queen, Rook, Bishop, Knight, Pawn, NoPiece}
@@ -153,6 +155,7 @@ var round_num:int = -1 # _ready will run the first round
 func _process(_delta: float) -> void:
 	if not game_start: return
 	if !game_over and !round_in_process:
+		current_failure_count = 0
 		round_in_process = true
 		# start next round
 		RoundSetup()
@@ -176,6 +179,12 @@ func _process(_delta: float) -> void:
 		if not isActivePlayerTurn():
 			call_state_ctrl = RPC_STATE.MoveV_PROCESS # ready for opponent's move request
 
+func under_retry_count() -> bool:
+	current_failure_count += 1
+	if current_failure_count >= FAILURE_COUNT_MAX:
+		return false
+	return true
+
 func ForceDraw() -> void:
 	# game over
 	game_over = true
@@ -197,7 +206,8 @@ func ProcessMoveRequest(responce:String) -> void:
 	else:
 		if action != ActionType.Selectable:
 			MoveValidationResult.rpc(false) # invalid selection
-			ForceDraw()
+			if not under_retry_count():
+				ForceDraw()
 			return
 		# select tile
 		GetMoveTiles(other_move[0], other_move[1]) # notify driver of piece selection
@@ -205,7 +215,8 @@ func ProcessMoveRequest(responce:String) -> void:
 		action = ParseActionType(GetActionOnTile(other_move[2], other_move[3]))
 		if action != ActionType.Move:
 			MoveValidationResult.rpc(false) # invalid move
-			ForceDraw()
+			if not under_retry_count():
+				ForceDraw()
 			return
 		# apply move
 		__ApplyMove(other_move[2], other_move[3])
@@ -222,7 +233,8 @@ func MoveValidationResult(result:bool) -> void:
 		if not IS_LOCAL: validation_label.text = "Move was invalid"
 		move_validation.emit(false)
 		ClearCurrentSelection()
-		ForceDraw()
+		if not under_retry_count():
+			ForceDraw()
 		return
 	# move passed validation
 	if not IS_LOCAL: validation_label.text = "Move was valid"
