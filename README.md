@@ -60,6 +60,6 @@ I made all the assets for this project from scratch. The 3D models were made in 
 
 *Pieces can be selected and show the available moves they can make, an undo selection button is visible only once a piece is selected.*
 
-![A game over screen, the game can detect 5 distinct game over conditions](images/figure-05.jpg)
+![A game over screen, the game can detect 5 distinct game over conditions](images/figure-04.jpg)
 
 *The game can detect 5 different game over conditions: Checkmate, Stalemate, Threefold Repetition, Dead Position, and 50 Move Rule.*
