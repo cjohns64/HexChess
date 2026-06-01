@@ -1,6 +1,8 @@
 extends GDHexChessDriver
 class_name HexChess
 
+var DEMO_MODE:bool = false
+var DEMO_TIMER:float = 1.0
 signal gameOver(state:GameState, isWhiteTurn:bool)
 signal activate_promotion()
 signal play_clank_sound(type:int)
@@ -14,6 +16,7 @@ enum ActionType {NoAction, Selectable, Move, MoveAndSelect}
 enum PieceType {King, Queen, Rook, Bishop, Knight, Pawn, NoPiece}
 enum GameState {Running, Checkmate, Stalemate, DeadPosistion, ThreefoldRepitition, FiftyMoveRule}
 enum RPC_STATE {NoAction, MoveV_PROCESS, MoveV_RESULT, Promotion}
+var RPC_avalibile:bool = true
 var call_state_ctrl:RPC_STATE = RPC_STATE.NoAction
 var WhitePieces:Dictionary[PieceType, PackedScene] = {
 	PieceType.King:preload("res://assets/scenes/pieces/King-White.tscn"),
@@ -178,6 +181,7 @@ func _process(_delta: float) -> void:
 			gameOver.emit(ReturnGameState(), round_num % 2 == 0)
 		if not isActivePlayerTurn():
 			call_state_ctrl = RPC_STATE.MoveV_PROCESS # ready for opponent's move request
+			RPC_avalibile = true
 
 func under_retry_count() -> bool:
 	current_failure_count += 1
@@ -195,7 +199,9 @@ func ForceDraw() -> void:
 	
 @rpc("any_peer")
 func ProcessMoveRequest(responce:String) -> void:
-	if not IS_LOCAL and call_state_ctrl != RPC_STATE.MoveV_PROCESS: return
+	if not IS_LOCAL and not RPC_avalibile and call_state_ctrl != RPC_STATE.MoveV_PROCESS: return
+	RPC_avalibile = false
+	if DEMO_MODE: await get_tree().create_timer(DEMO_TIMER).timeout
 	# decode move
 	var other_move:Array[int] = [responce[0].hex_to_int(), responce[1].hex_to_int(), responce[2].hex_to_int(), responce[3].hex_to_int()]
 	# validate
@@ -225,7 +231,8 @@ func ProcessMoveRequest(responce:String) -> void:
 
 @rpc("any_peer")
 func MoveValidationResult(result:bool) -> void:
-	if not IS_LOCAL and call_state_ctrl != RPC_STATE.MoveV_RESULT: return
+	if not IS_LOCAL and not RPC_avalibile and call_state_ctrl != RPC_STATE.MoveV_RESULT: return
+	RPC_avalibile = false
 	# read responce
 	var valid_move:bool = result
 	# if move did not pass validation, ask for a different move
@@ -255,6 +262,7 @@ func AskForMoveValidation(move:String) -> void:
 		move_data = CurrentSelection + move
 		# send to opponent
 		call_state_ctrl = RPC_STATE.MoveV_RESULT # ready for reply
+		RPC_avalibile = true
 		ProcessMoveRequest.rpc(move_data)
 
 func isActivePlayerTurn() -> bool:
@@ -393,7 +401,6 @@ func OnTileClicked(rank:int, file:int) -> void:
 		# ask other player to validate move selection
 		AskForMoveValidation("%x%x" % [rank, file])
 		disable_undo_button.emit()
-		#await get_tree().create_timer(1.5).timeout
 		return
 	else:
 		# tile has both a selection and a move
@@ -413,6 +420,7 @@ func __ApplyMove(rank:int, file:int) -> void:
 			menu_active += 1
 		else:
 			call_state_ctrl = RPC_STATE.Promotion
+			RPC_avalibile = true
 			# ready for auto promotion
 	else:
 		round_in_process = false
@@ -467,13 +475,15 @@ func ParseActionType(action:int) -> ActionType:
 
 @rpc("any_peer")
 func sync_promotion(selection:int) -> void:
-	if not IS_LOCAL and call_state_ctrl != RPC_STATE.Promotion: return
+	if not IS_LOCAL and not RPC_avalibile and call_state_ctrl != RPC_STATE.Promotion: return
+	RPC_avalibile = false
 	RunPromotion(selection)
 	round_in_process = false
 	call_state_ctrl = RPC_STATE.NoAction
 
 func _on_ui_promotion_selected(selection: int) -> void:
 	play_clank_sound.emit(1)
+	if DEMO_MODE: await get_tree().create_timer(DEMO_TIMER).timeout
 	RunPromotion(selection)
 	sync_promotion.rpc(selection)
 	menu_active -= 1

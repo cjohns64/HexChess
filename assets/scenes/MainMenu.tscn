@@ -145,6 +145,7 @@ text = "Return To Menu"
 
 [node name="ip_config_panel" type="Panel" parent="Panel" unique_id=1108560527]
 visible = false
+custom_minimum_size = Vector2(750, 0)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.3
@@ -156,6 +157,7 @@ grow_vertical = 2
 theme = ExtResource("1_u804d")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/ip_config_panel" unique_id=1532951983]
+custom_minimum_size = Vector2(750, 0)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -188,6 +190,7 @@ size_flags_horizontal = 3
 theme_override_styles/separator = SubResource("StyleBoxEmpty_u804d")
 
 [node name="IP1_SpinBox" type="SpinBox" parent="Panel/ip_config_panel/VBoxContainer/HBoxContainer" unique_id=831381670]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 max_value = 255.0
 value = 127.0
@@ -198,6 +201,7 @@ layout_mode = 2
 text = "."
 
 [node name="IP2_SpinBox" type="SpinBox" parent="Panel/ip_config_panel/VBoxContainer/HBoxContainer" unique_id=868051143]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 max_value = 255.0
 rounded = true
@@ -207,6 +211,7 @@ layout_mode = 2
 text = "."
 
 [node name="IP3_SpinBox" type="SpinBox" parent="Panel/ip_config_panel/VBoxContainer/HBoxContainer" unique_id=1901643675]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 max_value = 255.0
 rounded = true
@@ -216,6 +221,7 @@ layout_mode = 2
 text = "."
 
 [node name="IP4_SpinBox" type="SpinBox" parent="Panel/ip_config_panel/VBoxContainer/HBoxContainer" unique_id=262591644]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 max_value = 255.0
 value = 1.0
@@ -227,6 +233,7 @@ text = "Done"
 
 [node name="server_config_panel" type="Panel" parent="Panel" unique_id=605102060]
 visible = false
+custom_minimum_size = Vector2(750, 0)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.3
@@ -267,6 +274,7 @@ text = "Done"
 
 [node name="NetworkPanel" type="Panel" parent="." unique_id=999485287]
 visible = false
+custom_minimum_size = Vector2(750, 0)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.3
