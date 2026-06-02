@@ -40,14 +40,14 @@ func _on_main_menu_start_online(server: bool, is_white_player: bool, ip_addr:Str
 	if server:
 		self.multiplayer.multiplayer_peer = network_manager.start_server()
 		set_network_notification("Your IP is %s\nwaiting for connection.." % (network_manager.server_ip))
-		#game_scene.hex_chess_driver.IsWhitePlayer = is_white_player
 	else:
 		set_network_notification("waiting for connection..")
 		self.multiplayer.multiplayer_peer = network_manager.start_client(ip_addr)
 
 @rpc("authority")
 func require_color(is_white_player:bool) -> void:
-	#self.game_scene.hex_chess_driver.IsWhitePlayer = is_white_player
+	# input validation
+	if is_white_player is not bool: return
 	self.is_white = is_white_player
 	self.game_ready = true
 	print("set player to %s" % ("White" if is_white_player else "Black"))

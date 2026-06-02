@@ -21,9 +21,9 @@ func _on_hex_chess_driver_game_over(state: HexChess.GameState, isWhiteTurn:bool)
 		HexChess.GameState.Stalemate:
 			game_over_text.text = "Draw, Stalemate"
 		HexChess.GameState.DeadPosistion:
-			game_over_text.text = "Draw, Dead Posistion"
+			game_over_text.text = "Draw, Dead Position"
 		HexChess.GameState.ThreefoldRepitition:
-			game_over_text.text = "Draw, Threefold Repitition"
+			game_over_text.text = "Draw, Threefold Repetition"
 		HexChess.GameState.FiftyMoveRule:
 			game_over_text.text = "Draw, 50 Move Rule"
 		_:

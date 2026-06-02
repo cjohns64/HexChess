@@ -145,7 +145,7 @@ class TileObject:
 
 func _ready() -> void:
 	board_mesh = $"../BoardMesh"
-	self.__init_hexboard.call_deferred(board_mesh) # board_mesh is initailaized after hexchess driver
+	self.__init_hexboard.call_deferred(board_mesh) # board_mesh is initialized after hexchess driver
 	
 func __init_hexboard(_board_mesh:Node3D) -> void:
 	hexboard = Chessboard.new(board_mesh, self)
@@ -202,15 +202,25 @@ func ProcessMoveRequest(responce:String) -> void:
 	if not IS_LOCAL and not RPC_avalibile and call_state_ctrl != RPC_STATE.MoveV_PROCESS: return
 	RPC_avalibile = false
 	if DEMO_MODE: await get_tree().create_timer(DEMO_TIMER).timeout
+	# input validation
+	if len(responce) != 4:
+		print("response has len", len(responce))
+		return
 	# decode move
 	var other_move:Array[int] = [responce[0].hex_to_int(), responce[1].hex_to_int(), responce[2].hex_to_int(), responce[3].hex_to_int()]
-	# validate
+	# validate range
+	var valid_range:bool = true
+	for x in range(4):
+		if other_move[x] > 10 or other_move[x] < 0:
+			valid_range = false
+			print("invalid range, ", other_move[x])
+			break
 	# check selection
 	var action:ActionType = ParseActionType(GetActionOnTile(other_move[0], other_move[1]))
 	if IS_LOCAL:
 		MoveValidationResult(true)
 	else:
-		if action != ActionType.Selectable:
+		if not valid_range or action != ActionType.Selectable:
 			MoveValidationResult.rpc(false) # invalid selection
 			if not under_retry_count():
 				ForceDraw()
@@ -233,8 +243,13 @@ func ProcessMoveRequest(responce:String) -> void:
 func MoveValidationResult(result:bool) -> void:
 	if not IS_LOCAL and not RPC_avalibile and call_state_ctrl != RPC_STATE.MoveV_RESULT: return
 	RPC_avalibile = false
-	# read responce
-	var valid_move:bool = result
+	# input validation
+	var valid_move:bool = false
+	if result is not bool:
+		print("result is ", result)
+	else:
+		# read response
+		valid_move = result
 	# if move did not pass validation, ask for a different move
 	if not valid_move:
 		if not IS_LOCAL: validation_label.text = "Move was invalid"
@@ -376,7 +391,7 @@ func OnTileClicked(rank:int, file:int) -> void:
 	if menu_active > 0 or not isActivePlayerTurn():
 		return # ignore tile click if a menu is active or it is not this player's turn
 	print("Tile Clicked :: rank=%d file=%d" % [rank, file])
-	# verifiy coordinates are within board range
+	# verify coordinates are within board range
 	if rank > 10 or rank < 0:
 		print("ERROR:: rank not in range :: ", rank)
 	if file > 10 or file < 0:
@@ -397,7 +412,6 @@ func OnTileClicked(rank:int, file:int) -> void:
 		var tmp:TileInteraction = hexboard.get_tile(rank, file).tile_instance as TileInteraction
 		tmp.current_obj.show()
 	elif action == ActionType.Move:
-		# TODO double click?
 		# ask other player to validate move selection
 		AskForMoveValidation("%x%x" % [rank, file])
 		disable_undo_button.emit()
@@ -477,6 +491,8 @@ func ParseActionType(action:int) -> ActionType:
 func sync_promotion(selection:int) -> void:
 	if not IS_LOCAL and not RPC_avalibile and call_state_ctrl != RPC_STATE.Promotion: return
 	RPC_avalibile = false
+	# input validation
+	if selection is not int or selection > 4 or selection < 1: return
 	RunPromotion(selection)
 	round_in_process = false
 	call_state_ctrl = RPC_STATE.NoAction

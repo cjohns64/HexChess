@@ -1,7 +1,7 @@
 extends Node3D
 class_name TileInteraction
 
-# matirial override
+# material override
 @export var mat_override:Mat
 enum Mat {White, Black, Grey}
 @onready var mesh = $"Container/tile-container/tile-grey/Tile-applied"
