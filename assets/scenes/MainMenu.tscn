@@ -272,6 +272,11 @@ popup/item_1/id = 1
 layout_mode = 2
 text = "Done"
 
+[node name="TestingButton" type="Button" parent="Panel/server_config_panel/VBoxContainer" unique_id=1236358513]
+visible = false
+layout_mode = 2
+text = "Debug Testing"
+
 [node name="NetworkPanel" type="Panel" parent="." unique_id=999485287]
 visible = false
 custom_minimum_size = Vector2(750, 0)
@@ -324,4 +329,5 @@ text = "Main Menu"
 [connection signal="pressed" from="Panel/ConnectionPanel/VBoxContainer/ReturnButton" to="." method="_on_return_button_pressed"]
 [connection signal="pressed" from="Panel/ip_config_panel/VBoxContainer/Button" to="." method="_on_ip_config_button_pressed"]
 [connection signal="pressed" from="Panel/server_config_panel/VBoxContainer/Button" to="." method="_on_server_config_button_pressed"]
+[connection signal="pressed" from="Panel/server_config_panel/VBoxContainer/TestingButton" to="." method="_on_testing_button_pressed"]
 [connection signal="pressed" from="NetworkPanel/Button" to="." method="_on_network_panel_button_pressed"]

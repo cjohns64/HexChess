@@ -5,6 +5,8 @@ var is_server:bool = false
 var game_ready:bool = false
 var is_white:bool = false
 var send_color_info:bool = false
+const TESTING_MODULE = preload("uid://ble7vhlnsfbaw")
+var testing_mode:bool = false
 
 @onready var main_menu: Control = $MainMenu
 @onready var network_manager: Node = $hexchess_network_manager
@@ -28,6 +30,8 @@ func NewGame(set_turn_labels:bool=true) -> void:
 	self.game_scene.hex_chess_driver.IsWhitePlayer = self.is_white
 	if set_turn_labels: self.game_scene.set_ui_turn_labels()
 	main_menu._hide()
+	if testing_mode: __activate_testing_module.call_deferred()
+	testing_mode = false
 
 func _on_main_menu_start_local(is_white_player: bool) -> void:
 	self.is_white = is_white_player
@@ -100,3 +104,10 @@ func _on_hexchess_network_manager_de_sync_draw() -> void:
 	if self.game_scene and self.game_scene.hex_chess_driver:
 		self.game_scene.hex_chess_driver.ForceDraw()
 		hide_network_notification()
+
+func _on_main_menu_testing_module() -> void:
+	testing_mode = true
+
+func __activate_testing_module() -> void:
+	var module:Node = TESTING_MODULE.instantiate()
+	self.game_scene.add_child(module)

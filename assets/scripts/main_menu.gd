@@ -69,3 +69,9 @@ func _on_ip_config_button_pressed() -> void:
 func _on_server_config_button_pressed() -> void:
 	StartOnline.emit(true, color_options.selected == 0)
 	server_config_panel.hide()
+
+signal TESTING_MODULE()
+func _on_testing_button_pressed() -> void:
+	# launches a server and also the testing module
+	_on_server_config_button_pressed()
+	TESTING_MODULE.emit()

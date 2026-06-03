@@ -199,9 +199,10 @@ func ForceDraw() -> void:
 	
 @rpc("any_peer")
 func ProcessMoveRequest(responce:String) -> void:
-	if not IS_LOCAL and not RPC_avalibile and call_state_ctrl != RPC_STATE.MoveV_PROCESS: return
+	if not IS_LOCAL and (not RPC_avalibile or call_state_ctrl != RPC_STATE.MoveV_PROCESS): return
 	RPC_avalibile = false
 	if DEMO_MODE: await get_tree().create_timer(DEMO_TIMER).timeout
+	print("ProcessMoveRequest:: ", responce, ":", call_state_ctrl)
 	# input validation
 	if len(responce) != 4:
 		print("response has len", len(responce))
@@ -221,16 +222,20 @@ func ProcessMoveRequest(responce:String) -> void:
 		MoveValidationResult(true)
 	else:
 		if not valid_range or action != ActionType.Selectable:
+			print("invalid selection")
 			MoveValidationResult.rpc(false) # invalid selection
 			if not under_retry_count():
 				ForceDraw()
 			return
 		# select tile
+		print("vaild selection")
 		GetMoveTiles(other_move[0], other_move[1]) # notify driver of piece selection
 		# check move
 		action = ParseActionType(GetActionOnTile(other_move[2], other_move[3]))
 		if action != ActionType.Move:
+			print("invalid move")
 			MoveValidationResult.rpc(false) # invalid move
+			ClearCurrentSelection(false)
 			if not under_retry_count():
 				ForceDraw()
 			return
@@ -241,8 +246,9 @@ func ProcessMoveRequest(responce:String) -> void:
 
 @rpc("any_peer")
 func MoveValidationResult(result:bool) -> void:
-	if not IS_LOCAL and not RPC_avalibile and call_state_ctrl != RPC_STATE.MoveV_RESULT: return
+	if not IS_LOCAL and (not RPC_avalibile or call_state_ctrl != RPC_STATE.MoveV_RESULT): return
 	RPC_avalibile = false
+	print("MoveValidationResult:: ", result, ":", call_state_ctrl)
 	# input validation
 	var valid_move:bool = false
 	if result is not bool:
@@ -379,9 +385,9 @@ func SetTileHighlight(action:ActionType, rank:int, file:int, color:int) -> void:
 		tmp.select_obj.hide()
 		tmp.move_obj.hide()
 
-func ClearCurrentSelection() -> void:
+func ClearCurrentSelection(playSound:bool=true) -> void:
 	disable_undo_button.emit()
-	play_clank_sound.emit(1)
+	if playSound: play_clank_sound.emit(1)
 	CurrentSelection = ""
 	ClearSelection() # remove current selection
 	GetSelectableTiles() # update selectable tiles
@@ -489,8 +495,9 @@ func ParseActionType(action:int) -> ActionType:
 
 @rpc("any_peer")
 func sync_promotion(selection:int) -> void:
-	if not IS_LOCAL and not RPC_avalibile and call_state_ctrl != RPC_STATE.Promotion: return
+	if not IS_LOCAL and (not RPC_avalibile or call_state_ctrl != RPC_STATE.Promotion): return
 	RPC_avalibile = false
+	print("sync_promotion:: ", selection, ":", call_state_ctrl)
 	# input validation
 	if selection is not int or selection > 4 or selection < 1: return
 	RunPromotion(selection)
