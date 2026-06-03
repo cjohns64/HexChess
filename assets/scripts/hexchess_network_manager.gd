@@ -6,6 +6,7 @@ signal PeerConnectionChange(ID:int, con:bool)
 signal DeSyncDraw
 var disconnect_timer:float = 0.0
 var is_peer_disconnected:bool = false
+var is_game_restart:bool = false
 @export var max_disconnect_timer:float = 10.0
 
 func start_server() -> ENetMultiplayerPeer:
@@ -28,6 +29,7 @@ func start_client(IP_Address:String) -> ENetMultiplayerPeer:
 	return client
 
 func _on_peer_connect(ID:int) -> void:
+	if is_game_restart: is_game_restart = false
 	print("peer connect %d" % [ID])
 	is_peer_disconnected = false
 	disconnect_timer = 0.0
@@ -39,6 +41,7 @@ func _on_peer_disconnect(ID:int) -> void:
 	PeerConnectionChange.emit(ID, false)
 	
 func _process(delta: float) -> void:
+	if is_game_restart: return
 	if is_peer_disconnected:
 		disconnect_timer += delta
 	if is_peer_disconnected and disconnect_timer > max_disconnect_timer:

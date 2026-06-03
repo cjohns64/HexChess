@@ -18,6 +18,7 @@ func _on_world_restart_pressed() -> void:
 	if game_scene: game_scene.queue_free()
 	main_menu._show()
 	main_menu.init_menu()
+	network_manager.is_game_restart = true
 	
 func NewGame(set_turn_labels:bool=true) -> void:
 	if game_scene: game_scene.queue_free()
